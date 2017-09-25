@@ -1,9 +1,5 @@
 # mtest-v2
-Web app writed on golang and angularjs 2. Used:
+Web app writed on golang and angularjs 2. 
+Used: Go, Postgres, Bleve, Angular 2
 
-Go
-Postgres
-Bleve
-Angular 2
-
-Project is in process
+Project is in process...
