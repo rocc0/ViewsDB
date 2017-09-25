@@ -1,0 +1,37 @@
+<!--article.html-->
+
+<!--Embed the header.html template at this location-->
+
+{{ template "header.html" . }}
+<!--Display the title of the article-->
+<h1>{{ .pl.id }}{{.pl.name_and_requisits | toString}}</h1>
+
+<!--Display the content of the article-->
+<p>reg_date {{.pl.reg_date | toString}}</p>
+<p>id_reg_number {{.pl.id_reg_number | toString}}</p>
+<p>actuality_date {{.pl.actuality_date | toString}}</p>
+<p>act_developer {{.pl.act_developer | toString}}</p>
+<p>government_choice {{.pl.government_choice | toString}}</p>
+<p>year_of_tracing {{.pl.year_of_tracing | toString}}</p>
+<p>termin_basic {{.pl.termin_basic | toString}}</p>
+<p>termin_repeated {{.pl.termin_repeated | toString}}</p>
+<p>termin_periodical {{.pl.termin_periodical | toString}}</p>
+<p>result_basic {{.pl.result_basic | toString}}</p>
+<p>result_repeated {{.pl.result_repeated | toString}}</p>
+<p>result_periodical {{.pl.result_periodical | toString}}</p>
+<p>signation_basic {{.pl.signation_basic | toString}}</p>
+<p>signation_repeated {{.pl.signation_repeated | toString}}</p>
+<p>signation_periodical {{.pl.signation_periodical | toString}}</p>
+<p>publication_basic {{.pl.publication_basic | toString}}</p>
+<p>publication_repeated {{.pl.publication_repeated | toString}}</p>
+<p>publication_periodical {{.pl.publication_periodical | toString}}</p>
+<p>gived_basic {{.pl.gived_basic | toString}}</p>
+<p>gived_repeated {{.pl.gived_repeated | toString}}</p>
+<p>gived_periodical {{.pl.gived_periodical | toString}}</p>
+<p>conclusion_basic {{.pl.conclusion_basic | toString}}</p>
+<p>conclusion_repeated {{.pl.conclusion_repeated | toString}}</p>
+<p>conclusion_periodical {{.pl.conclusion_periodical | toString}}</p>
+
+
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" . }}
