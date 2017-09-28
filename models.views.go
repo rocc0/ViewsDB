@@ -8,7 +8,7 @@ import (
 )
 
 type View_mainpage struct {
-	Id                 int
+	Id int
 	Name_and_requisits string
 	Reg_Date           string
 	Government_choice string

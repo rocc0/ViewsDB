@@ -5,7 +5,10 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"html/template"
+
+	bleveHttp "github.com/blevesearch/bleve/http"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
 )
 
 var router *gin.Engine
@@ -17,6 +20,8 @@ func main(){
 	// Set the router as the default one provided by Gin
 	router = gin.Default()
 
+
+	router.Static("js/", "js/")
 	// Process the templates at the start so that they don't have to be loaded
 	// from the disk again. This makes serving HTML pages very fast.
 	//router.LoadHTMLGlob("templates/*")
@@ -28,9 +33,10 @@ func main(){
 	userInit()
 	// Initialize the routes
 	initializeRoutes()
-
 	generateIndexes()
-	searchIndex()
+	idx, _ := Bleve(viewsIdx)
+	bleveHttp.RegisterIndexName("view", idx)
+	log.Printf("Indexing complited!")
 
 	// Start serving the application
 	router.Run(":8888")
@@ -44,10 +50,10 @@ func render(c *gin.Context, data gin.H, templateName string) {
 	switch c.Request.Header.Get("Accept") {
 	case "application/json":
 		// Respond with JSON
-		c.JSON(http.StatusOK, data["payload"])
+		c.JSON(http.StatusOK, data["pl"])
 	case "application/xml":
 		// Respond with XML
-		c.XML(http.StatusOK, data["payload"])
+		c.XML(http.StatusOK, data["pl"])
 	default:
 		// Respond with HTML
 		c.HTML(http.StatusOK, templateName, data)

@@ -1,11 +1,20 @@
 package main
 
+import (
+	bleveHttp "github.com/blevesearch/bleve/http"
+	"github.com/gin-gonic/gin"
+)
+
+
+
 
 func initializeRoutes() {
 
 	// Use the setUserStatus middleware for every route to set a flag
 	// indicating whether the request was from an authenticated user or not
+
 	router.Use(setUserStatus())
+
 	// Handle the index route
 	router.GET("/", showIndexPage)
 	userRoutes := router.Group("/u")
@@ -50,9 +59,10 @@ func initializeRoutes() {
 
 	}
 
+
 	apiRoutes := router.Group("/api")
 	{
-		apiRoutes.GET("/api/:view_id", getView)
+		apiRoutes.GET("/v/:view_id", getViewJson)
 
 		//viewRoutes.POST("/view/:view_id/edit", ensureLoggedIn(), showEditView)
 		//
@@ -64,8 +74,9 @@ func initializeRoutes() {
 		// Ensure that the user is logged in by using the middleware
 		apiRoutes.POST("/create", ensureLoggedIn(), createView)
 
-		apiRoutes.POST("/search", searchIndex)
-
+		apiRoutes.POST("/search", gin.WrapH(bleveHttp.NewSearchHandler("view")))
+		apiRoutes.GET("/fields", gin.WrapH(bleveHttp.NewListFieldsHandler("view")))
 
 	}
+
 }

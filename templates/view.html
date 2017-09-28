@@ -4,9 +4,10 @@
 
 {{ template "header.html" . }}
 <!--Display the title of the article-->
-<h1>{{ .pl.id }}{{.pl.name_and_requisits | toString}}</h1>
 
-<!--Display the content of the article-->
+<h1>{{ .pl.id }} | {{.pl.name_and_requisits | toString}}</h1>
+
+Display the content of the article
 <p>reg_date {{.pl.reg_date | toString}}</p>
 <p>id_reg_number {{.pl.id_reg_number | toString}}</p>
 <p>actuality_date {{.pl.actuality_date | toString}}</p>
@@ -31,6 +32,11 @@
 <p>conclusion_basic {{.pl.conclusion_basic | toString}}</p>
 <p>conclusion_repeated {{.pl.conclusion_repeated | toString}}</p>
 <p>conclusion_periodical {{.pl.conclusion_periodical | toString}}</p>
+
+<div  ng-include="'/js/view.html'">
+
+</div>
+
 
 
 <!--Embed the footer.html template at this location-->

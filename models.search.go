@@ -1,38 +1,48 @@
 package main
 
 import (
+	"log"
 
-	"fmt"
+	"github.com/blevesearch/bleve"
+	"strconv"
 )
 
+const (
+	viewsIdx = "views.index"
+)
 
-type Event struct {
-	ID int
-	Name_and_requisits string
-	Reg_Date string
-	Government_choice string
+var bleveIdx bleve.Index
 
-}
-
-func getData() []Event {
-	var (
-		id int
-		name_and_requisits, reg_date, government_choice string
-		events []Event
-	)
-	evt, err := db.Query("SELECT id, name_and_requisits, reg_date, government_choice from book WHERE id <= 30")
-	if err != nil {
-		fmt.Print(err.Error())
-	}
-	defer evt.Close()
-	for evt.Next() {
-		err = evt.Scan(&id, &name_and_requisits, &reg_date, &government_choice)
+func Bleve(indexPath string) (bleve.Index, error) {
+	if bleveIdx == nil {
+		var err error
+		bleveIdx, err = bleve.Open(indexPath)
 		if err != nil {
-			fmt.Print(err.Error())
+			mapping, _ := buildIndexMapping()
+			bleveIdx, err = bleve.New(indexPath, mapping)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
-		events = append(events, Event{id, name_and_requisits, reg_date, government_choice })
 	}
-	return events
+	return bleveIdx, nil
 }
 
+func generateIndexes() {
+	viewList := getAllArticles()
+	idx, err := Bleve(viewsIdx)
+	if err != nil || idx == nil {
+		log.Print(err.Error())
+	}
+	log.Printf("Indexing...")
+	for _, view := range viewList {
+		view.Index(idx)
+	}
+
+}
+
+func (e *View_mainpage) Index(index bleve.Index) error {
+	err := index.Index(string(strconv.Itoa(e.Id)), e)
+	return err
+}
 
