@@ -1,4 +1,4 @@
-package ru
+package ua
 
 import (
 	"github.com/blevesearch/bleve/analysis"
