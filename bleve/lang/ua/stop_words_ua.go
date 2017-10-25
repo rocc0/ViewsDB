@@ -20,7 +20,7 @@ var UkrainianStopWords = []byte(` | From svn.tartarus.org/snowball/trunk/website
  |
  | NOTE: To use this file with StopFilterFactory, you must specify format="snowball"
 
- | a russian stop word list. comments begin with vertical bar. each stop
+ | a ukrainian stop word list. comments begin with vertical bar. each stop
  | word is at the start of a line.
 
  | this is a ranked list (commonest to rarest) of stopwords derived from
