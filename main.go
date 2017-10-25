@@ -21,7 +21,7 @@ func main(){
 	router = gin.Default()
 
 
-	router.Static("js/", "js/")
+	router.Static("static/", "static/")
 	// Process the templates at the start so that they don't have to be loaded
 	// from the disk again. This makes serving HTML pages very fast.
 	//router.LoadHTMLGlob("templates/*")

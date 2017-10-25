@@ -1,0 +1,20 @@
+<div>
+    <div class="input-group">
+        <input type="text"
+               class="form-control"
+               uib-datepicker-popup="dd.MM.yyyy"
+               ng-model="model"
+               is-open="popup.opened"
+               datepicker-options="dateOptions"
+               close-text="Close"
+               ng-show="editMode"
+               />
+        <div class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open()" ng-show="editMode">
+                <i class="glyphicon glyphicon-calendar"></i>
+            </button>
+        </div>
+        <span ng-hide="editMode" ng-click="edit()">{{model}}</span>
+    </div>
+</div>
+

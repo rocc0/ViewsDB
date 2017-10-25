@@ -1,51 +1,14 @@
 <!--index.html-->
 
-<!--Embed the header.html template at this location-->
-
 {{ template "header.html" . }}
 
-<!--Loop over the `payload` variable, which is the list of articles-->
 
 
+<div  ng-view>
 
-<div>
-    <form class="form-horizontal" role="form">
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-8">
-                <input ng-model="syntax" type="text" class="form-control" id="searchTerm" placeholder="">
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-primary" ng-click="searchSyntax()">Search</button>
-            </div>
-        </div>
-    </form>
+
 </div>
 
-<div ng-show="results" ng-include src="'/js/results.html'"></div>
-
-
-
-<!--{{range .payload }}-->
-
-<!--&lt;!&ndash;Create the link for the article based on its ID&ndash;&gt;-->
-
-<!--<a href="/views/view/{{.Id}}">-->
-
-    <!--&lt;!&ndash;Display the title of the article &ndash;&gt;-->
-
-    <!--<h2>{{.Id}} | {{.Name_and_requisits}}</h2>-->
-<!--</a>-->
-
-<!--&lt;!&ndash;Display the content of the article&ndash;&gt;-->
-<!--<p>{{.Reg_Date}}</p>-->
-<!--<p>{{.Government_choice}}</p>-->
-<!--<p>{{.Termin_basic}}</p>-->
-
-<!--{{end}}-->
-
-<!--Embed the footer.html template at this location-->
 
 {{ template "footer.html" . }}
 

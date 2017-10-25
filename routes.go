@@ -7,7 +7,6 @@ import (
 
 
 
-
 func initializeRoutes() {
 
 	// Use the setUserStatus middleware for every route to set a flag
@@ -17,6 +16,7 @@ func initializeRoutes() {
 
 	// Handle the index route
 	router.GET("/", showIndexPage)
+	router.GET("/ratings", showRatings)
 	userRoutes := router.Group("/u")
 	{
 		// Handle the GET requests at /u/login
@@ -50,33 +50,32 @@ func initializeRoutes() {
 		//
 		//viewRoutes.POST("/view/:view_id/edit", ensureLoggedIn(), editView)
 
-		viewRoutes.GET("/create", ensureLoggedIn(), showViewCreationPage)
+		viewRoutes.GET("/create",  viewCreationPage)
 
 		// Handle POST requests at /article/create
 		// Ensure that the user is logged in by using the middleware
-		viewRoutes.POST("/create", ensureLoggedIn(), createView)
-
+		viewRoutes.POST("/create",  createView)
 
 	}
 
-
 	apiRoutes := router.Group("/api")
 	{
-		apiRoutes.GET("/v/:view_id", getViewJson)
+		//Get goverments names and ids
+		apiRoutes.GET("/govs", allGovs)
 
-		//viewRoutes.POST("/view/:view_id/edit", ensureLoggedIn(), showEditView)
-		//
-		//viewRoutes.POST("/view/:view_id/edit", ensureLoggedIn(), editView)
+		//View ratings
+		apiRoutes.GET("/ratings", viewRatings)
 
-		apiRoutes.GET("/create", ensureLoggedIn(), showViewCreationPage)
+		//Show and edit view
+		apiRoutes.GET("/v/:view_id", viewData)
+		apiRoutes.POST("/v/:view_id", saveViewRow)
 
-		// Handle POST requests at /article/create
-		// Ensure that the user is logged in by using the middleware
-		apiRoutes.POST("/create", ensureLoggedIn(), createView)
+		//Creation of view
+		apiRoutes.POST("/create", createView)
 
+		//Search handling
 		apiRoutes.POST("/search", gin.WrapH(bleveHttp.NewSearchHandler("view")))
 		apiRoutes.GET("/fields", gin.WrapH(bleveHttp.NewListFieldsHandler("view")))
 
 	}
-
 }

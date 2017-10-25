@@ -21,7 +21,7 @@ func Bleve(indexPath string) (bleve.Index, error) {
 			mapping, _ := buildIndexMapping()
 			bleveIdx, err = bleve.New(indexPath, mapping)
 			if err != nil {
-				log.Fatal(err)
+				log.Print(err)
 			}
 		}
 	}

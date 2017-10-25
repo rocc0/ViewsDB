@@ -1,0 +1,22 @@
+<div>
+    <div class="input-group">
+        <input type="text"
+               on-enter="save()"
+               on-esc="cancel()"
+               ng-model="model"
+               ng-show="editMode"
+               class="form-control"
+               aria-label="model"
+        style="height: 30px;">
+        <div class="input-group-btn inline">
+            <button type="button" class="btn btn-default" aria-label="Bold" ng-click="save()" ng-show="editMode" style="height: 30px;">
+                <span class="glyphicon glyphicon-ok" ></span></button>
+            <button type="button" class="btn btn-default" aria-label="Italic" ng-click="cancel()" ng-show="editMode" style="height: 30px;">
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+    </div>
+    <span ng-hide="editMode" ng-click="edit()">{{model}}</span>
+  </span>
+</div>
+

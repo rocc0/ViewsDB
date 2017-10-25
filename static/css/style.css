@@ -1,0 +1,146 @@
+html {
+    height: 100%;
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    position: relative;
+    margin: 0;
+    padding-bottom: 6rem;
+    min-height: 100%;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+
+.gridStyle {
+    border: 1px solid rgb(212,212,212);
+    width: 400px;
+    height: 300px;
+}
+
+.header {
+    background-color: #ccecef;
+}
+
+.container {
+    width: 1317px;
+}
+
+.row-view {
+    width: 100%;
+    margin: 5px 0px;
+    display: block;
+    height: 58px;
+    border: 1px solid #000;
+    clear: both;
+}
+
+.footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    background-color: #efefef;
+    text-align: center;
+}
+
+
+.gov {
+    min-height: 20px;
+    height: auto;
+    clear: both;
+}
+
+.gov_field {
+    padding: 2px!important;
+    font-size: 13px;
+    border: 1px solid #000;
+    text-align: center;
+    width: 3.38%;
+    float: left;
+}
+
+.gov_field:first-child {
+    text-align: left;
+    width: 56%;
+}
+
+.field_name {
+    height: 100%;
+    border: 1px solid #000;
+    font-size: 11px;
+    width: 3.38%;
+    float: left;
+    overflow: hidden;
+    display: inline-block;
+
+}
+
+.field_name:first-child  {
+    width: 56%;
+    font-size: 18px;
+}
+
+.field_names {
+    height: 177px;
+    width: 100%;
+}
+
+.field_name:nth-child(1n+2) .rotated {
+    width: 169px;
+    word-wrap: break-word;
+    -webkit-transform: translate(1.1em,0) rotate(90deg);
+    -moz-transform: translate(1.1em,0) rotate(90deg);
+    -o-transform: translate(1.1em,0) rotate(90deg);
+    transform: translate(1.1em,0) rotate(90deg);
+    -webkit-transform-origin: 0 0;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    transform-origin: 11px 14px;
+    -ms-transform: none;
+    -ms-transform-origin: none;
+    -ms-writing-mode: tb-rl;
+}
+
+.field_name:first-child .rotated {
+    padding: 37px 0px 0px 10px;
+}
+
+.rotated:before {
+    content: "";
+    float: left;
+    margin-top: 100%;
+}
+
+.developer .form-control {
+    float: left;
+    width: 100%;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.years .toggle.btn {
+    width: 72px!important;
+}
+
+.comment textarea {
+    width: 98%!important;
+}
+.inline .btn {
+    padding:0px 12px;
+}
+
+.panel-body {
+    padding: 5px 15px!important;
+}
+
+.panel-heading {
+    padding: 5px 15px!important;
+}

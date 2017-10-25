@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/blevesearch/bleve"
-	"github.com/blevesearch/bleve/analysis/lang/en"
 	"github.com/blevesearch/bleve/mapping"
+	"github.com/blevesearch/bleve/analysis/lang/en"
 )
 
 func buildIndexMapping() (mapping.IndexMapping, error) {

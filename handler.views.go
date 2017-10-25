@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"net/http"
+	"fmt"
 )
 
 func showIndexPage(c *gin.Context) {
@@ -26,9 +27,12 @@ func getView(c *gin.Context) {
 		if err == nil {
 			// Call the render function with the title, article and the name of the
 			// template
+			for _,v := range view.Fields {
+				fmt.Sprintf("%v", v)
+			}
 			render(c, gin.H{
-				"title":  string(view.Fields["name_and_requisits"].([]uint8)),
-				"pl": view.Fields}, "view.html")
+				"title": "Редагування | " + string(view.Fields["name_and_requisits"].([]uint8)),
+				"pl": view.Fields}, "index.html")
 
 		} else {
 			// If the article is not found, abort with an error
@@ -41,25 +45,15 @@ func getView(c *gin.Context) {
 	}
 }
 
-func showViewCreationPage(c *gin.Context) {
+func viewCreationPage(c *gin.Context) {
 	render(c, gin.H{
-		"title": "Create view",
-	}, "create.html")
-
+		"title": "Додати відстеження",
+	}, "index.html")
 }
 
-func  createView(c *gin.Context) {
-	cols := make([]string, len(getColsNames()))
-	formData := make([]interface{}, len(getColsNames()))
-	colsNames := getColsNames()
-	for i, _ := range cols{
-		formData[i] = c.PostForm(colsNames[i])
-	}
-	if a, err := createNewView(formData); err == nil {
-		render(c, gin.H{
-			"title":   "Submission Successful",
-			"pl": a}, "success.html")
-	} else {
-		c.AbortWithStatus(http.StatusBadRequest)
-	}
+func showRatings(c *gin.Context) {
+	render(c, gin.H{
+		"title": "Таблиця по міністерствам",
+	}, "index.html")
 }
+

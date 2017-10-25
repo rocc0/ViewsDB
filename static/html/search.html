@@ -1,0 +1,37 @@
+<div>
+    <form class="form-horizontal" role="form">
+        <div class="form-group col-md-11">
+            <div >
+                <input ng-model="syntax" type="text" class="form-control" id="searchTerm" placeholder="">
+            </div>
+        </div>
+        <div class="form-group col-md-1" style="float: right">
+            <div >
+                <button type="submit" class="btn btn-primary" ng-click="searchSyntax()">Пошук</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div ng-show="results" ng-include="'results.html'"></div>
+
+
+<script type="text/ng-template" id="results.html" >
+
+<h3 class="col-md-12">Результати пошуку:</h3>
+
+
+<ul class="col-md-12" style="list-style: none;">
+    <li ng-repeat="hit in results.hits">
+        <div class="well col-md-11">
+            <div ng-repeat="(Name_and_requisits, fragments) in hit.fragments">
+                <div ng-show="fragments.length > 0"></div>
+                <ul>
+                    <a href="/views/view/{[{ hit.id }]}"><li ng-repeat="fragment in fragments" ng-bind-html="fragment"></li></a>
+                </ul>
+            </div>
+        </div>
+
+    </li>
+</ul>
+</script>

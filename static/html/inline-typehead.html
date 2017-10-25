@@ -1,0 +1,27 @@
+<div>
+    <div class="input-group">
+        <input type="text"
+               ng-model="model"
+               placeholder="Оберіть розробника"
+               ng-show="editMode"
+               uib-typeahead="gov as gov.Name for gov in govs | filter:{Name:$viewValue}"
+               class="form-control"
+               typeahead-min-length="0"
+               typeahead-focus-on-select="true"
+               typeahead-editable="false">
+        <div class="input-group-btn">
+            <button type="button" class="btn btn-default" aria-label="Bold" ng-show="editMode"
+                    ng-click="save()">
+                <span class="glyphicon glyphicon-ok"></span>
+            </button>
+            <button type="button" class="btn btn-default" aria-label="Italic"
+                    ng-show="editMode" ng-click="cancel()" >
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+        <span ng-hide="editMode" ng-click="edit()">{{data}}</span>
+    </div>
+
+</div>
+
+

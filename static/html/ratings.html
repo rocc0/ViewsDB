@@ -1,0 +1,19 @@
+
+<h2>Якісні показники</h2>
+
+<div class="field_names">
+    <div class="field_name" ng-repeat="field_name in ratings.col_names">
+        <div class="rotated">{[{ field_name }]}</div>
+    </div>
+</div>
+<table class="table table-striped">
+    <tbody>
+    <tr class="gov " ng-repeat="gov in ratings.gov">
+        <td class="gov_field " ng-repeat="field in gov track by $index">
+            {[{ field }]}
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+

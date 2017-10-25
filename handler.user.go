@@ -26,7 +26,7 @@ func performLogin(c *gin.Context) {
 	if isUserValid(username, password) {
 		// If the username/password is valid set the token in a cookie
 		token := generateSessionToken()
-		c.SetCookie("token", token, 3600, "", "", false, true)
+		c.SetCookie("token", token, 9600, "", "", false, true)
 		c.Set("is_logged_in", true)
 
 		render(c, gin.H{

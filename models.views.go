@@ -15,6 +15,11 @@ type View_mainpage struct {
 	Termin_basic string
 }
 
+type Rating struct {
+	Header []string
+	Gov [][]interface{}
+}
+
 type View struct {
 	Fields map[string]interface{}
 }
@@ -35,7 +40,7 @@ func init() {
 }
 
 func getColsNames() []string {
-	rows, err := db.Query("select * from book where id = 1")
+	rows, err := db.Query("select * from views where id = 1")
 	if err != nil {
 		return nil
 	}
@@ -50,7 +55,7 @@ func getAllArticles() []View_mainpage {
 		name_and_requisits, reg_date, government_choice, termin_basic string
 		views []View_mainpage
 	)
-	res, err := db.Query("select id, name_and_requisits, reg_date, government_choice, termin_basic from book WHERE id <= 10")
+	res, err := db.Query("select id, name_and_requisits, reg_date, government_choice, termin_basic from views WHERE id <= 10")
 	if err != nil {
 		fmt.Print(err.Error())
 	}
@@ -68,7 +73,7 @@ func getAllArticles() []View_mainpage {
 
 func getViewById(id int) (*View, error){
 	var vie View
-	rows, _ := db.Query("select * from book where id = ?", id)
+	rows, _ := db.Query("select * from views where id = ?", id)
 	colNames, _ := rows.Columns()
 	defer rows.Close()
 	for rows.Next() {
@@ -86,19 +91,22 @@ func getViewById(id int) (*View, error){
 			if *a == nil {
 				*a = []uint8("не заповнено")
 			}
-			val := a
-			m[colName] =  *val
+			m[colName] =  *a
 		}
 		vie = View{m}
 	}
 	return &vie, nil
 }
 
+
+
+
 func createNewView(formData []interface{}) (*View_mainpage, error) {
 
-	res, err := db.Exec("insert into book (name_and_requisits, reg_date, id_reg_number, actuality_date, act_developer, government_choice, year_of_tracing, termin_basic, termin_repeated, termin_periodical," +
+	res, err := db.Exec("insert into views (name_and_requisits, reg_date, id_reg_number, actuality_date, act_developer, government_choice, year_of_tracing, termin_basic, termin_repeated, termin_periodical," +
 		"result_basic, result_repeated, result_periodical, signation_basic, signation_repeated, signation_periodical," +
-			"publication_basic, publication_repeated, publication_periodical, gived_basic, gived_repeated, gived_periodical, conclusion_basic, conclusion_repeated, conclusion_periodical) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+			"publication_basic, publication_repeated, publication_periodical, gived_basic, gived_repeated, gived_periodical, conclusion_basic, conclusion_repeated, conclusion_periodical" +
+				"comment, qty_type, qty_period_done, qty_sign, qty_pub, qty_period_report, qty_method_track, qty_data_mb, qty_indexes, qty_my_rate, qty_dev_rate) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )",
 		formData...)
 	if err != nil {
 		log.Printf("%#v", formData)
@@ -108,3 +116,4 @@ func createNewView(formData []interface{}) (*View_mainpage, error) {
 	vie := View_mainpage{int(id), formData[0].(string),formData[1].(string), formData[2].(string), formData[3].(string)}
 	return &vie, nil
 }
+
