@@ -1,11 +1,5 @@
 package main
 
-import (
-	bleveHttp "github.com/blevesearch/bleve/http"
-	"github.com/gin-gonic/gin"
-)
-
-
 
 func initializeRoutes() {
 
@@ -74,8 +68,5 @@ func initializeRoutes() {
 		apiRoutes.POST("/create", createView)
 
 		//Search handling
-		apiRoutes.POST("/search", gin.WrapH(bleveHttp.NewSearchHandler("view")))
-		apiRoutes.GET("/fields", gin.WrapH(bleveHttp.NewListFieldsHandler("view")))
-
 	}
 }

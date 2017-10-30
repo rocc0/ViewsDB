@@ -4,17 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"net/http"
-<<<<<<< HEAD
 	"reflect"
 	"log"
 	"io/ioutil"
 	"encoding/json"
-||||||| merged common ancestors
-	"log"
-
-=======
-	"reflect"
->>>>>>> 219ac6dc41467e6dddf6f1dbfa707efdd8ecdf7b
 )
 
 type saveRequest struct {
@@ -27,7 +20,6 @@ func viewData(c *gin.Context) {
 	viewID, err := strconv.Atoi(c.Param("view_id"));
 	if err == nil {
 		view, err := getViewById(viewID)
-<<<<<<< HEAD
 		arr := make(map[string]string)
 		selected := make(map[string]string)
 		for k,v := range view.Fields {
@@ -39,44 +31,16 @@ func viewData(c *gin.Context) {
 				arr[k] = string(v.([]uint8))
 			}
 		}
-||||||| merged common ancestors
-=======
-		arr := make(map[string]string)
-		for k,v := range view.Fields {
-			s := reflect.ValueOf(v)
-			switch s.Interface().(type){
-			case int64:
-				arr[k] = string(v.(int64))
-			default:
-				arr[k] = string(v.([]uint8))
-			}
-		}
->>>>>>> 219ac6dc41467e6dddf6f1dbfa707efdd8ecdf7b
 		if err == nil {
-<<<<<<< HEAD
 			c.JSON(http.StatusOK, gin.H{
 				"pl": arr,
 				"selected": selected})
-||||||| merged common ancestors
-			// Call the render function with the title, article and the name of the
-			// template
-			c.SecureJSON(http.StatusOK, gin.H{
-				"pl": view.Fields})
-			log.Print(view.Fields)
-
-=======
-			// Call the render function with the title, article and the name of the
-			// template
-			c.JSON(http.StatusOK, gin.H{
-				"pl": arr})
->>>>>>> 219ac6dc41467e6dddf6f1dbfa707efdd8ecdf7b
 		} else {
 			c.AbortWithError(http.StatusNotFound, err)
 		}
 	} else {
 		c.AbortWithStatus(http.StatusBadGateway)
 	}
-<<<<<<< HEAD
 }
 
 func viewRatings(c *gin.Context) {
@@ -137,8 +101,3 @@ func allGovs(c *gin.Context) {
 		"govs": res,
 	})
 }
-||||||| merged common ancestors
-}
-=======
-}
->>>>>>> 219ac6dc41467e6dddf6f1dbfa707efdd8ecdf7b

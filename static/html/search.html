@@ -1,16 +1,42 @@
 <div>
     <form class="form-horizontal" role="form">
-        <div class="form-group col-md-11">
-            <div >
-                <input ng-model="syntax" type="text" class="form-control" id="searchTerm" placeholder="">
+        <div style="width:100%;clear: both">
+            <div class="form-group col-xs-11">
+                <div >
+                    <input ng-model="phrase" type="text" class="form-control" id="searchTerm" placeholder="Введіть назву документу">
+                </div>
+            </div>
+            <div class="form-group col-xs-1" style="float: right">
+                <div >
+                    <button type="submit" class="btn btn-primary" ng-click="searchSyntax()">Пошук</button>
+                </div>
             </div>
         </div>
-        <div class="form-group col-md-1" style="float: right">
-            <div >
-                <button type="submit" class="btn btn-primary" ng-click="searchSyntax()">Пошук</button>
+        <div style="width:100%;clear: both" class="search_params form-group">
+            <div class="col-xs-1">
+            <input type="text" ng-model="search_yot" placeholder="Рік"  class="col-xs-1 form-control">
+            </div>
+            <toggle class="pull-left" ng-model="search_yb" on="Баз." off="Баз."></toggle>
+            <toggle class="pull-left" ng-model="search_yr" on="Повт." off="Повт."></toggle>
+            <toggle class="pull-left" ng-model="search_yp" on="Пер." off="Пер."></toggle>
+            <toggle class="pull-left" ng-model="search_yf" on="Факт." off="Факт."></toggle>
+            <div class="col-xs-1">
+                <input type="text" ng-model="search_id" placeholder="ID"  class="form-control">
+            </div>
+            <div class="col-xs-3">
+                <input type="text"
+                       ng-model="search_dev"
+                       placeholder="Оберіть розробника"
+                       uib-typeahead="gov as gov.Name for gov in govs | filter:{Name:$viewValue}"
+                       class="form-control"
+                       typeahead-min-length="0"
+                       typeahead-focus-on-select="true"
+                       typeahead-editable="false">
             </div>
         </div>
+
     </form>
+
 </div>
 
 <div ng-show="results" ng-include="'results.html'"></div>
@@ -22,14 +48,10 @@
 
 
 <ul class="col-md-12" style="list-style: none;">
-    <li ng-repeat="hit in results.hits">
+    <li ng-repeat="hit in results.hits.hits">
         <div class="well col-md-11">
-            <div ng-repeat="(Name_and_requisits, fragments) in hit.fragments">
-                <div ng-show="fragments.length > 0"></div>
-                <ul>
-                    <a href="/views/view/{[{ hit.id }]}"><li ng-repeat="fragment in fragments" ng-bind-html="fragment"></li></a>
-                </ul>
-            </div>
+                <a href="/views/view/{[{ hit._source.id }]}">{[{ hit._source.name_and_requisits }]}</a>
+                <div>{[{ hit._source.reg_date }]}</div>
         </div>
 
     </li>

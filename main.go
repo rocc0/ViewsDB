@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"html/template"
 
-	bleveHttp "github.com/blevesearch/bleve/http"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 )
@@ -33,9 +32,8 @@ func main(){
 	userInit()
 	// Initialize the routes
 	initializeRoutes()
-	generateIndexes()
-	idx, _ := Bleve(viewsIdx)
-	bleveHttp.RegisterIndexName("view", idx)
+	elasticIndex()
+
 	log.Printf("Indexing complited!")
 
 	// Start serving the application

@@ -12,11 +12,9 @@ func showIndexPage(c *gin.Context) {
 
 	// Call the render function with the name of the template to render
 	render(c, gin.H{
-		"title":   "Home Page",
+		"title":   "База пошуку відстежень",
 		"payload": articles}, "index.html")
 }
-
-
 
 func getView(c *gin.Context) {
 	// Check if the article ID is valid

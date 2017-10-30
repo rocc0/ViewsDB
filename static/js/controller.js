@@ -6,7 +6,7 @@ viewDB.config(function($interpolateProvider, $routeProvider, $locationProvider) 
     $routeProvider
         .when('/', {
             templateUrl: '/static/html/search.html',
-            controller: 'viewDBCtrl',
+            controller: 'searchCtrl',
         })
         .when('/ratings', {
             templateUrl: '/static/html/ratings.html',
@@ -28,72 +28,34 @@ viewDB.config(function($interpolateProvider, $routeProvider, $locationProvider) 
         });
 });
 
-viewDB.controller("viewDBCtrl", function($scope, $http, $sce) {
-    $http.get('/api/fields').then(function(response) {
-            $scope.fieldNames = response.data.fields;
-        })
-    $scope.searchSyntax = function() {
-        $http.post('/api/search', {
-            "size": 10,
-            "explain": true,
-            "highlight":{},
-            "query": {
-                "boost": 1.0,
-                "query": $scope.syntax,
-            }
-        }).
-        then(function(response) {
-            $scope.processResults(response.data);
-        })
-    };
-
-    $scope.roundTook = function(took) {
-        if (took < 1000 * 1000) {
-            return "less than 1ms";
-        } else if (took < 1000 * 1000 * 1000) {
-            return "" + Math.round(took / (1000*1000)) + "ms";
-        } else {
-            roundMs = Math.round(took / (1000*1000));
-            return "" + roundMs/1000 + "s";
-        }
-    };
-
-    $scope.roundScore = function(score) {
-        return Math.round(score*1000)/1000;
-    };
-
-    $scope.expl = function(explanation) {
-        rv = "" + $scope.roundScore(explanation.value) + " - " + explanation.message;
-        rv = rv + "<ul>";
-        for(var i in explanation.children) {
-            child = explanation.children[i];
-            rv = rv + "<li>" + $scope.expl(child) + "</li>";
-        }
-        rv = rv + "</ul>";
-        return rv;
-    };
-
-    $scope.processResults = function(data) {
-        $scope.errorMessage = null;
-        $scope.results = data;
-        for(var i in $scope.results.hits) {
-            hit = $scope.results.hits[i];
-            hit.roundedScore = $scope.roundScore(hit.score);
-            hit.explanationString = $scope.expl(hit.explanation);
-            hit.explanationStringSafe = $sce.trustAsHtml(hit.explanationString);
-            for(var ff in hit.fragments) {
-                fragments = hit.fragments[ff];
-                newFragments = [];
-                for(var ffi in fragments) {
-                    fragment = fragments[ffi];
-                    safeFragment = $sce.trustAsHtml(fragment);
-                    newFragments.push(safeFragment);
+viewDB.controller("searchCtrl", function($scope, $http) {
+    $scope.years = [2003,2004,2005,2006,2007,2008,2009,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024]
+    this.filter = function () {
+        if ($scope.search_id != null) {
+            return "filter" : {
+                "term": {
+                    "id": $scope.search_id
                 }
-                hit.fragments[ff] = newFragments;
             }
+        } else {
+
         }
-        $scope.results.roundTook = $scope.roundTook(data.took);
-    };
+    }
+    $scope.searchSyntax = function () {
+        $http.post("http://192.168.99.100:9200/views/_search",{
+            "query":{
+                "bool": {
+                    "should" : {
+                        "multi_match" : {
+                            "query": $scope.phrase,
+                            "fields": [ "name_and_requisits", "government_choice", "reg_date", "id" ]
+                        }
+                    },
+                }}
+            }).then(function (response) {
+            $scope.results = response.data;
+        })
+    }
 });
 
 viewDB.controller("viewCtrl", function($scope, $http, $sce, $location) {

@@ -126,10 +126,12 @@ body {
     border-bottom-right-radius: 0;
 }
 
-.years .toggle.btn {
-    width: 72px!important;
+.toggle.btn {
+    width: 65px !important;
 }
-
+.search_params toggle{
+    padding: 0px 4px;
+}
 .comment textarea {
     width: 98%!important;
 }
