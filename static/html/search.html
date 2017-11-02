@@ -3,40 +3,51 @@
         <div style="width:100%;clear: both">
             <div class="form-group col-xs-11">
                 <div >
-                    <input ng-model="phrase" type="text" class="form-control" id="searchTerm" placeholder="Введіть назву документу">
+                    <input ng-model="phrase" type="text" class="form-control" ng-change="addPhrase()"
+                           id="searchTerm" placeholder="Введіть назву документу">
                 </div>
             </div>
             <div class="form-group col-xs-1" style="float: right">
                 <div >
-                    <button type="submit" class="btn btn-primary" ng-click="searchSyntax()">Пошук</button>
+                    <button type="submit" class="btn btn-primary" ng-click="doSearch()">Пошук</button>
                 </div>
             </div>
         </div>
         <div style="width:100%;clear: both" class="search_params form-group">
             <div class="col-xs-1">
-            <input type="text" ng-model="search_yot" placeholder="Рік"  class="col-xs-1 form-control">
-            </div>
-            <toggle class="pull-left" ng-model="search_yb" on="Баз." off="Баз."></toggle>
-            <toggle class="pull-left" ng-model="search_yr" on="Повт." off="Повт."></toggle>
-            <toggle class="pull-left" ng-model="search_yp" on="Пер." off="Пер."></toggle>
-            <toggle class="pull-left" ng-model="search_yf" on="Факт." off="Факт."></toggle>
-            <div class="col-xs-1">
-                <input type="text" ng-model="search_id" placeholder="ID"  class="form-control">
+            <input type="text" ng-model="search_yot" ng-change="addTerm('year_of_tracing', search_yot)"
+                   placeholder="Рік"  class="col-xs-1 form-control">
+            </div><div class="pull-left">
+            <div class="pull-left">База<switcher class="styled" ng-model="search_yb"
+                           true-value="1" true-label="" false-value="0" false-label=""
+                           ng-change="addTerm('base', search_yb);doSearch()"></switcher></div>
+
+            <div class="pull-left">Повт.<switcher class="styled" ng-model="search_yr"
+                           true-value="1" true-label="" false-value="0" false-label=""
+                           ng-change="addTerm('repeat', search_yr);doSearch()"></switcher></div>
+
+            <div class="pull-left">Період.<switcher class="styled" ng-model="search_yp"
+                           true-value="1" true-label="" false-value="0" false-label=""
+                           ng-change="addTerm('periodical', search_yp);doSearch()"></switcher></div>
+
+            <div class="pull-left">Факт.<switcher class=" styled" ng-model="search_yf"
+                           true-value="1" true-label="" false-value="0" false-label=""
+                           ng-change="addTerm('fact', search_yf);doSearch()"></switcher></div>
+
             </div>
             <div class="col-xs-3">
                 <input type="text"
                        ng-model="search_dev"
                        placeholder="Оберіть розробника"
-                       uib-typeahead="gov as gov.Name for gov in govs | filter:{Name:$viewValue}"
+                       uib-typeahead="gov as gov.Name for gov in govs.govs | filter:$viewValue | limitTo:8"
                        class="form-control"
-                       typeahead-min-length="0"
+                       typeahead-on-select="addTerm('act_developer', $item.Id)"
+                       typeahead-min-length="3"
                        typeahead-focus-on-select="true"
                        typeahead-editable="false">
             </div>
         </div>
-
     </form>
-
 </div>
 
 <div ng-show="results" ng-include="'results.html'"></div>
@@ -49,11 +60,14 @@
 
 <ul class="col-md-12" style="list-style: none;">
     <li ng-repeat="hit in results.hits.hits">
-        <div class="well col-md-11">
-                <a href="/views/view/{[{ hit._source.id }]}">{[{ hit._source.name_and_requisits }]}</a>
-                <div>{[{ hit._source.reg_date }]}</div>
+        <div class="well col-md-12">
+                <a href="/views/view/{[{ hit._source.id }]}" target="_blank" class="clearfix">{[{ hit._source.name_and_requisits }]}</a>
+                <div class="pull-left col-xs-2">{[{ hit._source.reg_date }]}</div><div lass="pull-left col-xs-4">{[{ hit._source.government_choice }]}</div>
         </div>
 
     </li>
 </ul>
+
+<ul uib-pagination total-items="results.hits.total" ng-model="currentPage" ng-change="query.from=currentPage*10;doSearch()"></ul>
+
 </script>

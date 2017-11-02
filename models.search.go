@@ -12,6 +12,8 @@ type Idx struct {
 	Name_and_requisits string		`json:"name_and_requisits"`
 	Reg_Date           string		`json:"reg_date"`
 	Government_choice  string		`json:"government_choice"`
+	Year_of_tracing	   string		`json:"year_of_tracing"`
+	Act_developer	   string		`json:"act_developer"`
 }
 
 const mapping = `
@@ -36,6 +38,12 @@ const mapping = `
 				"government_choice":{
 					"type":"string",
 					"analyzer": "ukrainian"
+				},
+				"year":{
+					"type":"integer",
+				},
+				"act_developer":{
+					"type":"integer",
 				}
 			}
 		}
@@ -90,16 +98,17 @@ func elasticIndex(){
 		}
 	}
 	var (
-		id, name_and_requisits, reg_date, government_choice string
+		id, name_and_requisits, reg_date, government_choice, act_developer, year_of_tracing string
 		vie Idx
 	)
-	res, err := db.Query("select id, name_and_requisits, reg_date, government_choice from views WHERE id <= 10")
+	res, err := db.Query("select id, name_and_requisits, reg_date, government_choice, year_of_tracing, act_developer from views")
 	for res.Next(){
-		err := res.Scan(&id, &name_and_requisits, &reg_date, &government_choice)
+		err := res.Scan(&id, &name_and_requisits, &reg_date, &government_choice, &year_of_tracing, &act_developer )
 		if err != nil {
 			fmt.Print(err.Error())
 		}
-		vie = Idx{id, name_and_requisits,reg_date,government_choice}
+		vie = Idx{id, name_and_requisits,reg_date,government_choice,
+		year_of_tracing, act_developer}
 		_, err = client.Index().
 			Index("views").
 			Type("view").

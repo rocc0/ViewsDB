@@ -126,11 +126,21 @@ body {
     border-bottom-right-radius: 0;
 }
 
-.toggle.btn {
-    width: 65px !important;
+switcher.col-xs-1 {
+    width: 10%;
+    padding: 3px 13px 0px 13px;
 }
-.search_params toggle{
-    padding: 0px 4px;
+.styled .switcher-line:before { height: 20px; }
+/* bar backgrounds */
+.styled         .switcher-line:before { background: #e35144; }
+.styled .active .switcher-line:before { background: #4ecb32; }
+
+.col-xs-1.heading {
+    width: 10%;
+    height: 34px;
+    padding-top: 8px;
+    background: #f3f3f3;
+    text-align: center;
 }
 .comment textarea {
     width: 98%!important;
