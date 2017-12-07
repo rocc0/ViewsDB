@@ -1,0 +1,81 @@
+<div id="report">
+    <div id="report2">
+        <div class="header-block clearfix">
+            <div class="first-field">
+                Назва ЦОВВ
+            </div>
+            <div class="second-field">
+                <div class="col-header">Кількість звітів про відстеження, наданих  у 2016 році</div>
+                <div class="col-names">
+                    <div class="col">Всього</div>
+                    <div class="col">Базових</div>
+                    <div class="col">Повтор.</div>
+                    <div class="col">Періодич.</div>
+                </div>
+                <div class="col-units">
+                    <div class="unit">шт.</div>
+                    <div class="unit">шт.</div>
+                    <div class="unit">шт.</div>
+                    <div class="unit">шт.</div>
+                </div>
+            </div>
+
+            <div class="third-field">
+                <div class="col-header">Кількість р.а., що підлягали базовому відстеженню у 2016 році</div>
+                <div class="col-units">
+                    <div class="unit">шт.</div>
+                </div>
+            </div>
+
+            <div class="fourth-field">
+                <div class="col-header">з них,</div>
+                <div class="col-names">
+                    <div class="col">кількість звітів про базове відстеження, що  фактично надані
+                        стосовно р.а. що підлягають баз.відстеженню у 2016 р.</div>
+                    <div class="col">кількість р.а, що залишились у 2016 році поза межами базового відстеження</div>
+                </div>
+                <div class="col-units">
+                    <div class="unit">шт.</div>
+                    <div class="unit">%</div>
+                    <div class="unit">шт.</div>
+                    <div class="unit">%</div>
+                </div>
+            </div>
+            <div class="fifth-field">
+                <div class="col-header">Результати проведення відстежень (висновки розробників) за 2016 р.</div>
+                <div class="col-names">
+                    <div class="col">к-ть р.а, що потребували <b>скасування</b></div>
+                    <div class="col">з них фактично скасовано</div>
+                    <div class="col">к-ть р.а, що потребували внесення змін</div>
+                    <div class="col">з них фактично <b>внесено зміни</b></div>
+                </div>
+                <div class="col-units">
+                    <div class="unit">шт.</div>
+                    <div class="unit">шт.</div>
+                    <div class="unit">шт.</div>
+                    <div class="unit">шт.</div>
+                </div>
+            </div>
+        </div>
+        <div class="table table-striped">
+            <div class="gov" ng-repeat="gov in ratings.ratings">
+                <div class="gov-field" ng-repeat="field in gov track by $index">
+                    <div class="gov-name"> {[{ field.gov_name }]} </div>
+                    <div class="gov-name"> {[{ field.rep_total }]} </div>
+                    <div class="gov-name"> {[{ field.rep_basic }]} </div>
+                    <div class="gov-name"> {[{ field.rep_repited }]} </div>
+                    <div class="gov-name"> {[{ field.rep_periodic }]} </div>
+                    <div class="gov-name"> {[{ field.broken_track_meth }]} </div>
+                    <div class="gov-name"> {[{ field.broken_sign }]} </div>
+                    <div class="gov-name"> {[{ field.broken_promo }]} </div>
+                    <div class="gov-name"> {[{ field.broken_period }]} </div>
+                    <div class="gov-name"> {[{ field.broken_track_meth }]} </div>
+                    <div class="gov-name"> {[{ field.broken_data_assump }]} </div>
+                    <div class="gov-name"> {[{ field.broken_indexes }]} </div>
+                    <div class="gov-name"> {[{ field.broken_my_rating }]} </div>
+                    <div class="gov-name"> {[{ field.broken_dev_rating }]} </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

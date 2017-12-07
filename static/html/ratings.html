@@ -1,19 +1,20 @@
-
-<h2>Якісні показники</h2>
-
-<div class="field_names">
-    <div class="field_name" ng-repeat="field_name in ratings.col_names">
-        <div class="rotated">{[{ field_name }]}</div>
+<div class="clearfix">
+    <h3 class="page-name">Якісні показники</h3>
+    <div class="print">
+        <button class="glyphicon glyphicon-print" ng-click="printDiv('report')"></button>
     </div>
 </div>
-<table class="table table-striped">
-    <tbody>
-    <tr class="gov " ng-repeat="gov in ratings.gov">
-        <td class="gov_field " ng-repeat="field in gov track by $index">
-            {[{ field }]}
-        </td>
-    </tr>
-    </tbody>
-</table>
-
+<uib-tabset active="activeJustified" justified="true">
+    <uib-tab index="0" heading="Якісні показники по ЦОВВ" >
+        <div ng-include="'/static/html/ratings1.html'"></div>
+    </uib-tab>
+    <uib-tab index="1" heading="Додаток 10" select="reportName = ratings2">
+        <div ng-include="'/static/html/ratings2.html'"></div></uib-tab>
+    <uib-tab index="2" heading="Додатки 11 та 12" select="reportName = ratings3">
+        <div ng-include="'/static/html/ratings3.html'"></div>
+    </uib-tab>
+    <uib-tab index="3" heading="Додаток 15" select="reportName = ratings4">
+        <div ng-include="'/static/html/ratings4.html'"></div>
+    </uib-tab>
+</uib-tabset>
 

@@ -1,0 +1,49 @@
+
+<div class="track">
+    <h3>{[{ track.pl.requisits }]}</h3>
+
+    <div ng-include="'/static/html/ngtmp/e_info.html'"></div>
+
+    <uib-tabset active="activeJustified" justified="true" type="pills">
+        <uib-tab index="0" heading="Базове відстеження" >
+            <div ng-include="'/static/html/ngtmp/e_basic.html'"></div>
+        </uib-tab>
+
+        <uib-tab index="1" heading="Повторне відстеження">
+            <div ng-include="'/static/html/ngtmp/e_repeated.html'"></div>
+        </uib-tab>
+
+        <uib-tab index="2" heading="Періодичні відстеження">
+            <div ng-include="'/static/html/ngtmp/e_period.html'"></div>
+        </uib-tab>
+    </uib-tabset>
+
+    <div class="col-xs-12 clearfix comment">
+        <div class="panel panel-default">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body" inline-comment="track.pl.comment" on-save="saveData('comment', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <button class="btn btn-primary pull-right" ng-hide="images.length == 0" ng-click="clearAll()">Clear All</button>
+            <h3 ng-bind="name"></h3>
+
+            <input type="file" ng-click="$event = $event" ng-model="display"
+                   multiple onchange="angular.element(this).scope().upload(event)" accept="image/png, image/jpeg, image/gif" />
+
+            <div class="row">
+                <div class="col-md-12">
+                    <span ng-repeat='img in images'>
+                        <a href="#" ng-click="setImage($index)">
+                            <img ng-src="{[{img}]}" alt="Generic placeholder thumbnail" style="max-height:100px;" class="thumbnail"/>
+                        </a>
+                    </span>
+                </div>
+            </div>
+            <img ng-src="{[{display}]}" ng-hide="!display" />
+            <h4>You have upload {[{images.length}]} images this session.</h4>
+        </div>
+    </div>
+</div>

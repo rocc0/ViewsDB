@@ -1,103 +1,123 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"strconv"
 	"net/http"
 	"reflect"
-	"log"
 	"io/ioutil"
 	"encoding/json"
+	"log"
+
+	"github.com/gin-gonic/gin"
 )
 
 type saveRequest struct {
-	Name  string `json:"name"`
-	Data string `json:"data"`
-	Id int `json:"id,string"`
+	TypeOf 	int 	`json:"type"`
+	Name  	string 	`json:"name"`
+	Data 	string 	`json:"data"`
+	Id 		int 	`json:"id"`
+}
+type deleteRequest struct {
+	ItemId	int		`json:"item_id"`
+	TblName	string	`json:"tbl_name"`
 }
 
-func viewData(c *gin.Context) {
-	viewID, err := strconv.Atoi(c.Param("view_id"));
+func getTrack(c *gin.Context) {
+	viewID, err := strconv.Atoi(c.Param("trk_id"))
+	basic := make(map[string]string)
+	selected := make(map[string]string)
 	if err == nil {
-		view, err := getViewById(viewID)
-		arr := make(map[string]string)
-		selected := make(map[string]string)
-		for k,v := range view.Fields {
+		btrace, err := getBasicData(viewID)
+		ptrace, err := getPeriodicData(viewID)
+		for k,v := range btrace.Fields {
 			s := reflect.ValueOf(v)
 			switch s.Interface().(type){
 			case int64:
-				arr[k] = string(strconv.Itoa(int(v.(int64))))
+				basic[k] = string(strconv.Itoa(int(v.(int64))))
 			default:
-				arr[k] = string(v.([]uint8))
+				basic[k] = string(v.([]uint8))
 			}
 		}
 		if err == nil {
 			c.JSON(http.StatusOK, gin.H{
-				"pl": arr,
+				"pl": basic,
+				"pr": ptrace,
 				"selected": selected})
 		} else {
-			c.AbortWithError(http.StatusNotFound, err)
+			log.Print(err)
 		}
 	} else {
-		c.AbortWithStatus(http.StatusBadGateway)
+		log.Print(err)
 	}
 }
 
-func viewRatings(c *gin.Context) {
-	res, err := getReportData()
-	if err != nil{
-		log.Print(err)
-	}
+func getRatings(c *gin.Context) {
+	columns, ratings, err := getReportData()
+	check(err)
+
 	c.JSON(http.StatusOK, gin.H{
-		"gov": res.Gov,
-		"col_names": res.Header,
+		"columns": columns,
+		"ratings": ratings,
 		})
 }
 
-func saveViewRow(c *gin.Context) {
+func getGovernments(c *gin.Context) {
+	res, err := getGovs()
+	check(err)
+	c.JSON(http.StatusOK, gin.H{
+		"govs": res,
+	})
+}
+
+func postTrackField(c *gin.Context) {
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	var srq saveRequest
 	err := json.Unmarshal([]byte(x), &srq)
 	if err != nil {
 		log.Print(err.Error())
 	} else {
-		err := editView(srq.Name, srq.Data, srq.Id)
+		err := editView(srq.Name, srq.Data, srq.TypeOf, srq.Id)
 		if err != nil  {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"ErrorTitle":   "Saving failed",
 				"ErrorMessage": "Bad data"})
-			log.Print(err.Error())
-
 		} else {
 			c.JSON(http.StatusOK, gin.H{
 				"title": "Data saved"})
-				log.Print("OK", srq.Name, srq.Data, srq.Id)
+			log.Print("OK", srq.TypeOf, srq.Name, srq.Data, srq.Id)
 		}
 	}
 }
 
-func  createView(c *gin.Context) {
-	cols := make([]string, len(getColsNames()))
-	formData := make([]interface{}, len(getColsNames()))
-	colsNames := getColsNames()
-	for i, _ := range cols{
-		formData[i] = c.PostForm(colsNames[i])
-	}
-	if a, err := createNewView(formData); err == nil {
-		render(c, gin.H{
-			"title":   "Submission Successful",
-			"pl": a}, "success.html")
+func postCreateItem(c *gin.Context) {
+	x, _ := ioutil.ReadAll(c.Request.Body)
+	var form map[string]interface{}
+	json.Unmarshal([]byte(x), &form)
+	if id, err := createNewItem(form); err == nil {
+		c.JSON(http.StatusOK, gin.H{
+			"title": "Item added",
+			"id": id,
+		})
+
 	} else {
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
 }
 
-func allGovs(c *gin.Context) {
-	res, err := getGovs()
-	if err != nil{
-		log.Print(err)
+func postDeleteItem(c *gin.Context) {
+	x, _ := ioutil.ReadAll(c.Request.Body)
+	var delrq deleteRequest
+	err := json.Unmarshal([]byte(x), &delrq)
+	check(err)
+
+	if err := deleteItem(delrq.ItemId, delrq.TblName); err == nil {
+		c.JSON(http.StatusOK, gin.H{
+			"title": "Item removed",
+		})
+	} else {
+		c.AbortWithStatus(http.StatusBadRequest)
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"govs": res,
-	})
 }
+
+
+

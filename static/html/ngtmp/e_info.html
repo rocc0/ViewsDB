@@ -1,0 +1,66 @@
+<div class="col-xs-12 clearfix">
+    <div class="panel panel-default requisits">
+        <div class="panel-heading">Назва та реквізити регуляторного акта</div>
+        <div class="panel-body" inline-comment="track.pl.requisits" on-save="saveData('requisits', value)" on-cancel="log('CANCEL', value)"></div>
+    </div>
+</div>
+
+<div class="col-xs-12 clearfix">
+    <div class="panel panel-default">
+        <div class="col-xs-8 panel-heading">Реквізити реєстрації регуляторного акта в Міністерстві Юстицій</div>
+        <div class="col-xs-4 panel-heading">&nbsp;</div>
+        <div class="clearfix">
+            <div class="col-xs-2 pull-left panel-body heading">Дата реєстрації</div>
+            <div class="col-xs-2 pull-left panel-body" inline-date="track.pl.reg_date"
+                 on-save="saveData('reg_date', value)" on-cancel="log('CANCEL', value)"></div>
+            <div class="col-xs-2 pull-left panel-body heading">Номер реєстрації</div>
+            <div class="col-xs-2 pull-left panel-body" inline-edit="track.pl.reg_number"
+                 on-save="saveData('reg_number', value)" on-cancel="log('CANCEL', value)"></div>
+            <div class="col-xs-2 pull-left panel-body heading">Дата набуття чинності</div>
+            <div class="col-xs-2 pull-left panel-body" inline-date="track.pl.actual_date"
+                 on-save="saveData('actuality_date', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-12 clearfix">
+    <div class="panel panel-default">
+        <div class="panel-heading">Розробник регуляторного акта</div>
+        <div class="panel-body developer">
+            <div class="pull-left" inline-typehead="track.pl.developer" type-govs="govs.govs"
+                 on-save="saveData('developer', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-12 clearfix">
+    <div class="panel panel-default">
+        <div class=" panel-heading">Рішення Держпідприємництва щодо погодження</div>
+        <div class="panel-body" inline-edit="track.pl.gov_choice" on-save="saveData('gov_choice', value)" on-cancel="log('CANCEL', value)"></div>
+    </div>
+</div>
+
+<div class="col-xs-12 clearfix years">
+    <div class="panel panel-default">
+        <div class="panel-heading">Рік відстеження та параметри</div>
+        <div class="panel-body">
+            <div class="col-xs-1 pull-left heading">Рік</div>
+            <div class="col-xs-1 pull-left year-body">
+                <div inline-edit="track.pl.trace_year"
+                     on-save="saveData('trace_year', value)" on-cancel="log('CANCEL', value)"></div>
+            </div>
+            <div class="col-xs-1 pull-left heading">Базовий</div>
+            <switcher class="col-xs-1 pull-left" ng-model="track.pl.base" ng-change="saveData('base', newValue, oldValue)"
+                      true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher>
+            <div class="col-xs-1 pull-left heading">Повторний</div>
+            <switcher class="col-xs-1 pull-left" ng-model="track.pl.repeated" ng-change="saveData('repeated', newValue, oldValue)"
+                      true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні" ></switcher>
+            <div class="col-xs-1 pull-left heading">Періодичний</div>
+            <switcher class="col-xs-1 pull-left" ng-model="track.pl.periodic" ng-change="saveData('periodical', newValue, oldValue)"
+                      true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні" ></switcher>
+            <div class="col-xs-1 pull-left heading">Фактичний</div>
+            <switcher class="col-xs-1 pull-left" ng-model="track.pl.fact" ng-change="saveData('fact', newValue, oldValue)"
+                      true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні" ></switcher>
+        </div>
+    </div>
+</div>

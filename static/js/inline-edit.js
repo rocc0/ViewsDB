@@ -7,11 +7,15 @@ viewDB.directive('inlineEdit', function($timeout) {
         },
         link: function(scope, elm, attr) {
             var previousValue;
-
+            scope.date = function () {
+                if (scope.model == "")  {
+                    scope.model = "інф. відсутня"
+                }
+            }
+            scope.date()
             scope.edit = function() {
                 scope.editMode = true;
                 previousValue = scope.model;
-
                 $timeout(function() {
                     elm.find('input')[0].focus();
                 }, 0, false);

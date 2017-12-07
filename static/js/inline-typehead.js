@@ -9,11 +9,9 @@ viewDB.directive('inlineTypehead', function($timeout) {
         link: function(scope, elm, attr) {
             var previousValue;
             $timeout(function () {
-                for (i in scope.govs) {
-                    if (String(scope.govs[i]["Id"]) == scope.model) {
-                        scope.data = scope.govs[i]["Name"]
-                    }
-                }}, 100);
+                scope.data = scope.govs[scope.model]["name"]
+            },
+                    100);
             scope.edit = function() {
                 scope.editMode = true;
                 previousValue = scope.model;

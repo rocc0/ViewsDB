@@ -1,7 +1,8 @@
-<div>
+
     <div class="input-group">
         <textarea type="text"
                ng-model="model"
+               on-esc="cancel()"
                placeholder="Коментар"
                ng-show="editMode"
                   class="form-control"></textarea>
@@ -15,9 +16,11 @@
                 <span class="glyphicon glyphicon-remove"></span>
             </button>
         </div>
-        <span ng-hide="editMode" ng-click="edit()">{{model}}</span>
+        <div ng-hide="editMode" ng-click="edit()">
+            <span ng-hide="model != ''">інф. відсутня</span>
+            <span ng-show="model != ''">{{model}}</span>
+        </div>
     </div>
 
-</div>
 
 

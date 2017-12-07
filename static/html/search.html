@@ -15,7 +15,7 @@
         </div>
         <div style="width:100%;clear: both" class="search_params form-group">
             <div class="col-xs-1">
-            <input type="text" ng-model="search_yot" ng-change="addTerm('year_of_tracing', search_yot)"
+            <input type="text" ng-model="search_yot" ng-change="addTerm('year', search_yot)"
                    placeholder="Рік"  class="col-xs-1 form-control">
             </div><div class="pull-left">
             <div class="pull-left">База<switcher class="styled" ng-model="search_yb"
@@ -28,7 +28,7 @@
 
             <div class="pull-left">Період.<switcher class="styled" ng-model="search_yp"
                            true-value="1" true-label="" false-value="0" false-label=""
-                           ng-change="addTerm('periodical', search_yp);doSearch()"></switcher></div>
+                           ng-change="addTerm('period', search_yp);doSearch()"></switcher></div>
 
             <div class="pull-left">Факт.<switcher class=" styled" ng-model="search_yf"
                            true-value="1" true-label="" false-value="0" false-label=""
@@ -41,8 +41,8 @@
                        placeholder="Оберіть розробника"
                        uib-typeahead="gov as gov.Name for gov in govs.govs | filter:$viewValue | limitTo:8"
                        class="form-control"
-                       typeahead-on-select="addTerm('act_developer', $item.Id)"
-                       typeahead-min-length="3"
+                       typeahead-on-select="addTerm('developer', $item.Id)"
+                       typeahead-min-length="2"
                        typeahead-focus-on-select="true"
                        typeahead-editable="false">
             </div>
@@ -55,19 +55,37 @@
 
 <script type="text/ng-template" id="results.html" >
 
-<h3 class="col-md-12">Результати пошуку:</h3>
+<h3 class="col-md-12 clearfix">Результати пошуку:</h3>
 
 
-<ul class="col-md-12" style="list-style: none;">
+<ul style="list-style: none;    padding-left: 0px;">
     <li ng-repeat="hit in results.hits.hits">
         <div class="well col-md-12">
-                <a href="/views/view/{[{ hit._source.id }]}" target="_blank" class="clearfix">{[{ hit._source.name_and_requisits }]}</a>
-                <div class="pull-left col-xs-2">{[{ hit._source.reg_date }]}</div><div lass="pull-left col-xs-4">{[{ hit._source.government_choice }]}</div>
+            <div class="pull-left col-xs-12">
+                <span class="pull-left" >Назва:	&nbsp;</span>
+                <a href="/track/id/{[{ hit._source.id }]}" target="_blank" class="clearfix"> {[{ hit._source.requisits }]}</a>
+            </div>
+            <div class="pull-left col-xs-4">Рішення: {[{ hit._source.reg_date }]}</div>
+            <div class="pull-left col-xs-3">Дата реєстрації: {[{ hit._source.gov_choice }]}</div>
+            <div class="pull-left col-xs-12">Розробник: {[{ govs.govs[hit._source.developer - 1].Name }]}</div>
         </div>
 
     </li>
 </ul>
 
-<ul uib-pagination total-items="results.hits.total" ng-model="currentPage" ng-change="query.from=currentPage*10;doSearch()"></ul>
+<div class="col-xs-12 search-pgn">
+    <ul uib-pagination total-items="results.hits.total"
+        max-size="10"
+        ng-model="currentPage"
+        boundary-links="true"
+        force-ellipses="true"
+        rotate="true"
+        first-text="Перша"
+        last-text="Остання"
+        next-text="Вперед"
+        previous-text="Назад"
+        ng-change="query.from=currentPage*10;doSearch()"></ul>
+</div>
+
 
 </script>

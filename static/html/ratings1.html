@@ -1,0 +1,60 @@
+<div id="report">
+    <div id="report1">
+    <div class="field-names">
+        <div class="field-name first-field">
+            <div class="">{[{ ratings.columns[0] }]}</div>
+        </div>
+        <div class="broken">
+            <div class="broken-header">
+                <h5>Порушено</h5>
+            </div>
+            <div class="broken-body">
+                <div class="field-name" ng-repeat="name in ratings.columns | limitTo:14:1">
+                    <div class="rotated">{[{ name }]}</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="table table-striped">
+        <div class="gov" ng-repeat="gov in ratings.ratings">
+            <div class="gov-field" ng-repeat="field in gov track by $index">
+                <div class="gov-name"> {[{ field.gov_name }]} </div>
+                <div class="gov-name"> {[{ field.rep_total }]} </div>
+                <div class="gov-name"> {[{ field.rep_basic }]} </div>
+                <div class="gov-name"> {[{ field.rep_repited }]} </div>
+                <div class="gov-name"> {[{ field.rep_periodic }]} </div>
+
+
+                <div class="gov-name"> {[{ field.broken_track_meth }]} </div>
+                <div class="gov-name">0</div>
+
+                <div class="gov-name"> {[{ field.broken_sign }]} </div>
+                <div class="gov-name">0</div>
+
+                <div class="gov-name"> {[{ field.broken_promo }]} </div>
+                <div class="gov-name">0</div>
+
+                <div class="gov-name"> {[{ field.broken_period }]} </div>
+                <div class="gov-name">0</div>
+
+                <div class="gov-name"> {[{ field.broken_track_meth }]} </div>
+                <div class="gov-name">0</div>
+
+                <div class="gov-name"> {[{ field.broken_data_assump }]} </div>
+                <div class="gov-name">0</div>
+
+                <div class="gov-name"> {[{ field.broken_indexes }]} </div>
+                <div class="gov-name">0</div>
+
+                <div class="gov-name"> {[{ field.broken_my_rating }]} </div>
+                <div class="gov-name">0</div>
+
+                <div class="gov-name"> {[{ field.broken_dev_rating }]} </div>
+                <div class="gov-name">0</div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+</div>

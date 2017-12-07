@@ -1,0 +1,56 @@
+<div class="clearfix">
+    <h3>Базове відстеження</h3>
+    <div class="col-xs-6 pull-left">
+        <div class="panel panel-default clearfix">
+            <div class="panel-heading">Термін здійснення заходів з відстеження</div>
+            <div class="pull-left panel-body" inline-date="track.pl.term_basic"
+                 on-save="saveData('term_basic', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
+    </div>
+    <div class="col-xs-6 pull-left switch">
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">Результати відстеження результативності</div>
+            <div class="pull-left panel-body" inline-edit="track.pl.rslt_basic"
+                 on-save="saveData('rslt_basic', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">Ефективне?</div>
+            <div class="panel-body"><switcher ng-model="track.pl.rslt_basic_bool"
+                                              true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+        </div>
+    </div>
+    <div class="col-xs-6 pull-left">
+        <div class="panel panel-default clearfix">
+            <div class="panel-heading">Дата підписання  звіту  про відстеження результативності регуляторного акта</div>
+            <div class="pull-left panel-body" inline-date="track.pl.sign_basic"
+                 on-save="saveData('sign_basic', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
+    </div>
+    <div class="col-xs-6 pull-left">
+        <div class="panel panel-default clearfix">
+            <div class="panel-heading">Дата оприлюденення  звіту  про відстеження результативності регуляторного акта</div>
+            <div class="pull-left panel-body" inline-date="track.pl.pub_basic"
+                 on-save="saveData('pub_basic', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
+    </div>
+    <div class="col-xs-6 pull-left">
+        <div class="panel panel-default clearfix">
+            <div class="panel-heading">Дата надання звіту  про відстеження результативності регуляторного акта до Держпідприємництва</div>
+            <div class="pull-left panel-body" inline-date="track.pl.gived_basic"
+                 on-save="saveData('gived_basic', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
+    </div>
+    <div class="col-xs-6 pull-left switch">
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">Висновок Комітету щодо відповідності звіту вимогам постанови КМУ від 11.03.04 р. №308</div>
+            <div class="pull-left panel-body" inline-edit="track.pl.concl_basic"
+                 on-save="saveData('concl_basic', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading high">Порушено?</div>
+            <div class="panel-body"><switcher ng-model="track.pl.cb_bool"
+                                              true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+        </div>
+    </div>
+
+</div>

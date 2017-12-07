@@ -1,20 +1,16 @@
 <div>
     <div class="input-group">
-        <input type="text"
-               class="form-control"
-               uib-datepicker-popup="dd.MM.yyyy"
-               ng-model="model"
-               is-open="popup.opened"
-               datepicker-options="dateOptions"
-               close-text="Close"
-               ng-show="editMode"
-               />
-        <div class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="open()" ng-show="editMode">
-                <i class="glyphicon glyphicon-calendar"></i>
-            </button>
+        <input type="date"
+                on-enter="save()"
+                on-esc="cancel()"
+                ng-model="model"
+                ng-show="editMode"
+                class="form-control"
+                placeholder="yyyy-MM-dd"/>
+        <div ng-hide="editMode" ng-click="edit()" class="inline-show">
+            <span ng-hide="model != ''">інф. відсутня</span>
+            <span ng-show="model != ''">{{model | date:'yyyy-MM-dd'}}</span>
         </div>
-        <span ng-hide="editMode" ng-click="edit()">{{model}}</span>
     </div>
 </div>
 

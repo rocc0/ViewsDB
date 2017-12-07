@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"strings"
-	"fmt"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -17,14 +17,10 @@ type user struct {
 func userInit() {
 	stmt, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id SERIAL NOT NULL PRIMARY KEY, email VARCHAR(100), " +
 		"username VARCHAR(20) NOT NULL, name VARCHAR(100) NOT NULL, password VARCHAR(100) NOT NULL);")
-	if err != nil {
-		fmt.Print(err.Error())
-	}
-	_, err = stmt.Exec()
+	check(err)
 
-	if err != nil {
-		fmt.Print(err.Error())
-	}
+	_, err = stmt.Exec()
+	check(err)
 }
 
 

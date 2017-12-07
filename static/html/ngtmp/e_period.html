@@ -1,0 +1,83 @@
+<div class="period clearfix">
+    <h3>Періодичні відстеження</h3>
+    <div ng-repeat="pr in track.pr track by $index">
+
+        <div class="col-xs-12 panel panel-default header">
+            <div class="label label-primary period-year" > {[{ pr.term_per | date: 'yyyy' }]}</div>
+            <div class="remove-block">
+                <div ng-show="removeAsk" class="ask">
+                    <button class="btn btn-success" ng-click="removePeriod($index, track.pr);">Так</button>
+                    <button ng-click="removeAsk=false" class="btn btn-danger">Ні</button>
+                </div>
+                <button class="btn btn-danger remove"
+                        ng-click="removeAsk=true">
+                    <span class="glyphicon glyphicon-remove" ></span>
+                </button>
+            </div>
+        </div>
+        <div class="col-xs-6 pull-left">
+            <div class="panel panel-default clearfix">
+                <div class="panel-heading">Термін здійснення заходів з відстеження</div>
+                <div class="panel-body" inline-date="pr.term_per"
+                     on-save="saveDataPer('term_per',pr.pid,value)" on-cancel="log('CANCEL', value)">
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6 pull-left switch-res">
+            <div class="panel panel-default pull-left">
+                <div class="panel-heading" >Результати відстеження результативності</div>
+                <div class="panel-body" inline-edit="pr.res_per"
+                     on-save="saveDataPer('res_per',pr.pid,value)" on-cancel="log('CANCEL', value)">
+                </div>
+            </div>
+            <div class="panel panel-default pull-left">
+                <div class="panel-heading">Рік</div>
+                <div class="pull-left panel-body" inline-edit="pr.res_per_year"
+                     on-save="saveData('res_per_year', value)" on-cancel="log('CANCEL', value)"></div>
+            </div>
+            <div class="panel panel-default pull-left">
+                <div class="panel-heading">Ефективне?</div>
+                <div class="panel-body"><switcher ng-model="pr.res_per_bool"
+                                                  true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-xs-6 pull-left">
+            <div class="panel panel-default clearfix">
+                <div class="panel-heading">Дата підписання  звіту  про відстеження результативності регуляторного акта</div>
+                <div class="panel-body" inline-date="pr.sign_per"
+                     on-save="saveDataPer('sign_per',pr.pid,value)" on-cancel="log('CANCEL', value)"></div>
+            </div>
+        </div>
+        <div class="col-xs-6 pull-left">
+            <div class="panel panel-default clearfix">
+                <div class="panel-heading">Дата оприлюденення  звіту  про відстеження результативності регуляторного акта</div>
+                <div class="panel-body" inline-date="pr.publ_per"
+                     on-save="saveDataPer('publ_per',pr.pid,value)" on-cancel="log('CANCEL', value)"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-xs-6 switch">
+            <div class="panel panel-default pull-left">
+                <div class="panel-heading">Висновок Комітету щодо відповідності звіту вимогам постанови КМУ від 11.03.04 р. №308</div>
+                <div class="pull-left panel-body" inline-edit="pr.concl_per"
+                     on-save="saveDataPer('concl_per',pr.pid,value)" on-cancel="log('CANCEL', value)"></div>
+            </div>
+            <div class="panel panel-default pull-left">
+                <div class="panel-heading high">Порушено?</div>
+                <div class="panel-body"><switcher ng-model="pr.cp_bool"
+                                                  true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="panel panel-default clearfix">
+                <div class="panel-heading">Дата надання звіту  про відстеження результативності регуляторного акта до Держпідприємництва</div>
+                <div class="pull-left panel-body" inline-date="pr.give_per"
+                     on-save="saveDataPer('give_per',pr.pid,value)" on-cancel="log('CANCEL', value)"></div>
+            </div>
+        </div>
+
+    </div>
+    <button class="btn btn-default add" ng-click="addPeriod(track.pr, track.pl.reg_date)">
+        Додати нове періодичне відстеження</button>
+</div>

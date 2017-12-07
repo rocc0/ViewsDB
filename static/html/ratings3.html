@@ -1,0 +1,55 @@
+<div id="report">
+    <div id="report3">
+        <div class="header-block clearfix">
+            <div class="first-field">
+                Назва ЦОВВ
+            </div>
+            <div class="second-field">
+                <div class="col-header">Загальна кількість прийнятих р.а</div>
+                <div class="col-names">
+                    <div class="col">2015 рік</div>
+                    <div class="col">2016 рік</div>
+                </div>
+                <div class="col-units">
+                    <div class="unit">шт.</div>
+                    <div class="unit">шт.</div>
+                </div>
+            </div>
+            <div class="third-field">
+                <div class="col-header">Регуляторні акти,  прийняті без погодження  з ДРС</div>
+                <div class="col-names">
+                    <div class="col">2015 рік</div>
+                    <div class="col">2016 рік</div>
+                </div>
+                <div class="col-units">
+                    <div class="unit">шт.</div>
+                    <div class="unit">%</div>
+                    <div class="unit">шт.</div>
+                    <div class="unit">%</div>
+                </div>
+            </div>
+            <div class="fourth-field">
+                <div class="col-header">Оцінка дотримання
+                    рівня вимоги щодо обов’язковості погодження регуляторних актів з ДРС
+                </div>
+                <div class="col-units">
+                    <div class="unit">%</div>
+                </div>
+            </div>
+        </div>
+        <div class="table table-striped">
+            <div class="gov" ng-repeat="gov in ratings.ratings">
+                <div class="gov-field" ng-repeat="field in gov track by $index">
+                    <div class="gov-name"> {[{ field.gov_name }]} </div>
+                    <div class="gov-name"> {[{ field.rep_total }]} </div>
+                    <div class="gov-name"> {[{ field.rep_basic }]} </div>
+                    <div class="gov-name"> {[{ field.rep_repited }]} </div>
+                    <div class="gov-name"> {[{ field.rep_periodic }]} </div>
+                    <div class="gov-name"> {[{ field.broken_track_meth }]} </div>
+                    <div class="gov-name"> {[{ field.broken_sign }]} </div>
+                    <div class="gov-name"> {[{ field.broken_promo }]} </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

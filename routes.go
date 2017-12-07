@@ -11,6 +11,7 @@ func initializeRoutes() {
 	// Handle the index route
 	router.GET("/", showIndexPage)
 	router.GET("/ratings", showRatings)
+
 	userRoutes := router.Group("/u")
 	{
 		// Handle the GET requests at /u/login
@@ -36,37 +37,34 @@ func initializeRoutes() {
 		userRoutes.POST("/register", ensureNotLoggedIn(), register)
 	}
 
-	viewRoutes := router.Group("/views")
+	viewRoutes := router.Group("/track")
 	{
-		viewRoutes.GET("/view/:view_id", getView)
+		viewRoutes.GET("/id/:trk_id", getView)
+		viewRoutes.GET("/id/:trk_id/edit", getView)
 
 		//viewRoutes.POST("/view/:view_id/edit", ensureLoggedIn(), showEditView)
 		//
 		//viewRoutes.POST("/view/:view_id/edit", ensureLoggedIn(), editView)
 
 		viewRoutes.GET("/create",  viewCreationPage)
-
-		// Handle POST requests at /article/create
-		// Ensure that the user is logged in by using the middleware
-		viewRoutes.POST("/create",  createView)
-
 	}
 
 	apiRoutes := router.Group("/api")
 	{
 		//Get goverments names and ids
-		apiRoutes.GET("/govs", allGovs)
+		apiRoutes.GET("/govs", getGovernments)
 
 		//View ratings
-		apiRoutes.GET("/ratings", viewRatings)
+		apiRoutes.GET("/ratings", getRatings)
 
 		//Show and edit view
-		apiRoutes.GET("/v/:view_id", viewData)
-		apiRoutes.POST("/v/:view_id", saveViewRow)
+		apiRoutes.GET("/v/:trk_id", getTrack)
+		apiRoutes.POST("/v/:trk_id", postTrackField)
 
 		//Creation of view
-		apiRoutes.POST("/create", createView)
+		apiRoutes.POST("/create", postCreateItem)
 
-		//Search handling
+		//Delete handling
+		apiRoutes.POST("/delete", postDeleteItem)
 	}
 }

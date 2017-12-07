@@ -1,0 +1,61 @@
+<div class="period clearfix">
+    <h3>Періодичні відстеження</h3>
+    <div ng-repeat="pr in track.pr track by $index">
+        <div class="col-xs-12 panel panel-default header">
+            <div class="label label-primary period-year" > {[{ pr.term_per | date: 'yyyy' }]}</div>
+        </div>
+        <div class="col-xs-6 pull-left">
+            <div class="panel panel-default clearfix">
+                <div class="panel-heading">Термін здійснення заходів з відстеження</div>
+                <div class="panel-body">{[{ pr.term_per }]}</div>
+            </div>
+        </div>
+        <div class="col-xs-6 pull-left switch-res">
+            <div class="panel panel-default clearfix">
+                <div class="panel-heading" >Результати відстеження результативності</div>
+                <div class="panel-body">
+                    <div ng-hide="pr.res_per == '' ">{[{ pr.res_per }]}</div>
+                    <div ng-show="pr.res_per == '' ">Інформація відсутня</div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-xs-6 pull-left">
+            <div class="panel panel-default clearfix">
+                <div class="panel-heading">Дата підписання  звіту  про відстеження результативності регуляторного акта</div>
+                <div class="panel-body">
+                    <div ng-hide="pr.sign_per == '' ">{[{ pr.sign_per }]}</div>
+                    <div ng-show="pr.sign_per == '' ">Інформація відсутня</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6 pull-left">
+            <div class="panel panel-default clearfix">
+                <div class="panel-heading">Дата оприлюденення  звіту  про відстеження результативності регуляторного акта</div>
+                <div class="panel-body">
+                    <div ng-hide="pr.publ_per == '' ">{[{ pr.publ_per }]}</div>
+                    <div ng-show="pr.publ_per == '' ">Інформація відсутня</div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-xs-6 switch">
+            <div class="panel panel-default clearfix">
+                <div class="panel-heading">Висновок Комітету щодо відповідності звіту вимогам постанови КМУ від 11.03.04 р. №308</div>
+                <div class="pull-left panel-body">
+                    <div ng-hide="pr.concl_per == '' ">{[{ pr.concl_per }]}</div>
+                    <div ng-show="pr.concl_per == '' ">Інформація відсутня</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="panel panel-default clearfix">
+                <div class="panel-heading">Дата надання звіту  про відстеження результативності регуляторного акта до Держпідприємництва</div>
+                <div class="pull-left panel-body">
+                    <div ng-hide="pr.give_per == '' ">{[{ pr.give_per }]}</div>
+                    <div ng-show="pr.give_per == '' ">Інформація відсутня</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

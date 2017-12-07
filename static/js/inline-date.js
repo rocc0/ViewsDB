@@ -8,30 +8,18 @@ viewDB.directive('inlineDate', function($timeout) {
         link: function(scope, elm, attr) {
             var previousValue;
 
-            scope.today = function() {
-                scope.model = new Date();
-            };
-            scope.today();
-
             scope.clear = function() {
                 scope.model = null;
             };
-            scope.dateOptions = {
-                formatYear: 'yy',
-                maxDate: new Date(2028, 5, 22),
-                minDate: new Date(1991, 5, 22),
-                startingDay: 1
-            };
-            scope.popup = {
-                opened: false
-            };
-
-            scope.open = function() {
-                scope.popup.opened = true;
-            };
+            if (scope.model != '') {
+                scope.model = new Date(scope.model)
+            }
 
             scope.edit = function() {
                 scope.editMode = true;
+                if (scope.model != '') {
+                    scope.model = new Date(scope.model)
+                }
                 previousValue = scope.model;
 
                 $timeout(function() {
@@ -39,8 +27,13 @@ viewDB.directive('inlineDate', function($timeout) {
                 }, 0, false);
             };
             scope.save = function() {
+                var month = parseInt(scope.model.getMonth())
+                if (month < 12) {
+                    month += 1
+                }
+                date_value = scope.model.getFullYear() + "-" + month + "-" + scope.model.getDate()
                 scope.editMode = false;
-                scope.handleSave({value: scope.model});
+                scope.handleSave({value: date_value});
             };
             scope.cancel = function() {
                 scope.editMode = false;
