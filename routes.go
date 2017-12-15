@@ -66,5 +66,13 @@ func initializeRoutes() {
 
 		//Delete handling
 		apiRoutes.POST("/delete", postDeleteItem)
+
+		//Images
+
+		apiRoutes.POST("/upload", postImage)
+
+		apiRoutes.GET("/img/:trk_id", getImages)
+
+		apiRoutes.POST("/img/:trk_id/delete", postDelImage)
 	}
 }

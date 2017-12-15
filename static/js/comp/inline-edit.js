@@ -1,19 +1,23 @@
-viewDB.directive('inlineComment', function($timeout) {
+viewDB.directive('inlineEdit', function($timeout) {
     return {
         scope: {
-            model: '=inlineComment',
+            model: '=inlineEdit',
             handleSave: '&onSave',
             handleCancel: '&onCancel'
         },
         link: function(scope, elm, attr) {
             var previousValue;
-
+            scope.date = function () {
+                if (scope.model == "")  {
+                    scope.model = "інф. відсутня"
+                }
+            }
+            scope.date()
             scope.edit = function() {
                 scope.editMode = true;
                 previousValue = scope.model;
-
                 $timeout(function() {
-                    elm.find('textarea')[0].focus();
+                    elm.find('input')[0].focus();
                 }, 0, false);
             };
             scope.save = function() {
@@ -26,6 +30,6 @@ viewDB.directive('inlineComment', function($timeout) {
                 scope.handleCancel({value: scope.model});
             };
         },
-        templateUrl: '/static/html/inline-comment.html'
+        templateUrl: '/static/html/inline-edit.html'
     };
 });

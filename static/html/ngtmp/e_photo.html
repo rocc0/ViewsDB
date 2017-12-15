@@ -1,0 +1,25 @@
+<div class="images">
+    <ul class="gallery" ng-show="images.length">
+        <li ng-repeat="image in images" class="image img-wrap">
+            <a ng-click="openLightboxModal($index)">
+                <img ng-src="{[{image.thumb}]}" class="img-thumbnail">
+            </a>
+                <button ng-click="removeImage($index)" class="btn btn-default btn-xs close" type="button">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+
+        </li>
+    </ul>
+    <div class="no-images" ng-hide="images.length"><h1>Фото відсутні</h1></div>
+</div>
+
+
+<div>
+    <div class="clearfix">
+        <div class="uploader" style="height: auto;clear: both;">
+            <form class="form-group ">
+                    <input type="file" demo-file-model="imgs" class="form-control" id="myFileField" />
+            </form>
+            <button ng-click="uploadFile(imgs)" class="btn btn-primary">Завантажити</button>
+        </div>
+    </div>
+</div>

@@ -31,7 +31,7 @@ viewDB.directive('inlineDate', function($timeout) {
                 if (month < 12) {
                     month += 1
                 }
-                date_value = scope.model.getFullYear() + "-" + month + "-" + scope.model.getDate()
+                var date_value = scope.model.getFullYear() + "-" + month + "-" + scope.model.getDate()
                 scope.editMode = false;
                 scope.handleSave({value: date_value});
             };

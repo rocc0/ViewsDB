@@ -1,28 +1,24 @@
-viewDB.directive('inlineTypehead', function($timeout) {
+viewDB.directive('inlineComment', function($timeout) {
     return {
         scope: {
-            model: '=inlineTypehead',
-            govs: '=typeGovs',
+            model: '=inlineComment',
             handleSave: '&onSave',
             handleCancel: '&onCancel'
         },
         link: function(scope, elm, attr) {
             var previousValue;
-            $timeout(function () {
-                scope.data = scope.govs[scope.model]["name"]
-            },
-                    100);
+
             scope.edit = function() {
                 scope.editMode = true;
                 previousValue = scope.model;
 
                 $timeout(function() {
-                    elm.find('input')[0].focus();
+                    elm.find('textarea')[0].focus();
                 }, 0, false);
             };
             scope.save = function() {
                 scope.editMode = false;
-                scope.handleSave({value: String(scope.model.Id)});
+                scope.handleSave({value: scope.model});
             };
             scope.cancel = function() {
                 scope.editMode = false;
@@ -30,6 +26,6 @@ viewDB.directive('inlineTypehead', function($timeout) {
                 scope.handleCancel({value: scope.model});
             };
         },
-        templateUrl: '/static/html/inline-typehead.html'
+        templateUrl: '/static/html/inline-comment.html'
     };
 });

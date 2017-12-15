@@ -46,7 +46,10 @@ h3 {
 .container {
     width: 1220px;
 }
-
+.section.scanned {
+    padding: 5px;
+    border: 1px solid #ddd;
+}
 .row-view {
     width: 100%;
     margin: 5px 0px;
@@ -92,6 +95,8 @@ h3 {
     width: 33%;
 }
 
+
+
 .gov-field div {
     border-right: 1px solid #ddd;
     border-bottom: none;
@@ -101,6 +106,14 @@ h3 {
     text-align: center;
     width: 3.04%;
     float: left;
+}
+
+.doc-name {
+    border-bottom: 1px solid #ddd;
+}
+
+.doc-tabs ul {
+    margin-bottom: 13px;
 }
 
 .page-name {
@@ -823,3 +836,70 @@ div#report {
 
 /*report 4*/
 
+/* image and uploader */
+
+.img-wrap {
+    position: relative;
+    display: inline-block;
+    border: 1px red solid;
+    font-size: 0;
+
+}
+.img-wrap .close {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    z-index: 100;
+    padding: 1px 2px 2px;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: .5;
+    text-align: center;
+    font-size: 17px;
+    line-height: 10px;
+    border-radius: 5px!important;
+}
+.img-wrap:hover .close {
+    opacity: 1;
+}
+.img-wrap img{
+    height: 100px;
+}
+li.image {
+    list-style: none;
+    margin: 2px;
+    float: left;
+}
+
+/* image and uploader */
+
+.uploader form {
+    float: left;
+    padding-right: 5px;
+}
+
+.images {
+
+    margin: 1px 1px 17px 1px;
+    padding: 10px;
+    background: #f7f7f7;
+    min-height: 150px;
+    width: 100%;
+    height: auto;
+}
+
+.images ul {
+    overflow: hidden;
+    -webkit-padding-start: 4px;
+}
+
+.no-images h1 {
+    color: rgba(226, 226, 226, 0.8);
+    text-align: center;
+    text-shadow: 1px 4px 6px #efefef, 0 0 0 #000, 1px 4px 6px #f3f3f3;
+}
+
+/* Don't show shadows when selecting text */
+::-moz-selection { background: #5af; color: #fff; text-shadow: none; }
+::selection { background: #5af; color: #fff; text-shadow: none; }

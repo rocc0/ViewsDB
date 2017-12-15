@@ -1,5 +1,5 @@
-
-var viewDB = angular.module("viewDB", ["ngRoute",'ngAnimate', 'ngSanitize', 'ui.bootstrap', 'switcher'])
+var viewDB = angular.module("viewDB", ["ngRoute",'ngAnimate', 'ngSanitize',
+    'ui.bootstrap', 'switcher', 'bootstrapLightbox'])
 
 viewDB.config(function($interpolateProvider, $routeProvider, $locationProvider) {
     $interpolateProvider.startSymbol('{[{').endSymbol('}]}');
@@ -103,10 +103,11 @@ viewDB.controller("searchCtrl", function($scope, $http) {
 
 viewDB.controller("viewCtrl", function ($scope, $http, $location,$routeParams) {
     $scope.params = $routeParams
+    $scope.editPath = $location.path() + "/edit"
     var docId = $scope.params.trackId
     $http.get("/api/v/"+ docId).then(function(response) {
         $scope.track = response.data;
-        for (k in $scope.track.pl) {
+        for (var k in $scope.track.pl) {
             if ($scope.track.pl[k] == '') {
                 $scope.track.pl[k] = 'Інформація відсутня'
             }
@@ -128,7 +129,8 @@ viewDB.controller("viewCtrl", function ($scope, $http, $location,$routeParams) {
 })
 
 
-viewDB.controller("editCtrl", function($scope, $http, $sce, $location,$routeParams) {
+viewDB.controller("editCtrl", function($scope, $http, $sce, $location,
+                                       $routeParams, fileUploadService, Lightbox) {
     $scope.params = $routeParams
     var docId = $scope.params.trackId
 
@@ -144,6 +146,21 @@ viewDB.controller("editCtrl", function($scope, $http, $sce, $location,$routePara
         "concl_per": "не заповнено",
         "cp_bool": 0
     };
+
+    $http.get("/api/v/"+ docId).then(function(response) {
+        $scope.track = response.data;
+    });
+
+    $http.get("/api/govs").then(function(response) {
+        $scope.govs = response.data;
+    });
+    $http.get("/api/img/"+docId).then(function (response) {
+        $scope.images = response.data.images;
+    })
+
+    $scope.years = [2003,2004,2005,2006,2007,2008,2009,2011,
+        2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024];
+
     $scope.addPeriod = function(data,reg_date) {
         console.log(!data,reg_date)
         if (!data || data.length == 0) {
@@ -178,6 +195,7 @@ viewDB.controller("editCtrl", function($scope, $http, $sce, $location,$routePara
         }
 
     }
+
     $scope.savePeriod = function(data) {
         $http.post("/api/create", data
         ).then(function(response) {
@@ -195,16 +213,6 @@ viewDB.controller("editCtrl", function($scope, $http, $sce, $location,$routePara
         })
 
     }
-    $scope.years = [2003,2004,2005,2006,2007,2008,2009,2011,
-        2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024];
-
-    $http.get("/api/v/"+ docId).then(function(response) {
-        $scope.track = response.data;
-    });
-
-    $http.get("/api/govs").then(function(response) {
-        $scope.govs = response.data;
-    });
 
 // start saving value
     $scope.saveData = function(name,newValue,oldValue) {
@@ -233,32 +241,39 @@ viewDB.controller("editCtrl", function($scope, $http, $sce, $location,$routePara
         console.log(name, "|",newValue);
     };
     // end saving value
+    // image
 
-    //image
-    $scope.name = "Select Files to Upload";
-    $scope.images = [];
-    $scope.display = $scope.images[$scope.images.length - 1];
-    $scope.setImage = function (ix) {
-        $scope.display = $scope.images[ix];
-    }
-    $scope.clearAll = function () {
-        $scope.display = '';
-        $scope.images = [];
-    }
-    $scope.upload = function (obj) {
-        var elem = obj.target || obj.srcElement;
-        for (i = 0; i < elem.files.length; i++) {
-            var file = elem.files[i];
-            var reader = new FileReader();
+    $scope.openLightboxModal = function (index) {
+        Lightbox.openModal($scope.images, index);
+    };
+    // remove image
+    $scope.removeImage = function(index) {
+        var photo_id = $scope.images[index].photo_id
+        $http.post("/api/img/"+docId+"/delete", {
+            "photo_id": photo_id,
+        }).then(function(response){
+            $scope.images.splice(index, 1);
 
-            reader.onload = function (e) {
-                $scope.images.push(e.target.result);
-                $scope.display = e.target.result;
-                $scope.$apply();
-            }
-            reader.readAsDataURL(file);
-        }
+        })
     }
+    // upload image
+    $scope.uploadFile = function (imgs) {
+        var uploadUrl = "/api/upload",
+            promise = fileUploadService.uploadFileToUrl(imgs, uploadUrl, docId);
+
+        promise.then(function (response) {
+                if($scope.images == null) {
+                    $scope.images = []
+                }
+                $scope.images.push({
+                    "photo_id": response.data.photo_id,
+                    "original": response.data.original,
+                    "thumb": response.data.thumb
+                })
+        }, function () {
+            $scope.serverResponse = 'An error has occurred';
+        })
+    };
     //image
 
 });
@@ -293,7 +308,6 @@ viewDB.controller("createCtrl", function($scope, $http) {
         return value
     }
 
-
 });
 
 viewDB.controller("ratingsCtrl", function($scope, $http) {
@@ -311,3 +325,4 @@ viewDB.controller("ratingsCtrl", function($scope, $http) {
         $scope.ratings = response.data
     })
 });
+
