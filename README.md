@@ -1,5 +1,5 @@
 # ViewsDB
-Web app writed on golang and angularjs 2. 
-Used: Go, Postgres, Bleve, AngularJS 2
+Web app writed on golang and angularjs. 
+Used: Go, MySQL, Elasticsearch, AngularJS, MongoDB
 
 Project is in process...
