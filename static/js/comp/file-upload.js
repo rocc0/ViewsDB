@@ -1,6 +1,6 @@
- /*
-     A directive to enable two way binding of file field
-     */
+
+
+
     viewDB.directive('demoFileModel', function ($parse) {
         return {
             restrict: 'A', //the directive can be used as an attribute only
@@ -27,3 +27,4 @@
             }
         };
     });
+

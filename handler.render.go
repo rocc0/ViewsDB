@@ -25,6 +25,18 @@ func showRatings(c *gin.Context) {
 	}, "index.html")
 }
 
+func showUserPage(c *gin.Context) {
+	render(c, gin.H{
+		"title": "Кабінет користувача",
+	}, "index.html")
+}
+
+func showEditGovsNames(c *gin.Context) {
+	render(c, gin.H{
+		"title": "Редагувати назви державних органів",
+	}, "index.html")
+}
+
 func getView(c *gin.Context) {
 	viewID, err := strconv.Atoi(c.Param("trk_id"));
 	if err == nil {

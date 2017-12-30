@@ -1,78 +1,105 @@
 package main
 
+import (
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/appleboy/gin-jwt"
+)
 
 func initializeRoutes() {
 
 	// Use the setUserStatus middleware for every route to set a flag
 	// indicating whether the request was from an authenticated user or not
 
-	router.Use(setUserStatus())
+	authMiddleware := &jwt.GinJWTMiddleware {
+		Realm:      "test zone",
+		Key:        []byte("secret key"),
+		Timeout:    time.Hour,
+		MaxRefresh: time.Hour,
+		Authenticator: func(eMail string, password string, c *gin.Context) (string, bool) {
+			if (loginCheck(eMail, password) == true) {
+				return eMail, true
+			}
+
+			return eMail, false
+		},
+		Authorizator: func(userId string, c *gin.Context) bool {
+			return authCheck(userId)
+		},
+		Unauthorized: func(c *gin.Context, code int, message string) {
+			c.JSON(code, gin.H{
+				"code":    code,
+				"message": message,
+			})
+		},
+
+		TokenLookup: "header:Authorization",
+
+		TokenHeadName: "Bearer",
+
+		TimeFunc: time.Now,
+	}
 
 	// Handle the index route
 	router.GET("/", showIndexPage)
 	router.GET("/ratings", showRatings)
+	router.GET("/govs/edit", showEditGovsNames)
 
 	userRoutes := router.Group("/u")
+
 	{
-		// Handle the GET requests at /u/login
-		// Show the login page
-		// Ensure that the user is not logged in by using the middleware
-		userRoutes.GET("/login", ensureNotLoggedIn(), showLoginPage)
+		userRoutes.GET("/login", showIndexPage)
 
-		// Handle POST requests at /u/login
-		// Ensure that the user is not logged in by using the middleware
-		userRoutes.POST("/login", ensureNotLoggedIn(), performLogin)
+		userRoutes.POST("/login", authMiddleware.LoginHandler)
 
-		// Handle GET requests at /u/logout
-		// Ensure that the user is logged in by using the middleware
-		userRoutes.GET("/logout", ensureLoggedIn(), logout)
+		userRoutes.GET("/register", showIndexPage)
 
-		// Handle the GET requests at /u/register
-		// Show the registration page
-		// Ensure that the user is not logged in by using the middleware
-		userRoutes.GET("/register", ensureNotLoggedIn(), showRegistrationPage)
+		userRoutes.POST("/register", registerHandler)
 
-		// Handle POST requests at /u/register
-		// Ensure that the user is not logged in by using the middleware
-		userRoutes.POST("/register", ensureNotLoggedIn(), register)
+		userRoutes.GET("/cabinet", showUserPage)
+
 	}
 
-	viewRoutes := router.Group("/track")
+	trackRoutes := router.Group("/track")
 	{
-		viewRoutes.GET("/id/:trk_id", getView)
-		viewRoutes.GET("/id/:trk_id/edit", getView)
+		trackRoutes.GET("/id/:trk_id", getView)
 
-		//viewRoutes.POST("/view/:view_id/edit", ensureLoggedIn(), showEditView)
-		//
-		//viewRoutes.POST("/view/:view_id/edit", ensureLoggedIn(), editView)
+		trackRoutes.GET("/id/:trk_id/edit", getView)
 
-		viewRoutes.GET("/create",  viewCreationPage)
+		trackRoutes.GET("/create", viewCreationPage)
+
 	}
 
 	apiRoutes := router.Group("/api")
 	{
 		//Get goverments names and ids
 		apiRoutes.GET("/govs", getGovernments)
+		apiRoutes.POST("/govs/edit", authMiddleware.MiddlewareFunc(), postEditGovernments)
 
 		//View ratings
 		apiRoutes.GET("/ratings", getRatings)
 
 		//Show and edit view
 		apiRoutes.GET("/v/:trk_id", getTrack)
-		apiRoutes.POST("/v/:trk_id", postTrackField)
+		apiRoutes.POST("/v/:trk_id", authMiddleware.MiddlewareFunc(),postTrackField)
 
 		//Creation of view
-		apiRoutes.POST("/create", postCreateItem)
+		apiRoutes.POST("/create", authMiddleware.MiddlewareFunc(),postCreateItem)
 
 		//Delete handling
-		apiRoutes.POST("/delete", postDeleteItem)
+		apiRoutes.POST("/delete", authMiddleware.MiddlewareFunc(),postDeleteItem)
 
 		//Images
-
-		apiRoutes.POST("/upload", postImage)
+		apiRoutes.POST("/upload",  postImage)
 
 		apiRoutes.GET("/img/:trk_id", getImages)
 
-		apiRoutes.POST("/img/:trk_id/delete", postDelImage)
+		apiRoutes.POST("/img/:trk_id/delete", authMiddleware.MiddlewareFunc(), postDelImage)
+
+		//user
+		apiRoutes.GET("/cabinet", authMiddleware.MiddlewareFunc(), cabinetHandler)
+		apiRoutes.POST("/edituser",authMiddleware.MiddlewareFunc(), editUserField)
 	}
+
 }

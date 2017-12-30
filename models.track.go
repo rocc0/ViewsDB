@@ -35,7 +35,7 @@ func editView(name, data string, table, id int) error{
 		tbl = "track_period"
 	}
 	log.Print("exec ",name," ", data," ",id)
-	stmt, err := db.Prepare("update " + tbl + " set " + name + "= ? where id= ?;")
+	stmt, err := db.Prepare("UPDATE " + tbl + " SET " + name + "= ? WHERE id= ?;")
 	if err != nil {
 		log.Print(err.Error())
 	} else {
@@ -170,4 +170,12 @@ func createNewItem(formData map[string]interface{}) (int, error) {
 }
 
 
-
+func editGovName(id int, name string) error {
+	stmt, err := db.Prepare("UPDATE governments SET gov_name=? WHERE id=?;")
+	check(err)
+	_, err = stmt.Exec(name, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

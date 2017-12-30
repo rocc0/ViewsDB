@@ -11,7 +11,7 @@ var router *gin.Engine
 
 func main(){
 	// Set Gin to production mode
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.DebugMode)
 	// Set the router as the default one provided by Gin
 	router = gin.Default()
 	// Set a lower memory limit for multipart forms (default is 32 MiB)

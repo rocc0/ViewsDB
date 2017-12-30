@@ -39,7 +39,7 @@
                 <input type="text"
                        ng-model="search_dev"
                        placeholder="Оберіть розробника"
-                       uib-typeahead="gov as gov.Name for gov in govs.govs | filter:$viewValue | limitTo:8"
+                       uib-typeahead="gov as gov.name for gov in govs.govs | filter:$viewValue | limitTo:8"
                        class="form-control"
                        typeahead-on-select="addTerm('developer', $item.Id)"
                        typeahead-min-length="2"

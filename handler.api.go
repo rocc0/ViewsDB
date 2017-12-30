@@ -22,6 +22,11 @@ type deleteRequest struct {
 	TblName	string	`json:"tbl_name"`
 }
 
+type editGov struct {
+	Id int
+	Name string
+}
+
 func getTrack(c *gin.Context) {
 	viewID, err := strconv.Atoi(c.Param("trk_id"))
 	basic := make(map[string]string)
@@ -120,4 +125,16 @@ func postDeleteItem(c *gin.Context) {
 }
 
 
-
+func postEditGovernments(c *gin.Context) {
+	x, _ := ioutil.ReadAll(c.Request.Body)
+	var editgov editGov
+	err := json.Unmarshal([]byte(x), &editgov)
+	check(err)
+	if err := editGovName(editgov.Id, editgov.Name); err == nil {
+		c.JSON(http.StatusOK, gin.H{
+			"title": "Gov name changed",
+		})
+	} else {
+		c.AbortWithStatus(http.StatusBadRequest)
+	}
+}

@@ -1,0 +1,7 @@
+<div class="governments">
+    <div ng-repeat="gov in govs" class="government">
+        <div class="col-xs-1 pull-left">{[{ gov.id }]})</div>
+         <div class="col-xs-11 pull-left" inline-edit="gov.name"
+             on-save="changeUserField(gov.id, value)" on-cancel="log('CANCEL', value)"></div>
+    </div>
+</div>

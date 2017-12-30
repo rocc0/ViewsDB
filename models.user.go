@@ -2,16 +2,16 @@ package main
 
 import (
 	"errors"
-	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-type user struct {
-	Username string
-	Password string
-	Name string
-	Email string
+type User struct{
+	Id int `json:"id"`
+	Name string `json:"name"`
+	Surename string `json:"surename"`
+	Email string `json:"email"`
+	Rights int
 }
 
 func userInit() {
@@ -24,41 +24,85 @@ func userInit() {
 }
 
 
-func isUserValid(username, password string) bool {
-	var databaseUsername  string
-	var databasePassword  string
-	err := db.QueryRow("SELECT username, password FROM users WHERE username=?", username).Scan(&databaseUsername, &databasePassword)
-	if err != nil {
-		return false
-	}
-	err = bcrypt.CompareHashAndPassword([]byte(databasePassword), []byte(password))
+func loginCheck(email, password string) bool{
+	var (
+		e_mail, passw string
+	)
+	res := db.QueryRow("SELECT email, password FROM users WHERE email=?", email)
+	res.Scan(&e_mail, &passw)
+	err := bcrypt.CompareHashAndPassword([]byte(passw), []byte(password))
+
 	if err != nil {
 		return false
 	}
 	return true
 }
 
-func registerNewUser(username, password, name, email string) (*user, error) {
-	if strings.TrimSpace(password) == "" {
-		return nil, errors.New("The password can't be empty")
-	} else if !isUsernameAvailable(username) {
-		return nil, errors.New("The username isn't available")
-	}
-	u := user{Username: username, Password: password, Email: email, Name: name}
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return nil, err
-	}
-	_, err = db.Exec("INSERT INTO users(username, password, name, email) VALUES(?, ?, ?, ?)", username, hashedPassword, name, email)
-	if err != nil {
-		return nil, err
-	}
-	return &u, nil
+func authCheck(email string) bool {
+	var (
+		privileged int
+	)
+	res := db.QueryRow("SELECT privileged FROM users WHERE email=?", email)
+	res.Scan(&privileged)
+
+	return privileged == 1
 }
 
-func isUsernameAvailable(username string) bool {
-	_, err := db.Query("SELECT username FROM users WHERE username=?", username)
+func getUser(email string) (*User, error) {
+
+	var (
+		userData User
+		name, surename, e_mail string
+		id,rights int
+	)
+
+	res := db.QueryRow("SELECT name, surename, email, id, rights FROM users WHERE email = ?", email)
+	err := res.Scan(&name, &surename, &e_mail, &id, &rights)
 	if err != nil {
+		return &userData, err
+	}
+
+	userData = User{id, name, surename, e_mail, rights}
+
+	return &userData, nil
+}
+
+func postUser(name, surename, email, password string) (string, error) {
+	if !isUsernameAvailable(email) {
+
+		return name, errors.New("Користувач з цим ім'ям вже існує")
+	}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	req, err := db.Prepare("INSERT INTO users (name, surename, email, password) VALUES (?,?,?,?)")
+	check(err)
+	_, err = req.Exec(name, surename, email, hashedPassword)
+	check(err)
+
+	return name, nil
+
+}
+
+func postChangeField(field, data string, id int) error {
+	stmt, err := db.Prepare("UPDATE users SET "+ field + "=? WHERE id=?;")
+	check(err)
+
+	if field == "password" {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(data), bcrypt.DefaultCost)
+		_, err = stmt.Exec(field, hashedPassword, id)
+		check(err)
+		return nil
+	} else {
+		_, err = stmt.Exec(data, id)
+		check(err)
+		return nil
+	}
+}
+
+
+func isUsernameAvailable(email string) bool {
+	res, _ := db.Query("SELECT email FROM users WHERE email=?", email)
+	if res == nil {
+
 		return false
 	}
 	return true

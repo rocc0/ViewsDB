@@ -21,6 +21,9 @@ body {
 h3 {
     margin-top: 5px;
 }
+.msg-error {
+    color:red;
+}
 .track .panel-body {
     height: 42px;
 }
@@ -49,6 +52,9 @@ h3 {
 .section.scanned {
     padding: 5px;
     border: 1px solid #ddd;
+}
+.border-bottom {
+    border-bottom: 1px solid #ddd;
 }
 .row-view {
     width: 100%;
@@ -898,6 +904,33 @@ li.image {
     color: rgba(226, 226, 226, 0.8);
     text-align: center;
     text-shadow: 1px 4px 6px #efefef, 0 0 0 #000, 1px 4px 6px #f3f3f3;
+}
+.governments .government {
+    background: #fff;
+    height: 20px;
+}
+.governments .government:nth-child(odd) {
+    background: #eee;
+}
+
+
+.governments .input-group {
+    width: 100%;
+}
+.governments .inline-show {
+    padding-top: 0px;
+}
+
+
+.governments .col-xs-1 {
+    width: 1%;
+}
+.governments .col-xs-11 {
+    width: 97%;
+}
+.governments input {
+    height: 26px;
+    width: 100%;
 }
 
 /* Don't show shadows when selecting text */

@@ -18,9 +18,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="https://cdn.rawgit.com/indrimuska/angular-switcher/master/dist/angular-switcher.min.js"></script>
 
-    <script src="/static/js/ui-bootstrap-tpls-2.5.0.min.js"></script>
-    <script src="/static/js/angular-bootstrap-lightbox.min.js"></script>
+    <script src="/static/js/src/ui-bootstrap-tpls-2.5.0.min.js"></script>
+    <script src="/static/js/src/angular-bootstrap-lightbox.min.js"></script>
+
     <script src='/static/js/controller.js'></script>
+    <script src='/static/js/config.js'></script>
+    <script src='/static/js/services.js'></script>
     <script src="/static/js/comp/inline-edit.js"></script>
     <script src="/static/js/comp/inline-typehead.js"></script>
     <script src="/static/js/comp/inline-comment.js"></script>
@@ -43,5 +46,4 @@
 <body class="container" ng-app="viewDB">
 <!--Embed the menu.html template at this location-->
 
-
-{{ template "menu.html" . }}
+<div ng-include="'/static/html/menu.html'"></div>
