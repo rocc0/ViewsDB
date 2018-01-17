@@ -33,7 +33,8 @@ func main(){
 	//Search indexing
 	elasticIndex()
 	//Calculate all rates
-	calculateRates()
+	err := calculateRates()
+	check(err)
 	// Start serving the application
 	router.Run(":8888")
 }

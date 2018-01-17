@@ -15,17 +15,19 @@ type Trace struct {
 }
 
 type Period struct {
-	Period_id		int		`json:"pid"`
-	Trace_id 		int 	`json:"trace_id"`
-	Term_per 		string	`json:"term_per"`
-	Res_per_bool 	int		`json:"res_per_bool"`
-	Res_per_year 	int		`json:"res_per_year"`
-	Res_per 		string	`json:"res_per"`
-	Sign_per 		string	`json:"sign_per"`
-	Publ_per 		string	`json:"publ_per"`
-	Give_per 		string	`json:"give_per"`
-	Concl_per 		string	`json:"concl_per"`
+	PeriodId		int		`json:"pid"`
+	TraceId 		int 	`json:"trace_id"`
+	TermPer 		string	`json:"term_per"`
+	ResPer_bool 	int		`json:"res_per_bool"`
+	ResPer_year 	int		`json:"res_per_year"`
+	ResPer 			string	`json:"res_per"`
+	SignPer 		string	`json:"sign_per"`
+	PublPer 		string	`json:"publ_per"`
+	GivePer 		string	`json:"give_per"`
+	ConclPer 		string	`json:"concl_per"`
 	Cp_bool 		int		`json:"cp_bool"`
+	BrokenMyRating	int 	`json:"broken_my_rating"`
+	BrokenDevRating	int 	`json:"broken_dev_rating"`
 }
 
 
@@ -96,7 +98,7 @@ func getBasicData(id int) (*Trace, error){
 
 func getPeriodicData(id int) (*[]Period, error){
 	var (
-		trace_id,res_per_bool,res_per_year,cp_bool,period_id int
+		trace_id,res_per_bool,res_per_year,cp_bool,period_id,broken_my_rating,broken_dev_rating int
 		term_per,sign_per,publ_per,give_per,res_per,concl_per string
 		periods []Period
 	)
@@ -108,15 +110,16 @@ func getPeriodicData(id int) (*[]Period, error){
 		"COALESCE(publ_per, '') as publ_per," +
 		"COALESCE(give_per, '') as give_per," +
 		"COALESCE(concl_per, '') as concl_per," +
-		"cp_bool from track_period where trace_id = ?;", id)
+		"cp_bool,broken_my_rating,broken_dev_rating from track_period where trace_id = ?;", id)
 	check(err)
 	for pers.Next() {
 		err := pers.Scan(&trace_id,&period_id,&term_per,&res_per_bool,&res_per_year,&res_per,
-			&sign_per,&publ_per,&give_per,&concl_per,&cp_bool)
+			&sign_per,&publ_per,&give_per,&concl_per,&cp_bool,&broken_my_rating,&broken_dev_rating)
 		check(err)
 
 		periods = append(periods, Period{trace_id,period_id,term_per,res_per_bool,
-		res_per_year,res_per,sign_per, publ_per,give_per,concl_per,cp_bool})
+		res_per_year,res_per,sign_per, publ_per,give_per,
+		concl_per,cp_bool,broken_my_rating,broken_dev_rating})
 	}
 	defer pers.Close()
 	return &periods, nil

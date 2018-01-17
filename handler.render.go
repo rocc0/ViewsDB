@@ -3,6 +3,7 @@ package main
 import (
 	"strconv"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -38,12 +39,19 @@ func showEditGovsNames(c *gin.Context) {
 }
 
 func getView(c *gin.Context) {
-	viewID, err := strconv.Atoi(c.Param("trk_id"));
+	var title string
+	trackId, err := strconv.Atoi(c.Param("trk_id"));
+	url := c.Request.URL.Path
+	if strings.Contains(url, "edit") {
+		title = "Редагування | "
+	} else {
+		title = ""
+	}
 	if err == nil {
-		trace, err := getBasicData(viewID)
+		trace, err := getBasicData(trackId)
 		if err == nil {
 			render(c, gin.H{
-				"title": "Редагування | " + string(trace.Fields["requisits"].([]uint8)),
+				"title": title + string(trace.Fields["requisits"].([]uint8)),
 				}, "index.html")
 		} else {
 			c.AbortWithError(http.StatusNotFound, err)

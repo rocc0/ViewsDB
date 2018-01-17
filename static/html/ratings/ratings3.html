@@ -1,3 +1,41 @@
+<div class="report-filter clearfix ">
+
+    <div class="col-md-3"><div class="input-group-addon">Оберіть період</div></div>
+    <div class="col-md-3">
+        <div class="input-group">
+            <input type="text" class="form-control" uib-datepicker-popup="{[{format}]}" ng-model="dt"
+                   is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true"
+                   close-text="Close" alt-input-formats="altInputFormats" />
+            <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open1()">
+                <i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="input-group">
+            <input type="text" class="form-control" uib-datepicker-popup ng-model="dt" is-open="popup2.opened"
+                   datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+            <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open2()">
+                <i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+    </div>
+
+
+    <div class="col-md-2">
+        <button class="btn bnt-primary"
+                ng-click="printDiv('report')">
+            <span class="glyphicon glyphicon-print "></span>
+            Перерахувати</button>
+    </div>
+    <div class="col-md-1">
+        <button class="glyphicon glyphicon-print btn bnt-default" ng-click="printDiv('report')"></button>
+    </div>
+
+</div>
 <div id="report">
     <div id="report3">
         <div class="header-block clearfix">

@@ -1,60 +1,138 @@
+<div class="report-filter clearfix ">
+
+        <div class="col-md-3"><div class="input-group-addon">Оберіть період</div></div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <input type="text" class="form-control" uib-datepicker-popup="{[{format}]}" ng-model="dt"
+                       is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true"
+                       close-text="Close" alt-input-formats="altInputFormats" />
+                <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open1()">
+                <i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="input-group">
+                <input type="text" class="form-control" uib-datepicker-popup ng-model="dt" is-open="popup2.opened"
+                       datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open2()">
+                <i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+            </div>
+        </div>
+
+
+        <div class="col-md-2">
+            <button class="btn bnt-primary"
+                    ng-click="printDiv('report')">
+                <span class="glyphicon glyphicon-print "></span>
+                Перерахувати</button>
+        </div>
+        <div class="col-md-1">
+            <button class="glyphicon glyphicon-print btn bnt-default" ng-click="printDiv('report')"></button>
+        </div>
+
+</div>
 <div id="report">
     <div id="report1">
-    <div class="field-names">
-        <div class="field-name first-field">
-            <div class="">{[{ ratings.columns[0] }]}</div>
-        </div>
-        <div class="broken">
-            <div class="broken-header">
-                <h5>Порушено</h5>
-            </div>
-            <div class="broken-body">
-                <div class="field-name" ng-repeat="name in ratings.columns | limitTo:14:1">
-                    <div class="rotated">{[{ name }]}</div>
+        <div class="field-names">
+         <div class="clearfix">
+             <div class="field-name first-field">
+                 <div class="">{[{ ratings.columns[0] }]}</div>
+             </div>
+             <div class="broken">
+                 <div class="broken-header">
+                     <h5>Порушено</h5>
+                 </div>
+                 <div class="broken-body">
+                     <div class="field-name" ng-repeat="name in ratings.columns | limitTo:14:1">
+                         <div class="rotated">{[{ name }]}</div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+
+            <div class="clearfix">
+                <div class="gov">
+                    <div class="gov-field-header">
+                        <div class="gov-name">&nbsp;</div>
+                        <div class="gov-name">шт.</div>
+                        <div class="gov-name">шт.</div>
+                        <div class="gov-name">шт.</div>
+                        <div class="gov-name">шт.</div>
+
+                        <div class="gov-name">шт.</div>
+                        <div class="gov-name">%</div>
+
+                        <div class="gov-name">шт.</div>
+                        <div class="gov-name">%</div>
+
+                        <div class="gov-name">шт.</div>
+                        <div class="gov-name">%</div>
+
+                        <div class="gov-name">шт.</div>
+                        <div class="gov-name">%</div>
+
+                        <div class="gov-name">шт.</div>
+                        <div class="gov-name">%</div>
+
+                        <div class="gov-name">шт.</div>
+                        <div class="gov-name">%</div>
+
+                        <div class="gov-name"> шт.</div>
+                        <div class="gov-name">%</div>
+
+                        <div class="gov-name">шт.</div>
+                        <div class="gov-name">%</div>
+
+                        <div class="gov-name">шт.</div>
+                        <div class="gov-name">%</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-    </div>
-    <div class="table table-striped">
-        <div class="gov" ng-repeat="gov in ratings.ratings">
-            <div class="gov-field" ng-repeat="field in gov track by $index">
-                <div class="gov-name"> {[{ field.gov_name }]} </div>
-                <div class="gov-name"> {[{ field.rep_total }]} </div>
-                <div class="gov-name"> {[{ field.rep_basic }]} </div>
-                <div class="gov-name"> {[{ field.rep_repited }]} </div>
-                <div class="gov-name"> {[{ field.rep_periodic }]} </div>
+        <div class="table table-striped">
 
+            <div class="gov" ng-repeat="gov in ratings.ratings">
+                <div class="gov-field" ng-repeat="f in gov track by $index">
+                    <div class="gov-name">{[{ f.gov_name }]} </div>
+                    <div class="gov-name">{[{ f.rep_total }]} </div>
+                    <div class="gov-name">{[{ f.rep_basic }]} </div>
+                    <div class="gov-name">{[{ f.rep_repited }]} </div>
+                    <div class="gov-name">{[{ f.rep_periodic }]} </div>
 
-                <div class="gov-name"> {[{ field.broken_track_meth }]} </div>
-                <div class="gov-name">0</div>
+                    <div class="gov-name">{[{ f.broken_track_meth }]} </div>
+                    <div class="gov-name">{[{ f.rep_total > 0 ? f.broken_track_meth*100/f.rep_total : 0 | number: 0}]}</div>
 
-                <div class="gov-name"> {[{ field.broken_sign }]} </div>
-                <div class="gov-name">0</div>
+                    <div class="gov-name"> {[{ f.broken_sign }]} </div>
+                    <div class="gov-name">{[{ f.rep_total > 0 ? f.broken_sign*100/f.rep_total : 0 | number: 0}]}</div>
 
-                <div class="gov-name"> {[{ field.broken_promo }]} </div>
-                <div class="gov-name">0</div>
+                    <div class="gov-name"> {[{ f.broken_promo }]} </div>
+                    <div class="gov-name">{[{ f.rep_total > 0 ? f.broken_promo*100/f.rep_total : 0 | number: 0}]}</div>
 
-                <div class="gov-name"> {[{ field.broken_period }]} </div>
-                <div class="gov-name">0</div>
+                    <div class="gov-name"> {[{ f.broken_period }]} </div>
+                    <div class="gov-name">{[{ f.rep_total > 0 ? f.broken_period*100/f.rep_total : 0 | number: 0}]}</div>
 
-                <div class="gov-name"> {[{ field.broken_track_meth }]} </div>
-                <div class="gov-name">0</div>
+                    <div class="gov-name"> {[{ f.broken_track_meth }]} </div>
+                    <div class="gov-name">{[{ f.rep_total > 0 ? f.broken_track_meth*100/f.rep_total : 0 | number: 0}]}</div>
 
-                <div class="gov-name"> {[{ field.broken_data_assump }]} </div>
-                <div class="gov-name">0</div>
+                    <div class="gov-name"> {[{ f.broken_data_assump }]} </div>
+                    <div class="gov-name">{[{ f.rep_total > 0 ? f.broken_data_assump*100/f.rep_total : 0 | number: 0}]}</div>
 
-                <div class="gov-name"> {[{ field.broken_indexes }]} </div>
-                <div class="gov-name">0</div>
+                    <div class="gov-name"> {[{ f.broken_indexes }]} </div>
+                    <div class="gov-name">{[{ f.rep_total > 0 ? f.broken_indexes*100/f.rep_total : 0 | number: 0}]}</div>
 
-                <div class="gov-name"> {[{ field.broken_my_rating }]} </div>
-                <div class="gov-name">0</div>
+                    <div class="gov-name"> {[{ f.broken_my_rating }]} </div>
+                    <div class="gov-name">{[{ f.rep_total > 0 ? f.broken_my_rating*100/f.rep_total : 0 | number: 0}]}</div>
 
-                <div class="gov-name"> {[{ field.broken_dev_rating }]} </div>
-                <div class="gov-name">0</div>
-
+                    <div class="gov-name"> {[{ f.broken_dev_rating }]} </div>
+                    <div class="gov-name" >{[{ f.rep_total > 0 ? f.broken_dev_rating*100/f.rep_total : 0 | number: 0}]}</div>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 </div>

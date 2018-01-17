@@ -90,6 +90,7 @@ func elasticConnect() (context.Context, *elastic.Client, error){
 	log.Printf("Elasticsearch version %s\n", esversion)
 
 	// Use the IndexExists service to check if a specified index exists.
+	client.DeleteIndex("tracking").Do(ctx)
 	exists, err := client.IndexExists("tracking").Do(ctx)
 	check(err)
 

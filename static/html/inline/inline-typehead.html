@@ -1,20 +1,22 @@
-<div>
+<div class="text-input">
     <div class="input-group">
-        <span ng-hide="editMode" ng-click="edit()">{{data}}</span>
         <input type="text"
                ng-model="model"
                on-enter="save()"
                on-esc="cancel()"
                placeholder="Оберіть розробника"
                ng-show="editMode"
-               uib-typeahead="gov as gov.Name for gov in govs | filter:{Name:$viewValue}"
+               uib-typeahead="gov as gov.name for gov in governs | limitTo:15 | filter:$viewValue "
                class="form-control"
                typeahead-min-length="0"
                typeahead-focus-on-select="true"
-               typeahead-editable="false">
-
+               typeahead-editable="false"
+               typeahead-on-select="formatLabel($model)"
+               typeahead-input-formatter="governs[$model].name" >
+        <div ng-hide="editMode" ng-click="edit()" class="inline-show">
+         {{data}}
+        </div>
     </div>
-
 </div>
 
 

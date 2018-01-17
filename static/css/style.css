@@ -93,26 +93,33 @@ h3 {
 #report1 .gov:nth-child(31) .gov-field div, #report1 .gov:nth-child(44) .gov-field div,
 #report2 .gov:nth-child(44) .gov-field div,#report2 .gov:nth-child(28) .gov-field div,
 #report2 .gov:nth-child(31) .gov-field div {
-    height: 41px;
+    height: 35px;
 }
 
-.gov-field div:first-child {
+.gov-field div:first-child,.gov-field-header div:first-child {
     text-align: left;
     width: 33%;
 }
 
-
-
-.gov-field div {
-    border-right: 1px solid #ddd;
-    border-bottom: none;
+.gov-field div, .gov-field-header div {
     padding: 2px!important;
-    font-size: 12px;
-    border-top: 1px solid #ddd;
+    font-size: 11px;
     text-align: center;
     width: 3.04%;
     float: left;
 }
+
+.gov-field div {
+    border-bottom: none;
+    border-right: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+}
+
+.gov-field-header div {
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
 
 .doc-name {
     border-bottom: 1px solid #ddd;
@@ -264,8 +271,10 @@ switcher.col-xs-1 {
 }
 
 .inline-show {
+    padding-left: 13px;
     padding-top: 8px;
 }
+
 .year-body .input-group .inline-show{
     padding-left: 15px;
 }
@@ -377,12 +386,12 @@ button.btn.btn-default:nth-child(2){
 
 .track .switch-res .panel:first-child {
     border-radius: 5px 0px 0px 5px;
-    width: 58%;
+    width: 57%;
 }
 
 .track .switch-res .panel:nth-child(2) {
     border-left: none;
-    width: 21%;
+    width: 22%;
     border-radius: 0px;
 }
 .track .switch-res .panel:nth-child(3) {
@@ -402,6 +411,7 @@ button.btn.btn-default:nth-child(2){
 }
 
 .track .input-group input {
+    font-size: 13px;
     height: 33px;
     border-radius: 4px!important;
 }
@@ -840,6 +850,15 @@ div#report {
     height: 61px;
 }
 
+.report-filter {
+    background: #f7f7f7;
+    border-right: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    padding: 3px 0px;
+}
+.report-filter .col-md-3:first-child {
+    padding-top: 4px;
+}
 /*report 4*/
 
 /* image and uploader */

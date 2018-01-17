@@ -25,12 +25,12 @@
             if (!$scope.query.query.bool.filter) {
                 $scope.query.query.bool.filter = {
                     "bool": {
-                        "should": []
+                        "must": []
                     }
                 }
             }
             var obj = {}
-            var arr = $scope.query.query.bool.filter.bool.should
+            var arr = $scope.query.query.bool.filter.bool.must
             obj[field] = data
             if (arr.length == 0) {
                 arr.push({"term": obj})
@@ -56,7 +56,7 @@
         // get gov names and ids
         trackingService.getGovs()
            .then(function(response) {
-            $scope.govs = response.data;
+            $scope.govs = response.data.govs;
         })
 
     });
@@ -121,10 +121,17 @@
             $scope.track = response.data;
         });
 
-        trackingService.getGovs()
+
+
+     //format label for typehead on select
+     trackingService.getGovs()
          .then(function(response) {
-             $scope.govs = response.data;
+             $scope.governs = response.data.govs;
          });
+
+     //end format label for typehead on select
+
+
         $http.get("/api/img/" + docId).then(function (response) {
             $scope.images = response.data.images;
         })
@@ -193,6 +200,7 @@
 
 // start saving value
         $scope.saveData = function (name, newValue, oldValue) {
+            console.log(newValue)
             $http({
                 method: 'POST',
                 url:"/api/v/" + docId,
@@ -302,6 +310,99 @@
         $http.get("/api/ratings").then(function (response) {
             $scope.ratings = response.data
         })
+     $scope.today = function() {
+         $scope.dt = new Date();
+     };
+     $scope.today();
+
+     $scope.clear = function() {
+         $scope.dt = null;
+     };
+
+     $scope.inlineOptions = {
+         customClass: getDayClass,
+         minDate: new Date(),
+         showWeeks: true
+     };
+
+     $scope.dateOptions = {
+         dateDisabled: disabled,
+         formatYear: 'yy',
+         maxDate: new Date(2020, 5, 22),
+         minDate: new Date(),
+         startingDay: 1
+     };
+
+     // Disable weekend selection
+     function disabled(data) {
+         var date = data.date,
+             mode = data.mode;
+         return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
+     }
+
+     $scope.toggleMin = function() {
+         $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
+         $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
+     };
+
+     $scope.toggleMin();
+
+     $scope.open1 = function() {
+         $scope.popup1.opened = true;
+     };
+
+     $scope.open2 = function() {
+         $scope.popup2.opened = true;
+     };
+
+     $scope.setDate = function(year, month, day) {
+         $scope.dt = new Date(year, month, day);
+     };
+
+     $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+     $scope.format = $scope.formats[0];
+     $scope.altInputFormats = ['M!/d!/yyyy'];
+
+     $scope.popup1 = {
+         opened: false
+     };
+
+     $scope.popup2 = {
+         opened: false
+     };
+
+     var tomorrow = new Date();
+     tomorrow.setDate(tomorrow.getDate() + 1);
+     var afterTomorrow = new Date();
+     afterTomorrow.setDate(tomorrow.getDate() + 1);
+     $scope.events = [
+         {
+             date: tomorrow,
+             status: 'full'
+         },
+         {
+             date: afterTomorrow,
+             status: 'partially'
+         }
+     ];
+
+     function getDayClass(data) {
+         var date = data.date,
+             mode = data.mode;
+         if (mode === 'day') {
+             var dayToCheck = new Date(date).setHours(0,0,0,0);
+
+             for (var i = 0; i < $scope.events.length; i++) {
+                 var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
+
+                 if (dayToCheck === currentDay) {
+                     return $scope.events[i].status;
+                 }
+             }
+         }
+
+         return '';
+     }
     });
 
  viewDB.controller("authLoginController", function ($scope, $timeout, $location, authService) {

@@ -21,7 +21,6 @@ var interceptor = function ($q, $location) {
 };
 viewDB.config(function($interpolateProvider, $routeProvider, $locationProvider, $httpProvider) {
 
-
     $httpProvider.interceptors.push(interceptor);
     $interpolateProvider.startSymbol('{[{').endSymbol('}]}');
     $locationProvider.html5Mode(true);

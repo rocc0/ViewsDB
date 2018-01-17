@@ -17,32 +17,15 @@
             <div class="col-xs-1">
             <input type="text" ng-model="search_yot" ng-change="addTerm('year', search_yot)"
                    placeholder="Рік"  class="col-xs-1 form-control">
-            </div><div class="pull-left">
-            <div class="pull-left">База<switcher class="styled" ng-model="search_yb"
-                           true-value="1" true-label="" false-value="0" false-label=""
-                           ng-change="addTerm('base', search_yb);doSearch()"></switcher></div>
-
-            <div class="pull-left">Повт.<switcher class="styled" ng-model="search_yr"
-                           true-value="1" true-label="" false-value="0" false-label=""
-                           ng-change="addTerm('repeat', search_yr);doSearch()"></switcher></div>
-
-            <div class="pull-left">Період.<switcher class="styled" ng-model="search_yp"
-                           true-value="1" true-label="" false-value="0" false-label=""
-                           ng-change="addTerm('period', search_yp);doSearch()"></switcher></div>
-
-            <div class="pull-left">Факт.<switcher class=" styled" ng-model="search_yf"
-                           true-value="1" true-label="" false-value="0" false-label=""
-                           ng-change="addTerm('fact', search_yf);doSearch()"></switcher></div>
-
             </div>
-            <div class="col-xs-3">
+            <div class="col-xs-6">
                 <input type="text"
                        ng-model="search_dev"
                        placeholder="Оберіть розробника"
-                       uib-typeahead="gov as gov.name for gov in govs.govs | filter:$viewValue | limitTo:8"
+                       uib-typeahead="gov as gov.name for gov in govs | filter:$viewValue | limitTo:15"
                        class="form-control"
-                       typeahead-on-select="addTerm('developer', $item.Id)"
-                       typeahead-min-length="2"
+                       typeahead-on-select="addTerm('developer', $item.id)"
+                       typeahead-min-length="0"
                        typeahead-focus-on-select="true"
                        typeahead-editable="false">
             </div>
@@ -67,7 +50,7 @@
             </div>
             <div class="pull-left col-xs-4">Рішення: {[{ hit._source.reg_date }]}</div>
             <div class="pull-left col-xs-3">Дата реєстрації: {[{ hit._source.gov_choice }]}</div>
-            <div class="pull-left col-xs-12">Розробник: {[{ govs.govs[hit._source.developer - 1].Name }]}</div>
+            <div class="pull-left col-xs-12">Розробник: {[{ govs[hit._source.developer - 1].name }]}</div>
         </div>
 
     </li>

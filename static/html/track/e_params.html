@@ -1,6 +1,48 @@
+<div class="col-md-12">
+    <h4 class="clearfix">Порушено</h4>
+    <div class="panel panel-default pull-left">
+        <div class="panel-heading high">Строк виконання</div>
+        <div class="panel-body"><switcher ng-model="track.pl.broken_period"
+                                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+    </div>
+    <div class="panel panel-default pull-left">
+        <div class="panel-heading high">Підпис</div>
+        <div class="panel-body"><switcher ng-model="track.pl.broken_sign"
+                                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+    </div>
+    <div class="panel panel-default pull-left">
+        <div class="panel-heading high">Оприлюднення</div>
+        <div class="panel-body"><switcher ng-model="track.pl.broken_promo"
+                                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+    </div>
+    <div class="panel panel-default pull-left">
+        <div class="panel-heading high">Строк подання звіту</div>
+        <div class="panel-body"><switcher ng-model="track.pl.broken_term_rep"
+                                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+    </div>
+    <div class="panel panel-default pull-left">
+        <div class="panel-heading high">Метод відстеження</div>
+        <div class="panel-body"><switcher ng-model="track.pl.broken_track_meth"
+                                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+    </div>
+    <div class="panel panel-default pull-left">
+        <div class="panel-heading high">Дані та припущення</div>
+        <div class="panel-body"><switcher ng-model="track.pl.broken_data_assump"
+                                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+    </div>
+    <div class="panel panel-default pull-left">
+        <div class="panel-heading high">Показники</div>
+        <div class="panel-body"><switcher ng-model="track.pl.broken_indexes"
+                                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+    </div>
+</div>
+
 <div class="col-xs-12 clearfix comment">
-    <div class="panel panel-default">
+
+    <div class="panel panel-default clearfix">
         <div class=" panel-heading">Коментар</div>
         <div class="panel-body" inline-comment="track.pl.comment" on-save="saveData('comment', value)" on-cancel="log('CANCEL', value)"></div>
     </div>
+
+
 </div>

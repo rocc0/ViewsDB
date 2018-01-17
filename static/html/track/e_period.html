@@ -76,7 +76,19 @@
                      on-save="saveDataPer('give_per',pr.pid,value)" on-cancel="log('CANCEL', value)"></div>
             </div>
         </div>
+        <div class="col-xs-12">
+            <div class="panel panel-default pull-left">
+                <div class="panel-heading high">Оцінка результатів (моя)</div>
+                <div class="panel-body"><switcher ng-model="pr.broken_my_rating"
+                                                  true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+            </div>
 
+            <div class="panel panel-default pull-left">
+                <div class="panel-heading high">Оцінка результатів (розробника)</div>
+                <div class="panel-body"><switcher ng-model="pr.broken_dev_rating"
+                                                  true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+            </div>
+        </div>
     </div>
     <button class="btn btn-default add" ng-click="addPeriod(track.pr, track.pl.reg_date)">
         Додати нове періодичне відстеження</button>

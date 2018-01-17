@@ -15,40 +15,102 @@ type Gov struct {
 }
 
 
-func calculateRates()  {
+func calculateRates() error {
 	gvs, err := getGovs()
 	check(err)
-
 	for _, v := range *gvs {
 		//total trackings
-		total, _ := db.Query("UPDATE ratings SET rep_total=(SELECT COUNT(developer) " +
-			"FROM track_base WHERE developer=?) WHERE gov_id=?",v.Id,v.Id)
+		total, err := db.Query("UPDATE ratings SET rep_total=(SELECT COUNT(developer) " +
+			"FROM track_base WHERE developer=? AND trace_year=?) WHERE gov_id=?",v.Id,"2016",v.Id)
+		if err != nil {
+			return err
+		}
 		total.Close()
 		//basic trackings
 		base, _ :=db.Query("UPDATE ratings SET rep_basic=(SELECT COUNT(term_basic) " +
-			"FROM track_base WHERE term_basic between ? and ? AND developer=?) WHERE gov_id=?",
-				"2016-01-01","2016-12-31",v.Id,v.Id)
+			"FROM track_base WHERE trace_year=? AND developer=? AND track_type=?) WHERE gov_id=?",
+			"2016",v.Id,"base",v.Id)
 		base.Close()
 
 		//repeated trackings
 		rep, _ := db.Query("UPDATE ratings SET rep_repited=(SELECT COUNT(termin_rep) " +
-			"FROM track_base WHERE termin_rep between ? and ? AND developer=?) WHERE gov_id=?",
-				"2016-01-01","2016-12-31",v.Id,v.Id)
+			"FROM track_base WHERE trace_year=? AND developer=? AND track_type=?) WHERE gov_id=?",
+			"2016",v.Id,"repeated",v.Id)
 		rep.Close()
 		//periodic trackings
-		periodic, _ := db.Query("UPDATE ratings SET rep_periodic=(SELECT COUNT(term_per) " +
-			"FROM track_period WHERE term_per between ? and ? AND developer=?) WHERE gov_id=?",
-				"2016-01-01","2016-12-31",v.Id,v.Id)
+		periodic, err := db.Query("UPDATE ratings SET rep_periodic=(SELECT COUNT(developer) " +
+			"FROM track_base WHERE trace_year=? AND developer=? AND track_type=?) WHERE gov_id=?",
+			"2016",v.Id,"periodic",v.Id)
+		if err != nil {
+			return err
+		}
 		periodic.Close()
-		base_term, _ :=db.Query("UPDATE ratings SET rep_basic=(SELECT COUNT(term_basic) " +
-			"FROM track_base WHERE term_basic between ? and ? AND developer=?) WHERE gov_id=?",
+
+		//broken
+		broken_period, _ :=db.Query("UPDATE ratings SET broken_period=(SELECT COUNT(broken_period) " +
+			"FROM track_base WHERE trace_year=? AND broken_period = 1 AND developer=?) WHERE gov_id=?",
+			"2016",v.Id,v.Id)
+		broken_period.Close()
+
+		broken_sign, _ :=db.Query("UPDATE ratings SET broken_sign=(SELECT COUNT(broken_sign) " +
+			"FROM track_base WHERE trace_year=?  AND broken_sign = 1 AND developer=?) WHERE gov_id=?",
+			"2016",v.Id,v.Id)
+		broken_sign.Close()
+
+		broken_promo, _ :=db.Query("UPDATE ratings SET broken_promo=(SELECT COUNT(broken_promo) " +
+			"FROM track_base WHERE trace_year=? AND broken_promo = 1 AND developer=?) WHERE gov_id=?",
+			"2016",v.Id,v.Id)
+		broken_promo.Close()
+
+		broken_term_rep, _ :=db.Query("UPDATE ratings SET broken_term_rep=(SELECT COUNT(broken_term_rep) " +
+			"FROM track_base WHERE trace_year=? AND broken_term_rep = 1 AND developer=?) WHERE gov_id=?",
+			"2016",v.Id,v.Id)
+		broken_term_rep.Close()
+
+		broken_track_meth, _ :=db.Query("UPDATE ratings SET broken_track_meth=(SELECT COUNT(broken_track_meth) " +
+			"FROM track_base WHERE trace_year=?  AND broken_track_meth = 1 AND developer=?) WHERE gov_id=?",
+			"2016",v.Id,v.Id)
+		broken_track_meth.Close()
+
+		broken_data_assump, _ :=db.Query("UPDATE ratings SET broken_data_assump=(SELECT COUNT(broken_data_assump) " +
+			"FROM track_base WHERE trace_year=?  AND broken_data_assump = 1 AND developer=?) WHERE gov_id=?",
+			"2016",v.Id,v.Id)
+		broken_data_assump.Close()
+
+		broken_indexes, _ :=db.Query("UPDATE ratings SET broken_indexes=(SELECT COUNT(broken_indexes) " +
+			"FROM track_base WHERE trace_year=? AND broken_indexes = 1 AND developer=?) WHERE gov_id=?",
+			"2016",v.Id,v.Id)
+		broken_indexes.Close()
+
+		//broken period
+
+		broken_my_rating, _ :=db.Query("UPDATE ratings SET broken_my_rating=(SELECT COUNT(broken_my_rating) " +
+			"FROM track_period WHERE term_per between ? AND ? AND broken_my_rating = 1 AND developer=?) WHERE gov_id=?",
 			"2016-01-01","2016-12-31",v.Id,v.Id)
-		base_term.Close()
 
+		broken_my_rating.Close()
 
+		broken_dev_rating, _ :=db.Query("UPDATE ratings SET broken_dev_rating=(SELECT COUNT(broken_dev_rating) " +
+			"FROM track_period WHERE term_per between ? AND ? AND broken_dev_rating = 1 AND developer=?) WHERE gov_id=?",
+			"2016-01-01","2016-12-31",v.Id,v.Id)
+		broken_dev_rating.Close()
 	}
 
+	return nil
 }
+
+func calulateRatesSeacond() error {
+	gvs, err := getGovs()
+	check(err)
+		for _, v := range *gvs {
+			//total trackings
+			total, _ := db.Query("UPDATE ratings2 SET rep_total=(SELECT COUNT(developer) " +
+				"FROM track_base WHERE developer=? AND ) WHERE gov_id=?",v.Id,v.Id)
+			total.Close()
+		}
+		return nil
+}
+
 
 func getGovs() (*[]Gov, error){
 	var (

@@ -9,9 +9,9 @@ import (
 
 	"github.com/disintegration/imaging"
 	"github.com/gin-gonic/gin"
-
-
 )
+
+
 type delImage struct {
 	Photo_id string
 }
