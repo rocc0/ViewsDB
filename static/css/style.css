@@ -42,6 +42,11 @@ h3 {
     height: 300px;
 }
 
+.comment .panel-heading {
+    height: 29px!important;
+
+}
+
 .header {
     background-color: #ccecef;
 }
@@ -271,7 +276,7 @@ switcher.col-xs-1 {
 }
 
 .inline-show {
-    padding-left: 13px;
+    padding-left: 11px;
     padding-top: 8px;
 }
 
@@ -362,7 +367,36 @@ button.btn.btn-default:nth-child(2){
     text-align: center;
 }
 
+.switch, .switch-res {
+    margin-bottom: 2px;
 
+}
+#track-edit .switch {
+    background: #d0d0ce;
+}
+.switch .panel-heading {
+    height: 47px;
+}
+#track-edit .switch.basic {
+    background: #f1f1ef;
+}
+
+#track-edit .switch-res {
+    background: #f1f1ef;
+}
+
+#broken-switch .panel.panel-default.pull-left {
+    margin-right: 5px;
+}
+
+.glyphicon-question-sign {
+    font-size: 15px;
+    color: #337ab7;
+}
+
+.track .switch-res .comment, .track .switch .comment {
+    width: 100%!important;
+}
 
 .track .switch .panel:first-child {
     border-radius: 5px 0px 0px 5px;
@@ -383,6 +417,13 @@ button.btn.btn-default:nth-child(2){
     height: 47px;
 }
 
+.switch-res-heading {
+    height: 47px;
+}
+
+.comment-show {
+    padding-left: 9px;
+}
 
 .track .switch-res .panel:first-child {
     border-radius: 5px 0px 0px 5px;
@@ -414,6 +455,18 @@ button.btn.btn-default:nth-child(2){
     font-size: 13px;
     height: 33px;
     border-radius: 4px!important;
+}
+.switch-reate .comment {
+    float: left;
+    width: 80.4%;
+}
+
+.switch-reate .comment .panel-body{
+    min-height: 42px;
+}
+
+.switch-reate .high {
+    width: 19.6%;
 }
 
 .create-track input {

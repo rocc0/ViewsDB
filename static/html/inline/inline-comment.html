@@ -16,7 +16,7 @@
                 <span class="glyphicon glyphicon-remove"></span>
             </button>
         </div>
-        <div ng-hide="editMode" ng-click="edit()">
+        <div ng-hide="editMode" ng-click="edit()" class="comment-show">
             <span ng-hide="model != ''">інф. відсутня</span>
             <span ng-show="model != ''">{{model}}</span>
         </div>

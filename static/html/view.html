@@ -13,18 +13,105 @@
     </div>
     <div ng-include="'/static/html/track/v_info.html'"></div>
 
-
     <div ng-include="'/static/html/track/v_basic.html'"></div>
 
     <div ng-include="'/static/html/track/v_repeated.html'"></div>
 
     <div ng-include="'/static/html/track/v_period.html'"></div>
 
+    <div class="col-md-12" id="broken-switch">
+        <h4 class="clearfix">Порушено:</h4>
+
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">
+                Строк виконання
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.broken_period_c }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
+            <div class="panel-body">{[{ track.pl.broken_period | boolToWord }]}</div>
+        </div>
+
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">
+                Підпис
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.broken_sign_c }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
+            <div class="panel-body">{[{ track.pl.broken_sign | boolToWord }]}</div>
+        </div>
+
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">
+                Оприлюднення
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.broken_promo_c }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
+            <div class="panel-body">{[{ track.pl.broken_promo | boolToWord }]}</div>
+        </div>
+
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">
+                Строк подання звіту
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.broken_term_rep_c }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
+            <div class="panel-body">{[{ track.pl.broken_term_rep | boolToWord }]}</div>
+        </div>
+
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">
+                Метод відстеження
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.broken_track_meth_c }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
+            <div class="panel-body">{[{ track.pl.broken_track_meth | boolToWord }]}</div>
+        </div>
+
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">
+                Дані та припущення
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.broken_data_assump_c }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
+            <div class="panel-body">{[{ track.pl.broken_data_assump | boolToWord }]}</div>
+        </div>
+
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">
+                Показники
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.broken_indexes_c }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
+            <div class="panel-body">{[{ track.pl.broken_indexes | boolToWord }]}</div>
+        </div>
+    </div>
+
 
     <div class="col-xs-12 clearfix comment">
         <div class="panel panel-default">
             <div class="panel-heading">Коментар</div>
-            <div class="panel-body">{[{ track.pl.comment }]}</div>
+            <div class="panel-body">{[{ track.pl.comment | boolToWord }]}</div>
         </div>
     </div>
 

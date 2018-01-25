@@ -10,9 +10,15 @@
                 <div class="panel-body">{[{ pr.term_per }]}</div>
             </div>
         </div>
-        <div class="col-xs-6 pull-left switch-res">
+        <div class="col-xs-6 pull-left ">
             <div class="panel panel-default clearfix">
-                <div class="panel-heading" >Результати відстеження результативності</div>
+                <div class="panel-heading" >Результати відстеження результативності
+                    <span class="glyphicon glyphicon-question-sign"
+                          aria-hidden="true"
+                          uib-popover="{[{ pr.res_per_comment }]}"
+                          popover-trigger="'mouseenter'"
+                          popover-placement="top-left">
+                    </span></div>
                 <div class="panel-body">
                     <div ng-hide="pr.res_per == '' ">{[{ pr.res_per }]}</div>
                     <div ng-show="pr.res_per == '' ">Інформація відсутня</div>
@@ -39,21 +45,28 @@
             </div>
         </div>
         <div class="clearfix"></div>
-        <div class="col-xs-6 switch">
-            <div class="panel panel-default clearfix">
-                <div class="panel-heading">Висновок Комітету щодо відповідності звіту вимогам постанови КМУ від 11.03.04 р. №308</div>
-                <div class="pull-left panel-body">
-                    <div ng-hide="pr.concl_per == '' ">{[{ pr.concl_per }]}</div>
-                    <div ng-show="pr.concl_per == '' ">Інформація відсутня</div>
-                </div>
-            </div>
-        </div>
+
         <div class="col-xs-6">
             <div class="panel panel-default clearfix">
                 <div class="panel-heading">Дата надання звіту  про відстеження результативності регуляторного акта до Держпідприємництва</div>
                 <div class="pull-left panel-body">
                     <div ng-hide="pr.give_per == '' ">{[{ pr.give_per }]}</div>
                     <div ng-show="pr.give_per == '' ">Інформація відсутня</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6 ">
+            <div class="panel panel-default clearfix">
+                <div class="panel-heading">Висновок Комітету щодо відповідності звіту вимогам постанови КМУ від 11.03.04 р. №308
+                    <span class="glyphicon glyphicon-question-sign"
+                          aria-hidden="true"
+                          uib-popover="{[{ pr.concl_per_comment }]}"
+                          popover-trigger="'mouseenter'"
+                          popover-placement="top-left">
+                    </span></div>
+                <div class="pull-left panel-body">
+                    <div ng-hide="pr.concl_per == '' ">{[{ pr.concl_per }]}</div>
+                    <div ng-show="pr.concl_per == '' ">Інформація відсутня</div>
                 </div>
             </div>
         </div>

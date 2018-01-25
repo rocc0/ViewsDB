@@ -31,7 +31,7 @@ func main(){
 	// Initialize the routes
 	initializeRoutes()
 	//Search indexing
-	elasticIndex()
+	//elasticIndex()
 	//Calculate all rates
 	err := calculateRates()
 	check(err)

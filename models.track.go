@@ -18,16 +18,20 @@ type Period struct {
 	PeriodId		int		`json:"pid"`
 	TraceId 		int 	`json:"trace_id"`
 	TermPer 		string	`json:"term_per"`
-	ResPer_bool 	int		`json:"res_per_bool"`
-	ResPer_year 	int		`json:"res_per_year"`
+	ResPerBool 		int		`json:"res_per_bool"`
+	ResPerYear 		int		`json:"res_per_year"`
+	ResPerComment	string 	`json:"res_per_comment"`
 	ResPer 			string	`json:"res_per"`
 	SignPer 		string	`json:"sign_per"`
 	PublPer 		string	`json:"publ_per"`
 	GivePer 		string	`json:"give_per"`
 	ConclPer 		string	`json:"concl_per"`
-	Cp_bool 		int		`json:"cp_bool"`
+	ConclPerBool 	int		`json:"cp_bool"`
+	ConclPerComment	string 	`json:"concl_per_comment"`
 	BrokenMyRating	int 	`json:"broken_my_rating"`
+	BrokenMyRatingComment string `json:"broken_my_rating_c"`
 	BrokenDevRating	int 	`json:"broken_dev_rating"`
+	BrokenDevRatingComment string `json:"broken_dev_rating_c"`
 }
 
 
@@ -36,7 +40,7 @@ func editView(name, data string, table, id int) error{
 	if table == 1 {
 		tbl = "track_period"
 	}
-	log.Print("exec ",name," ", data," ",id)
+	log.Print("exec ",name," ", data," ",id, " ", table)
 	stmt, err := db.Prepare("UPDATE " + tbl + " SET " + name + "= ? WHERE id= ?;")
 	if err != nil {
 		log.Print(err.Error())
@@ -98,28 +102,40 @@ func getBasicData(id int) (*Trace, error){
 
 func getPeriodicData(id int) (*[]Period, error){
 	var (
-		trace_id,res_per_bool,res_per_year,cp_bool,period_id,broken_my_rating,broken_dev_rating int
-		term_per,sign_per,publ_per,give_per,res_per,concl_per string
+		trace_id,res_per_bool,res_per_year,cp_bool,period_id,
+		broken_my_rating,broken_dev_rating int
+		term_per,sign_per,publ_per,give_per,res_per,concl_per,
+		res_per_comment,concl_per_comment,broken_dev_rating_c,broken_my_rating_c string
 		periods []Period
 	)
 
 	pers, err := db.Query("select id,trace_id,term_per,res_per_bool," +
 		"COALESCE(res_per_year, '') as res_per_year," +
 		"COALESCE(res_per, 'висновок відсутній') as res_per," +
+		"COALESCE(res_per_comment, 'коментар відсутній') as res_per_comment," +
 		"COALESCE(sign_per, '') as res_per," +
 		"COALESCE(publ_per, '') as publ_per," +
 		"COALESCE(give_per, '') as give_per," +
 		"COALESCE(concl_per, '') as concl_per," +
-		"cp_bool,broken_my_rating,broken_dev_rating from track_period where trace_id = ?;", id)
+		"cp_bool," +
+		"COALESCE(concl_per_comment, 'коментар відсутній') as concl_per_comment," +
+		"broken_my_rating," +
+		"COALESCE(broken_my_rating_c, '') as broken_my_rating_c," +
+		"broken_dev_rating, " +
+		"COALESCE(broken_my_rating_c, '') as broken_dev_rating_c " +
+		"from track_period where trace_id = ?;", id)
 	check(err)
 	for pers.Next() {
-		err := pers.Scan(&trace_id,&period_id,&term_per,&res_per_bool,&res_per_year,&res_per,
-			&sign_per,&publ_per,&give_per,&concl_per,&cp_bool,&broken_my_rating,&broken_dev_rating)
+		err := pers.Scan(&trace_id,&period_id,&term_per,&res_per_bool,&res_per_year,&res_per,&res_per_comment,
+			&sign_per,&publ_per,&give_per,&concl_per,&cp_bool,
+				&concl_per_comment, &broken_my_rating,&broken_my_rating_c,&broken_dev_rating,&broken_dev_rating_c)
 		check(err)
 
 		periods = append(periods, Period{trace_id,period_id,term_per,res_per_bool,
-		res_per_year,res_per,sign_per, publ_per,give_per,
-		concl_per,cp_bool,broken_my_rating,broken_dev_rating})
+		res_per_year,res_per,res_per_comment, sign_per, publ_per,give_per,
+		concl_per,cp_bool,concl_per_comment,
+		broken_my_rating,broken_my_rating_c,
+		broken_dev_rating, broken_dev_rating_c})
 	}
 	defer pers.Close()
 	return &periods, nil

@@ -39,27 +39,3 @@
     </div>
 </div>
 
-<div class="col-xs-12 clearfix years">
-    <div class="panel panel-default">
-        <div class="panel-heading">Рік відстеження та параметри</div>
-        <div class="panel-body">
-            <div class="col-xs-1 pull-left heading">Рік</div>
-            <div class="col-xs-1 pull-left year-body">
-                <div inline-edit="track.pl.trace_year"
-                     on-save="saveData('trace_year', value)" on-cancel="log('CANCEL', value)"></div>
-            </div>
-            <div class="col-xs-1 pull-left heading">Базовий</div>
-            <switcher class="col-xs-1 pull-left" ng-model="track.pl.base" ng-change="saveData('base', newValue, oldValue)"
-                      true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher>
-            <div class="col-xs-1 pull-left heading">Повторний</div>
-            <switcher class="col-xs-1 pull-left" ng-model="track.pl.repeated" ng-change="saveData('repeated', newValue, oldValue)"
-                      true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні" ></switcher>
-            <div class="col-xs-1 pull-left heading">Періодичний</div>
-            <switcher class="col-xs-1 pull-left" ng-model="track.pl.periodic" ng-change="saveData('periodical', newValue, oldValue)"
-                      true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні" ></switcher>
-            <div class="col-xs-1 pull-left heading">Фактичний</div>
-            <switcher class="col-xs-1 pull-left" ng-model="track.pl.fact" ng-change="saveData('fact', newValue, oldValue)"
-                      true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні" ></switcher>
-        </div>
-    </div>
-</div>

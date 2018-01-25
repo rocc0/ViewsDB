@@ -1,39 +1,117 @@
 <div class="col-md-12">
     <h4 class="clearfix">Порушено</h4>
-    <div class="panel panel-default pull-left">
-        <div class="panel-heading high">Строк виконання</div>
-        <div class="panel-body"><switcher ng-model="track.pl.broken_period"
-                                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+    <div class="clearfix switch-reate">
+        <div class="panel panel-default pull-left high">
+            <div class="panel-heading ">Строк виконання</div>
+            <div class="panel-body"><switcher ng-model="track.pl.broken_period"
+                                              true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+        </div>
+        <div class="panel panel-default comment">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body" inline-comment="track.pl.broken_period_c"
+                 on-save="saveData('broken_period_c',value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
     </div>
-    <div class="panel panel-default pull-left">
-        <div class="panel-heading high">Підпис</div>
-        <div class="panel-body"><switcher ng-model="track.pl.broken_sign"
-                                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+    <div class="clearfix switch-reate">
+        <div class="panel panel-default pull-left high">
+            <div class="panel-heading ">Підпис</div>
+            <div class="panel-body"><switcher ng-model="track.pl.broken_sign"
+                                              true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+        </div>
+        <div class="panel panel-default comment">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body" inline-comment="track.pl.broken_sign_c"
+                 on-save="saveData('broken_sign_c', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
     </div>
-    <div class="panel panel-default pull-left">
-        <div class="panel-heading high">Оприлюднення</div>
-        <div class="panel-body"><switcher ng-model="track.pl.broken_promo"
-                                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+    <div class="clearfix switch-reate">
+        <div class="panel panel-default pull-left high">
+            <div class="panel-heading ">Оприлюднення</div>
+            <div class="panel-body"><switcher ng-model="track.pl.broken_promo"
+                                              true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+        </div>
+
+        <div class="panel panel-default comment">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body" inline-comment="track.pl.broken_promo_c"
+                 on-save="saveData('broken_promo_c', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
     </div>
-    <div class="panel panel-default pull-left">
-        <div class="panel-heading high">Строк подання звіту</div>
-        <div class="panel-body"><switcher ng-model="track.pl.broken_term_rep"
-                                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+    <div class="clearfix switch-reate">
+        <div class="panel panel-default pull-left high">
+            <div class="panel-heading ">Строк подання звіту</div>
+            <div class="panel-body"><switcher ng-model="track.pl.broken_term_rep"
+                                              true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+        </div>
+
+        <div class="panel panel-default comment">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body" inline-comment="track.pl.broken_term_rep_c"
+                 on-save="saveData('broken_term_rep_c', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
     </div>
-    <div class="panel panel-default pull-left">
-        <div class="panel-heading high">Метод відстеження</div>
-        <div class="panel-body"><switcher ng-model="track.pl.broken_track_meth"
-                                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+    <div class="clearfix switch-reate">
+        <div class="panel panel-default pull-left high">
+            <div class="panel-heading ">Метод відстеження</div>
+            <div class="panel-body"><switcher ng-model="track.pl.broken_track_meth"
+                                              true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+        </div>
+
+        <div class="panel panel-default comment">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body" inline-comment="track.pl.broken_track_meth_c"
+                 on-save="saveData('broken_track_meth_c', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
     </div>
-    <div class="panel panel-default pull-left">
-        <div class="panel-heading high">Дані та припущення</div>
-        <div class="panel-body"><switcher ng-model="track.pl.broken_data_assump"
-                                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+    <div class="clearfix switch-reate">
+        <div class="panel panel-default pull-left high">
+            <div class="panel-heading ">Дані та припущення</div>
+            <div class="panel-body"><switcher ng-model="track.pl.broken_data_assump"
+                                              true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+        </div>
+        <div class="panel panel-default comment">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body" inline-comment="track.pl.broken_data_assump_c"
+                 on-save="saveData('broken_data_assump_c', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
     </div>
-    <div class="panel panel-default pull-left">
-        <div class="panel-heading high">Показники</div>
-        <div class="panel-body"><switcher ng-model="track.pl.broken_indexes"
-                                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+    <div class="clearfix switch-reate">
+        <div class="panel panel-default pull-left high">
+            <div class="panel-heading ">Показники</div>
+            <div class="panel-body"><switcher ng-model="track.pl.broken_indexes"
+                                              true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+        </div>
+
+        <div class="panel panel-default comment">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body" inline-comment="track.pl.broken_indexes_c"
+                 on-save="saveData('broken_indexes_c', value)" on-cancel="log('CANCEL', value)"></div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-12 clearfix years">
+    <div class="panel panel-default">
+        <div class="panel-heading">Рік відстеження та тип відстеження</div>
+        <div class="panel-body">
+            <div class="col-xs-1 pull-left heading">Рік</div>
+            <div class="col-xs-1 pull-left year-body">
+                <div inline-edit="track.pl.trace_year"
+                     on-save="saveData('trace_year', value)" on-cancel="log('CANCEL', value)"></div>
+            </div>
+            <div class="col-xs-1 pull-left heading">Базовий</div>
+            <switcher class="col-xs-1 pull-left" ng-model="track.pl.base" ng-change="saveData('base', newValue, oldValue)"
+                      true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher>
+            <div class="col-xs-1 pull-left heading">Повторний</div>
+            <switcher class="col-xs-1 pull-left" ng-model="track.pl.repeated" ng-change="saveData('repeated', newValue, oldValue)"
+                      true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні" ></switcher>
+            <div class="col-xs-1 pull-left heading">Періодичний</div>
+            <switcher class="col-xs-1 pull-left" ng-model="track.pl.periodic" ng-change="saveData('periodical', newValue, oldValue)"
+                      true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні" ></switcher>
+            <div class="col-xs-1 pull-left heading">Фактичний</div>
+            <switcher class="col-xs-1 pull-left" ng-model="track.pl.fact" ng-change="saveData('fact', newValue, oldValue)"
+                      true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні" ></switcher>
+        </div>
     </div>
 </div>
 
@@ -43,6 +121,5 @@
         <div class=" panel-heading">Коментар</div>
         <div class="panel-body" inline-comment="track.pl.comment" on-save="saveData('comment', value)" on-cancel="log('CANCEL', value)"></div>
     </div>
-
 
 </div>

@@ -31,7 +31,7 @@ func check(e error) {
 
 func init() {
 	var err error
-	db, err = sql.Open("mysql", "root:password@tcp(192.168.99.100:3306)/db")
+	db, err = sql.Open("mysql", "root:password@tcp(192.168.99.100:3306)/trackdb")
 	check(err)
 
 	err = db.Ping()

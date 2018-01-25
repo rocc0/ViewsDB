@@ -6,9 +6,15 @@
             <div class="pull-left panel-body">{[{ track.pl.term_basic }]}</div>
         </div>
     </div>
-    <div class="col-xs-6 pull-left switch">
+    <div class="col-xs-6 pull-left ">
         <div class="panel panel-default clearfix">
-            <div class="panel-heading">Результати відстеження результативності</div>
+            <div class="panel-heading">Результати відстеження результативності
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.rslt_basic_comment }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
             <div class="pull-left panel-body">{[{ track.pl.rslt_basic }]}</div>
         </div>
     </div>
@@ -30,9 +36,16 @@
             <div class="pull-left panel-body">{[{ track.pl.gived_basic }]}</div>
         </div>
     </div>
-    <div class="col-xs-6 pull-left switch">
+    <div class="col-xs-6 pull-left ">
         <div class="panel panel-default clearfix">
-            <div class="panel-heading">Висновок Комітету щодо відповідності звіту вимогам постанови КМУ від 11.03.04 р. №308</div>
+            <div class="panel-heading">Висновок Комітету щодо відповідності звіту вимогам постанови КМУ від 11.03.04 р. №308
+                    <span class="glyphicon glyphicon-question-sign"
+                          aria-hidden="true"
+                          uib-popover="{[{ track.pl.concl_basic_comment }]}"
+                          popover-trigger="'mouseenter'"
+                          popover-placement="top-left">
+                    </span>
+            </div>
             <div class="pull-left panel-body">{[{ track.pl.concl_basic }]}</div>
         </div>
     </div>
