@@ -56,7 +56,7 @@ viewDB.service('fileUploadService', function ($http, $q) {
         //FormData, object of key/value pair for form fields and values
         var fileFormData = new FormData();
         fileFormData.append('file', file);
-        fileFormData.append('docid', docId);
+        fileFormData.append('doc_id', docId);
         var deffered = $q.defer();
         $http.post(uploadUrl, fileFormData, {
             transformRequest: angular.identity,

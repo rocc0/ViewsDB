@@ -23,6 +23,7 @@
                 scope.save = function () {
                     scope.editMode = false;
                     scope.handleSave({value: String(scope.model)});
+                    scope.data = scope.governs[scope.model]["name"]
                 };
                 scope.cancel = function () {
                     scope.editMode = false;
@@ -30,11 +31,8 @@
                     scope.handleCancel({value: scope.model});
                 };
                 scope.formatLabel = function(gmodel) {
-                    for (var i=0; i< scope.governs.length; i++) {
-                        if (gmodel.id === scope.governs[i].id) {
-                            scope.model = scope.governs[i].id
-                        }
-                    }
+                    console.log(gmodel)
+                    scope.model = gmodel.id-1
                 };
             },
             templateUrl: '/static/html/inline/inline-typehead.html'

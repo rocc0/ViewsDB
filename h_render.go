@@ -1,8 +1,8 @@
 package main
 
 import (
-	"strconv"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -10,11 +10,11 @@ import (
 
 func showIndexPage(c *gin.Context) {
 	render(c, gin.H{
-		"title":   "Пошук відстежень",
-		}, "index.html")
+		"title": "Пошук відстежень",
+	}, "index.html")
 }
 
-func viewCreationPage(c *gin.Context) {
+func showTraceCreationPage(c *gin.Context) {
 	render(c, gin.H{
 		"title": "Додати відстеження",
 	}, "index.html")
@@ -38,9 +38,12 @@ func showEditGovsNames(c *gin.Context) {
 	}, "index.html")
 }
 
-func getView(c *gin.Context) {
-	var title string
-	trackId, err := strconv.Atoi(c.Param("trk_id"));
+func showTracePage(c *gin.Context) {
+	var (
+		trace Trace
+		title string
+	)
+	trackId, err := strconv.Atoi(c.Param("trk_id"))
 	url := c.Request.URL.Path
 	if strings.Contains(url, "edit") {
 		title = "Редагування | "
@@ -48,11 +51,11 @@ func getView(c *gin.Context) {
 		title = ""
 	}
 	if err == nil {
-		trace, err := getBasicData(trackId)
+		err := trace.getBasicData(trackId)
 		if err == nil {
 			render(c, gin.H{
 				"title": title + string(trace.Fields["requisits"].([]uint8)),
-				}, "index.html")
+			}, "index.html")
 		} else {
 			c.AbortWithError(http.StatusNotFound, err)
 		}
@@ -60,5 +63,3 @@ func getView(c *gin.Context) {
 		c.AbortWithStatus(http.StatusBadGateway)
 	}
 }
-
-

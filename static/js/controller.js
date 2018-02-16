@@ -269,7 +269,7 @@
  viewDB.controller("createCtrl", function ($scope, $http,trackingService) {
         trackingService.getGovs()
          .then(function(response) {
-             $scope.govs = response.data;
+             $scope.governs = response.data.govs;
          });
 
         $scope.addTrack = function () {

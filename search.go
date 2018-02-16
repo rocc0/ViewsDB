@@ -5,22 +5,21 @@ import (
 	"log"
 
 	elastic "gopkg.in/olivere/elastic.v5"
-
 )
 
-// Tweet is a structure used for serializing/deserializing data in Elasticsearch.
 type Idx struct {
-	Id 					string		`json:"id"`
-	Requisits 			string		`json:"requisits"`
-	Reg_Date           	string		`json:"reg_date"`
-	Gov_choice  		string		`json:"gov_choice"`
-	Trace_year	 	  	string		`json:"year"`
-	Developer		   	string		`json:"developer"`
-	Base	 			string		`json:"base"`
-	Repeated	 		string		`json:"repeat"`
-	Periodical	 		string		`json:"period"`
-	Fact	 			string		`json:"fact"`
+	Id         string `json:"id"`
+	Requisits  string `json:"requisits"`
+	Reg_Date   string `json:"reg_date"`
+	Gov_choice string `json:"gov_choice"`
+	Trace_year string `json:"year"`
+	Developer  string `json:"developer"`
+	Base       string `json:"base"`
+	Repeated   string `json:"repeat"`
+	Periodical string `json:"period"`
+	Fact       string `json:"fact"`
 }
+
 
 const mapping = `
 {
@@ -68,9 +67,7 @@ const mapping = `
 	}
 }`
 
-
-
-func elasticConnect() (context.Context, *elastic.Client, error){
+func elasticConnect() (context.Context, *elastic.Client, error) {
 	ctx := context.Background()
 	client, err := elastic.NewClient(
 		elastic.SetURL("http://192.168.99.100:9200", "http://192.168.99.100:9200"),
@@ -79,25 +76,33 @@ func elasticConnect() (context.Context, *elastic.Client, error){
 	)
 	// Ping the Elasticsearch server to get e.g. the version number
 	info, code, err := client.Ping("http://192.168.99.100:9200").Do(ctx)
-	check(err)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	log.Printf("Elasticsearch returned with code %d and version %s\n", code, info.Version.Number)
 
 	// Getting the ES version number is quite common, so there's a shortcut
 	esversion, err := client.ElasticsearchVersion("http://192.168.99.100:9200")
-	check(err)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	log.Printf("Elasticsearch version %s\n", esversion)
 
 	// Use the IndexExists service to check if a specified index exists.
 	client.DeleteIndex("tracking").Do(ctx)
 	exists, err := client.IndexExists("tracking").Do(ctx)
-	check(err)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	if !exists {
 		// Create a new index.
 		createIndex, err := client.CreateIndex("tracking").BodyString(mapping).Do(ctx)
-		check(err)
+		if err != nil {
+			return nil, nil, err
+		}
 
 		if !createIndex.Acknowledged {
 			// Not acknowledged
@@ -106,64 +111,80 @@ func elasticConnect() (context.Context, *elastic.Client, error){
 	return ctx, client, nil
 }
 
-
-func elasticIndex(){
+func elasticIndex(ch chan int) error {
 	var (
 		id, requisits, reg_date, gov_choice,
 		developer, trace_year, base, repeated, periodical, fact string
-		trk Idx
 	)
 	ctx, client, err := elasticConnect()
-	check(err)
+	if err != nil {
+		return err
+	}
 
 	res, err := db.Query("select id, requisits, gov_choice, reg_date, trace_year, " +
 		"developer, base, repeated, periodic, fact from track_base")
-	check(err)
+
+	if err != nil {
+		return err
+	}
 
 	log.Print("Indexing started")
-	for res.Next(){
+	for res.Next() {
 		err := res.Scan(&id, &requisits, &reg_date, &gov_choice, &trace_year, &developer,
 			&base, &repeated, &periodical, &fact)
 		if err != nil {
-			log.Print(err.Error(), " | " ,id, "\n")
+			log.Print(err.Error(), " | ", id, "\n")
+			return err
 		}
-		trk = Idx{id, requisits,reg_date,gov_choice,
+		idx := Idx{id, requisits, reg_date, gov_choice,
 			trace_year, developer, base, repeated, periodical, fact}
-		_, err = client.Index().
-			Index("tracking").
-			Type("trace").
-			Id(id).
-			BodyJson(trk).
-			Do(ctx)
-		check(err)
+		_ = idx.writeIndex(ctx, client)
 	}
+	ch <- 1
 	log.Print("Indexing complited!")
+	return nil
 }
 
-func updateIndex(id int64) {
+func (idx Idx) updateIndex(id int64) error {
 	var (
-		id_ind, requisits, reg_date, gov_choice,
+		index, requisits, reg_date, gov_choice,
 		developer, trace_year, base, repeated, periodical, fact string
 	)
 	ctx, client, err := elasticConnect()
 
-	ind, err := db.Query("select id, requisits, reg_date, gov_choice," +
+	ind, err := db.Query("select id, requisits, reg_date, gov_choice,"+
 		"trace_year, developer, base, repeated, periodic, fact from track_base where id=?;", id)
-	check(err)
+	if err != nil {
+		return err
+	}
 
 	for ind.Next() {
-		err = ind.Scan(&id_ind, &requisits, &reg_date, &gov_choice, &trace_year, &developer,
+		err = ind.Scan(&index, &requisits, &reg_date, &gov_choice, &trace_year, &developer,
 			&base, &repeated, &periodical, &fact)
 		if err != nil {
 			log.Print(err.Error())
+			return err
 		}
 	}
-	idx := Idx{id_ind, requisits, reg_date, gov_choice,
-		trace_year,developer, base, repeated, periodical, fact}
-	_, err = client.Index().
+
+	idx = Idx{index, requisits, reg_date, gov_choice,
+		trace_year, developer, base, repeated, periodical, fact}
+	_ = idx.writeIndex(ctx, client)
+
+	return nil
+}
+
+func (idx Idx) writeIndex(ctx context.Context, client *elastic.Client) error {
+
+	_, err := client.Index().
 		Index("tracking").
 		Type("trace").
-		Id(string(id)).
+		Id(string(idx.Id)).
 		BodyJson(idx).
 		Do(ctx)
+
+	if err != nil {
+		return err
+	}
+	return nil
 }

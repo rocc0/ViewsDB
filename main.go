@@ -1,40 +1,39 @@
 package main
 
-
 import (
-	"html/template"
+
 
 	"github.com/gin-gonic/gin"
+	"flag"
+	"log"
+
 )
 
 var router *gin.Engine
 
-func main(){
-	// Set Gin to production mode
-	gin.SetMode(gin.DebugMode)
-	// Set the router as the default one provided by Gin
-	router = gin.Default()
-	// Set a lower memory limit for multipart forms (default is 32 MiB)
-	router.MaxMultipartMemory = 8 << 20
-	// Set static routes
-	router.Static("static/", "static/")
-	// Set favicon path
-	router.StaticFile("/favicon.ico", "static/favicon.ico")
-	//Set templates path
-	if tmpl, err := template.New("projectViews").Funcs(TemplateHelpers).ParseGlob("templates/*"); err == nil {
-		router.SetHTMLTemplate(tmpl)
-	} else {
-		panic(err)
+const imgpath = "/static/images/"
+
+var assetsPath string
+
+func processFlags() *Config {
+	cfg := &Config{}
+
+	flag.StringVar(&cfg.ListenSpec, "listen", ":8888", "HTTP listen spec")
+	flag.StringVar(&cfg.Db.ConnectString, "db-connect",
+		"root:password@tcp(192.168.99.100:3306)/trackdb", "DB Connect String")
+	flag.StringVar(&assetsPath, "assets-path", "static/", "Path to assets dir")
+	flag.StringVar(&cfg.Rou.Cpuprofile,"cpuprofile", "./static/cpu.out", "write cpu profile to file")
+	flag.StringVar(&cfg.Rou.Memprofile,"memprofile", "./static/mem.out", "write mem profile to file")
+
+	flag.Parse()
+	return cfg
+}
+
+func main() {
+
+	cfg := processFlags()
+
+	if err := Run(cfg); err != nil {
+		log.Printf("Error in main(): %v", err)
 	}
-	//Create admin user
-	userInit()
-	// Initialize the routes
-	initializeRoutes()
-	//Search indexing
-	//elasticIndex()
-	//Calculate all rates
-	err := calculateRates()
-	check(err)
-	// Start serving the application
-	router.Run(":8888")
 }
