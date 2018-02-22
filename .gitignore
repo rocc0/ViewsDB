@@ -1,5 +1,6 @@
 track_db.exe
 test.index/*.*
+static/*.out
 static/images/*.*
 .idea/*.*
 conf.yaml
