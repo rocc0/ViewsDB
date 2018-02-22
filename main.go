@@ -1,39 +1,49 @@
 package main
 
 import (
-
-
-	"github.com/gin-gonic/gin"
-	"flag"
+	"io/ioutil"
 	"log"
 
+	"gopkg.in/yaml.v2"
 )
 
-var router *gin.Engine
+var config *Config
 
-const imgpath = "/static/images/"
+type Config struct {
+	Listen string `yaml:"listen"`
+	MySql string `yaml:"mysql"`
+	Assets string `yaml:"assets"`
+	ImagePath string `yaml:"imgpath"`
+	CpuProf string `yaml:"cpuprofile"`
+	MemProf string `yaml:"memprofile"`
+	ElasticUrl string `yaml:"elastic-url"`
+	ElasticLog string `yaml:"elastic-log"`
+	ElasticPass string `yaml:"elastic-pass"`
+	Mongo string `yaml:"mongo"`
+}
 
-var assetsPath string
-
-func processFlags() *Config {
-	cfg := &Config{}
-
-	flag.StringVar(&cfg.ListenSpec, "listen", ":8888", "HTTP listen spec")
-	flag.StringVar(&cfg.Db.ConnectString, "db-connect",
-		"root:password@tcp(192.168.99.100:3306)/trackdb", "DB Connect String")
-	flag.StringVar(&assetsPath, "assets-path", "static/", "Path to assets dir")
-	flag.StringVar(&cfg.Rou.Cpuprofile,"cpuprofile", "./static/cpu.out", "write cpu profile to file")
-	flag.StringVar(&cfg.Rou.Memprofile,"memprofile", "./static/mem.out", "write mem profile to file")
-
-	flag.Parse()
-	return cfg
+func (c *Config) getConf() error {
+	yamlFile, err := ioutil.ReadFile("conf.yaml")
+	if err != nil {
+		log.Printf("yamlFile.Get err   #%v ", err)
+		return err
+	}
+	err = yaml.Unmarshal(yamlFile, &config)
+	if err != nil {
+		log.Fatalf("Unmarshal: %v", err)
+		return err
+	}
+	return nil
 }
 
 func main() {
+	var c Config
 
-	cfg := processFlags()
+	if err := c.getConf(); err != nil {
+		log.Fatal("Error when parsing config: %v", err)
+	}
 
-	if err := Run(cfg); err != nil {
+	if err := Run(); err != nil {
 		log.Printf("Error in main(): %v", err)
 	}
 }

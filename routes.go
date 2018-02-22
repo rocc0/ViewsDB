@@ -12,7 +12,9 @@ import (
 // Use the setUserStatus middleware for every route to set a flag
 // indicating whether the request was from an authenticated user or not
 
-func initializeRoutes(listen string) {
+var router *gin.Engine
+
+func initializeRoutes() {
 	// Set Gin to production mode
 	gin.SetMode(gin.ReleaseMode)
 	// Set the router as the default one provided by Gin
@@ -20,7 +22,7 @@ func initializeRoutes(listen string) {
 	// Set a lower memory limit for multipart forms (default is 32 MiB)
 	router.MaxMultipartMemory = 8 << 20
 	// Set static routes
-	router.Static("static/", assetsPath)
+	router.Static("static/", config.Assets)
 	// Set favicon path
 	router.StaticFile("/favicon.ico", "static/favicon.ico")
 	//Set templates path
@@ -96,12 +98,12 @@ func initializeRoutes(listen string) {
 		apiUserRoutes.GET("/cabinet", authMiddleware.MiddlewareFunc(), Cabinet)
 		apiUserRoutes.POST("/edituser", authMiddleware.MiddlewareFunc(), EditField)
 	}
-	log.Printf("Starting, HTTP on%s\n", listen)
+	log.Printf("Starting, HTTP on: %s\n", config.Listen)
 	//gpprof.Register(router, &gpprof.Options{
 	//	// default is "debug/pprof"
 	//	RoutePrefix: "debug/pprof",
 	//})
-	router.Run(listen)
+	router.Run(config.Listen)
 }
 
 func render(c *gin.Context, data gin.H, templateName string) {

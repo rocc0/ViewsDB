@@ -40,7 +40,6 @@ func postImage(c *gin.Context) {
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
-
 	if err := i.addImages(); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
@@ -69,7 +68,7 @@ func postDelImage(c *gin.Context) {
 	var d DelImage
 
 	col := c.Param("trk_id")
-	original := "." + imgpath + col
+	original := "." + config.ImagePath + col
 
 	x, _ := ioutil.ReadAll(c.Request.Body)
 

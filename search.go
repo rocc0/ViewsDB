@@ -1,8 +1,8 @@
 package main
 
 import (
-	"context"
 	"log"
+	"context"
 
 	elastic "gopkg.in/olivere/elastic.v5"
 )
@@ -67,31 +67,27 @@ const mapping = `
 	}
 }`
 
+//Connect to elastic
 func elasticConnect() (context.Context, *elastic.Client, error) {
 	ctx := context.Background()
+
 	client, err := elastic.NewClient(
-		elastic.SetURL("http://192.168.99.100:9200", "http://192.168.99.100:9200"),
+		elastic.SetURL(config.ElasticUrl, config.ElasticUrl),
 		elastic.SetSniff(false),
-		elastic.SetBasicAuth("elastic", "changeme"),
+		elastic.SetBasicAuth(config.ElasticLog, config.ElasticPass),
 	)
+	if err != nil {
+		return nil, nil, err
+	}
 	// Ping the Elasticsearch server to get e.g. the version number
-	info, code, err := client.Ping("http://192.168.99.100:9200").Do(ctx)
+	info, code, err := client.Ping(config.ElasticUrl).Do(ctx)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	log.Printf("Elasticsearch returned with code %d and version %s\n", code, info.Version.Number)
-
-	// Getting the ES version number is quite common, so there's a shortcut
-	esversion, err := client.ElasticsearchVersion("http://192.168.99.100:9200")
-	if err != nil {
-		return nil, nil, err
-	}
-
-	log.Printf("Elasticsearch version %s\n", esversion)
-
-	// Use the IndexExists service to check if a specified index exists.
 	client.DeleteIndex("tracking").Do(ctx)
+	// Use the IndexExists service to check if a specified index exists.
 	exists, err := client.IndexExists("tracking").Do(ctx)
 	if err != nil {
 		return nil, nil, err
@@ -111,40 +107,7 @@ func elasticConnect() (context.Context, *elastic.Client, error) {
 	return ctx, client, nil
 }
 
-func elasticIndex(ch chan int) error {
-	var (
-		id, requisits, reg_date, gov_choice,
-		developer, trace_year, base, repeated, periodical, fact string
-	)
-	ctx, client, err := elasticConnect()
-	if err != nil {
-		return err
-	}
-
-	res, err := db.Query("select id, requisits, gov_choice, reg_date, trace_year, " +
-		"developer, base, repeated, periodic, fact from track_base")
-
-	if err != nil {
-		return err
-	}
-
-	log.Print("Indexing started")
-	for res.Next() {
-		err := res.Scan(&id, &requisits, &reg_date, &gov_choice, &trace_year, &developer,
-			&base, &repeated, &periodical, &fact)
-		if err != nil {
-			log.Print(err.Error(), " | ", id, "\n")
-			return err
-		}
-		idx := Idx{id, requisits, reg_date, gov_choice,
-			trace_year, developer, base, repeated, periodical, fact}
-		_ = idx.writeIndex(ctx, client)
-	}
-	ch <- 1
-	log.Print("Indexing complited!")
-	return nil
-}
-
+//Get item from DB and adding it to elastic
 func (idx Idx) updateIndex(id int64) error {
 	var (
 		index, requisits, reg_date, gov_choice,
@@ -174,6 +137,7 @@ func (idx Idx) updateIndex(id int64) error {
 	return nil
 }
 
+//Writing item to elastic index
 func (idx Idx) writeIndex(ctx context.Context, client *elastic.Client) error {
 
 	_, err := client.Index().

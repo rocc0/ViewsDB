@@ -74,7 +74,6 @@ func TestUser_Register(t *testing.T) {
 		t.Fail()
 	}
 } //
-
 func TestUserField_EditField(t *testing.T) {
 	var f = []userField{
 		userField{"","",0},

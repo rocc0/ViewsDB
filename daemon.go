@@ -9,28 +9,17 @@ import (
 
 )
 
-type rConfig struct {
-	Cpuprofile string
-	Memprofile string
-}
 
-
-type Config struct {
-	ListenSpec string
-	Rou        rConfig
-	Db         dConfig
-}
-
-func Run(cfg *Config) error {
-	e, c := make(chan int), make(chan int)
-	err := InitDb(cfg.Db)
+func Run() error {
+	ch, _ := make(chan bool), make(chan int)
+	err := InitDb(config.MySql)
 	if err != nil {
 		log.Printf("Error initializing database: %v\n", err)
 		return err
 	}
 
-	if cfg.Rou.Cpuprofile != "" {
-		f, err := os.Create(cfg.Rou.Cpuprofile)
+	if config.CpuProf != "" {
+		f, err := os.Create(config.CpuProf)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -38,19 +27,16 @@ func Run(cfg *Config) error {
 		f.Close()
 	}
 
-	go initializeRoutes(cfg.ListenSpec)
-
-	go calculateRates(c)
-	<-c
+	go initializeRoutes()
+	//go calculateRates(c)
+	//<-c
 
 	go func() {
-		err = elasticIndex(e)
-		if err != nil {
-			log.Fatal(err)
-		}
+		createWorkerPool(10, ch)
+
 		pprof.StopCPUProfile()
-		if cfg.Rou.Memprofile != "" {
-			f, err := os.Create(cfg.Rou.Memprofile)
+		if config.MemProf != "" {
+			f, err := os.Create(config.MemProf)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -58,7 +44,7 @@ func Run(cfg *Config) error {
 			f.Close()
 		}
 	}()
-	<-e
+	<-ch
 
 	WaitForSignal()
 

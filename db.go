@@ -8,13 +8,9 @@ import (
 
 var db *sql.DB
 
-type dConfig struct {
-	ConnectString string
-}
-
-func InitDb(cfg dConfig) error {
+func InitDb(connect string) error {
 	var err error
-	db, err = sql.Open("mysql", cfg.ConnectString)
+	db, err = sql.Open("mysql", connect)
 	if err != nil {
 		log.Print(err.Error())
 		return err

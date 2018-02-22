@@ -13,11 +13,11 @@ import (
 func (i *Image) addImages() error {
 
 	i.PhotoId = RandSeq(20)
-	i.Original = imgpath + i.DocId + "/" + i.PhotoId + ".jpg"
-	i.Thumb = imgpath + i.DocId + "/resized/" + i.PhotoId + ".jpg"
+	i.Original = config.ImagePath + i.DocId + "/" + i.PhotoId + ".jpg"
+	i.Thumb = config.ImagePath + i.DocId + "/resized/" + i.PhotoId + ".jpg"
 
-	os.Mkdir("."+imgpath+i.DocId, 755)
-	os.Mkdir("."+imgpath + i.DocId + "/resized", 755)
+	os.Mkdir("."+config.ImagePath+i.DocId, 755)
+	os.Mkdir("."+config.ImagePath + i.DocId + "/resized", 755)
 
 	return nil
 }
@@ -40,7 +40,7 @@ func (i *Image) resizeImage() error {
 }
 
 func (i *Image) addImageUrls() error {
-	session, err := mgo.Dial("mongodb://adder:password@192.168.99.100:27017")
+	session, err := mgo.Dial(config.Mongo)
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func (i *Image) addImageUrls() error {
 }
 
 func getImageUrls(col string) ([]Image, error) {
-	session, err := mgo.Dial("mongodb://adder:password@192.168.99.100:27017")
+	session, err := mgo.Dial(config.Mongo)
 	if err != nil {
 		panic(err)
 	}
@@ -67,7 +67,6 @@ func getImageUrls(col string) ([]Image, error) {
 	var result []Image
 
 	c := session.DB("images").C("i" + col)
-
 	err = c.Find(nil).All(&result)
 
 	if err != nil {
@@ -79,7 +78,7 @@ func getImageUrls(col string) ([]Image, error) {
 
 func (d DelImage) deleteImage(col string) error {
 
-	session, err := mgo.Dial("mongodb://adder:password@192.168.99.100:27017")
+	session, err := mgo.Dial(config.Mongo)
 	session.SetMode(mgo.Monotonic, true)
 
 	if err != nil {
