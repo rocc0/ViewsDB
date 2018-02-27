@@ -6,7 +6,6 @@ import (
 	"os/signal"
 	"runtime/pprof"
 	"syscall"
-
 )
 
 
@@ -15,6 +14,12 @@ func Run() error {
 	err := InitDb(config.MySql)
 	if err != nil {
 		log.Printf("Error initializing database: %v\n", err)
+		return err
+	}
+
+	err = mgoConnect()
+	if err != nil {
+		log.Printf("Error initializing mongo: %v\n", err)
 		return err
 	}
 
@@ -31,19 +36,17 @@ func Run() error {
 	//go calculateRates(c)
 	//<-c
 
-	go func() {
-		createWorkerPool(10, ch)
+	createWorkerPool(10, ch)
 
-		pprof.StopCPUProfile()
-		if config.MemProf != "" {
-			f, err := os.Create(config.MemProf)
-			if err != nil {
-				log.Fatal(err)
-			}
-			pprof.WriteHeapProfile(f)
-			f.Close()
+	pprof.StopCPUProfile()
+	if config.MemProf != "" {
+		f, err := os.Create(config.MemProf)
+		if err != nil {
+			log.Fatal(err)
 		}
-	}()
+		pprof.WriteHeapProfile(f)
+		f.Close()
+	}
 	<-ch
 
 	WaitForSignal()
