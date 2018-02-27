@@ -6,11 +6,28 @@ import (
 	"os/signal"
 	"runtime/pprof"
 	"syscall"
+	"flag"
 )
 
 
 func Run() error {
 	ch, _ := make(chan bool), make(chan int)
+
+	//Flag parsing
+	reindex := flag.NewFlagSet("reindex", flag.ExitOnError)
+	reindexWorkers := reindex.Int("qty",  1, "Number of workers")
+	if len(os.Args) > 2 {
+		switch os.Args[1] {
+		case "reindex":
+			err := reindex.Parse(os.Args[2:])
+			if err != nil {
+				log.Panic(err)
+			}
+		default:
+			log.Print("Strating...")
+		}
+	}
+
 	err := InitDb(config.MySql)
 	if err != nil {
 		log.Printf("Error initializing database: %v\n", err)
@@ -23,31 +40,41 @@ func Run() error {
 		return err
 	}
 
-	if config.CpuProf != "" {
-		f, err := os.Create(config.CpuProf)
-		if err != nil {
-			log.Fatal(err)
-		}
-		pprof.StartCPUProfile(f)
-		f.Close()
-	}
-
 	go initializeRoutes()
+
+	//Calculation of reports
 	//go calculateRates(c)
 	//<-c
 
-	createWorkerPool(10, ch)
-
-	pprof.StopCPUProfile()
-	if config.MemProf != "" {
-		f, err := os.Create(config.MemProf)
-		if err != nil {
-			log.Fatal(err)
+	//Reindexing
+	if reindex.Parsed() {
+		if *reindexWorkers <= 0 {
+			reindex.Usage()
+			os.Exit(1)
 		}
-		pprof.WriteHeapProfile(f)
-		f.Close()
+
+		createWorkerPool(*reindexWorkers, ch)
+
+		if config.CpuProf != "" {
+			f, err := os.Create(config.CpuProf)
+			if err != nil {
+				log.Fatal(err)
+			}
+			pprof.StartCPUProfile(f)
+			f.Close()
+		}
+
+		pprof.StopCPUProfile()
+		if config.MemProf != "" {
+			f, err := os.Create(config.MemProf)
+			if err != nil {
+				log.Fatal(err)
+			}
+			pprof.WriteHeapProfile(f)
+			f.Close()
+		}
+		<-ch
 	}
-	<-ch
 
 	WaitForSignal()
 
