@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2018.
+ */
+
 package main
 
 import (
@@ -5,15 +9,21 @@ import (
 )
 
 func init() {
-	var c Config
-
-	if err := c.getConf(); err != nil {
-		log.Fatal("Error when parsing config: %v", err)
+	if err := config.getConf(); err != nil {
+		log.Fatalf("Error when parsing config: %v", err)
+	}
+	err := initDB(config.MySQL)
+	if err != nil {
+		log.Fatalf("Error initializing database: %v\n", err)
+	}
+	err = mgoConnect()
+	if err != nil {
+		log.Fatalf("Error initializing mongo: %v\n", err)
 	}
 }
 
 func main() {
-	if err := Run(); err != nil {
-		log.Printf("Error in main(): %v", err)
+	if err := run(); err != nil {
+		log.Fatalf("Error in main(): %v", err)
 	}
 }

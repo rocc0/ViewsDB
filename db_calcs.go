@@ -1,9 +1,8 @@
 package main
 
-type Rating struct {
+type governments struct {
 	Gov map[string]string `json:"gov"`
 }
-
 
 func calculateRates(ch chan int) error {
 	gvs, err := getGovernsList()
@@ -14,7 +13,7 @@ func calculateRates(ch chan int) error {
 	for _, v := range *gvs {
 		//total trackings
 		total, err := db.Query("UPDATE ratings SET rep_total=(SELECT COUNT(developer) "+
-			"FROM track_base WHERE developer=? AND trace_year=?) WHERE gov_id=?", v.Id, "2016", v.Id)
+			"FROM track_base WHERE developer=? AND trace_year=?) WHERE gov_id=?", v.ID, "2016", v.ID)
 		if err != nil {
 			return err
 		}
@@ -22,71 +21,71 @@ func calculateRates(ch chan int) error {
 		//basic trackings
 		base, _ := db.Query("UPDATE ratings SET rep_basic=(SELECT COUNT(term_basic) "+
 			"FROM track_base WHERE trace_year=? AND developer=? AND track_type=?) WHERE gov_id=?",
-			"2016", v.Id, "base", v.Id)
+			"2016", v.ID, "base", v.ID)
 		base.Close()
 
 		//repeated trackings
 		rep, _ := db.Query("UPDATE ratings SET rep_repited=(SELECT COUNT(termin_rep) "+
 			"FROM track_base WHERE trace_year=? AND developer=? AND track_type=?) WHERE gov_id=?",
-			"2016", v.Id, "repeated", v.Id)
+			"2016", v.ID, "repeated", v.ID)
 		rep.Close()
 		//periodic trackings
 		periodic, err := db.Query("UPDATE ratings SET rep_periodic=(SELECT COUNT(developer) "+
 			"FROM track_base WHERE trace_year=? AND developer=? AND track_type=?) WHERE gov_id=?",
-			"2016", v.Id, "periodic", v.Id)
+			"2016", v.ID, "periodic", v.ID)
 		if err != nil {
 			return err
 		}
 		periodic.Close()
 
 		//broken
-		broken_period, _ := db.Query("UPDATE ratings SET broken_period=(SELECT COUNT(broken_period) "+
+		brokenPeriod, _ := db.Query("UPDATE ratings SET broken_period=(SELECT COUNT(broken_period) "+
 			"FROM track_base WHERE trace_year=? AND broken_period = 1 AND developer=?) WHERE gov_id=?",
-			"2016", v.Id, v.Id)
-		broken_period.Close()
+			"2016", v.ID, v.ID)
+		brokenPeriod.Close()
 
-		broken_sign, _ := db.Query("UPDATE ratings SET broken_sign=(SELECT COUNT(broken_sign) "+
+		brokenSign, _ := db.Query("UPDATE ratings SET broken_sign=(SELECT COUNT(broken_sign) "+
 			"FROM track_base WHERE trace_year=?  AND broken_sign = 1 AND developer=?) WHERE gov_id=?",
-			"2016", v.Id, v.Id)
-		broken_sign.Close()
+			"2016", v.ID, v.ID)
+		brokenSign.Close()
 
-		broken_promo, _ := db.Query("UPDATE ratings SET broken_promo=(SELECT COUNT(broken_promo) "+
+		brokenPromo, _ := db.Query("UPDATE ratings SET broken_promo=(SELECT COUNT(broken_promo) "+
 			"FROM track_base WHERE trace_year=? AND broken_promo = 1 AND developer=?) WHERE gov_id=?",
-			"2016", v.Id, v.Id)
-		broken_promo.Close()
+			"2016", v.ID, v.ID)
+		brokenPromo.Close()
 
-		broken_term_rep, _ := db.Query("UPDATE ratings SET broken_term_rep=(SELECT COUNT(broken_term_rep) "+
+		brokenTermRep, _ := db.Query("UPDATE ratings SET broken_term_rep=(SELECT COUNT(broken_term_rep) "+
 			"FROM track_base WHERE trace_year=? AND broken_term_rep = 1 AND developer=?) WHERE gov_id=?",
-			"2016", v.Id, v.Id)
-		broken_term_rep.Close()
+			"2016", v.ID, v.ID)
+		brokenTermRep.Close()
 
-		broken_track_meth, _ := db.Query("UPDATE ratings SET broken_track_meth=(SELECT COUNT(broken_track_meth) "+
+		brokenTrackMeth, _ := db.Query("UPDATE ratings SET broken_track_meth=(SELECT COUNT(broken_track_meth) "+
 			"FROM track_base WHERE trace_year=?  AND broken_track_meth = 1 AND developer=?) WHERE gov_id=?",
-			"2016", v.Id, v.Id)
-		broken_track_meth.Close()
+			"2016", v.ID, v.ID)
+		brokenTrackMeth.Close()
 
-		broken_data_assump, _ := db.Query("UPDATE ratings SET broken_data_assump=(SELECT COUNT(broken_data_assump) "+
+		brokenDataAssump, _ := db.Query("UPDATE ratings SET broken_data_assump=(SELECT COUNT(broken_data_assump) "+
 			"FROM track_base WHERE trace_year=?  AND broken_data_assump = 1 AND developer=?) WHERE gov_id=?",
-			"2016", v.Id, v.Id)
-		broken_data_assump.Close()
+			"2016", v.ID, v.ID)
+		brokenDataAssump.Close()
 
-		broken_indexes, _ := db.Query("UPDATE ratings SET broken_indexes=(SELECT COUNT(broken_indexes) "+
+		brokenIndexes, _ := db.Query("UPDATE ratings SET broken_indexes=(SELECT COUNT(broken_indexes) "+
 			"FROM track_base WHERE trace_year=? AND broken_indexes = 1 AND developer=?) WHERE gov_id=?",
-			"2016", v.Id, v.Id)
-		broken_indexes.Close()
+			"2016", v.ID, v.ID)
+		brokenIndexes.Close()
 
 		//broken period
 
-		broken_my_rating, _ := db.Query("UPDATE ratings SET broken_my_rating=(SELECT COUNT(broken_my_rating) "+
+		brokenMyRating, _ := db.Query("UPDATE ratings SET broken_my_rating=(SELECT COUNT(broken_my_rating) "+
 			"FROM track_period WHERE term_per between ? AND ? AND broken_my_rating = 1 AND developer=?) WHERE gov_id=?",
-			"2016-01-01", "2016-12-31", v.Id, v.Id)
+			"2016-01-01", "2016-12-31", v.ID, v.ID)
 
-		broken_my_rating.Close()
+		brokenMyRating.Close()
 
-		broken_dev_rating, _ := db.Query("UPDATE ratings SET broken_dev_rating=(SELECT COUNT(broken_dev_rating) "+
+		brokenDevRating, _ := db.Query("UPDATE ratings SET broken_dev_rating=(SELECT COUNT(broken_dev_rating) "+
 			"FROM track_period WHERE term_per between ? AND ? AND broken_dev_rating = 1 AND developer=?) WHERE gov_id=?",
-			"2016-01-01", "2016-12-31", v.Id, v.Id)
-		broken_dev_rating.Close()
+			"2016-01-01", "2016-12-31", v.ID, v.ID)
+		brokenDevRating.Close()
 	}
 	ch <- 1
 
@@ -101,19 +100,16 @@ func calulateRatesSecond() error {
 	for _, v := range *gvs {
 		//total trackings
 		total, _ := db.Query("UPDATE ratings2 SET rep_total=(SELECT COUNT(developer) "+
-			"FROM track_base WHERE developer=? AND ) WHERE gov_id=?", v.Id, v.Id)
+			"FROM track_base WHERE developer=? AND ) WHERE gov_id=?", v.ID, v.ID)
 		total.Close()
 	}
 	return nil
 }
 
-
-
-func getReportData() (*[]string, *[]Rating, error) {
+func getReportData() (*[]string, *[]governments, error) {
 	var (
-		rating  Rating
-		ratings []Rating
-
+		rating  governments
+		ratings []governments
 		column  string
 		columns []string
 	)
@@ -137,7 +133,7 @@ func getReportData() (*[]string, *[]Rating, error) {
 	for rows.Next() {
 		columns := make([]string, len(colNames))
 		columnPointers := make([]interface{}, len(colNames))
-		for i, _ := range columns {
+		for i := range columns {
 			columnPointers[i] = &columns[i]
 		}
 		err := rows.Scan(columnPointers...)
@@ -150,7 +146,7 @@ func getReportData() (*[]string, *[]Rating, error) {
 			a := columnPointers[i].(*string)
 			m[colName] = *a
 		}
-		rating = Rating{m}
+		rating = governments{m}
 		ratings = append(ratings, rating)
 	}
 

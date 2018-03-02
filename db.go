@@ -5,10 +5,9 @@ import (
 	"log"
 )
 
-
 var db *sql.DB
 
-func InitDb(connect string) error {
+func initDB(connect string) error {
 	var err error
 	db, err = sql.Open("mysql", connect)
 	if err != nil {
@@ -22,14 +21,11 @@ func InitDb(connect string) error {
 		return err
 	}
 
-	err = UserInit()
+	err = userInit()
 	if err != nil {
 		log.Print(err.Error())
 		return err
 	}
 	return nil
+
 }
-
-
-
-

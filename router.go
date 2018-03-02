@@ -2,8 +2,8 @@ package main
 
 import (
 	"html/template"
-	"net/http"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	//gpprof "github.com/gin-contrib/pprof"
@@ -46,7 +46,7 @@ func initializeRoutes() {
 
 		userRoutes.GET("/register", showIndexPage)
 
-		userRoutes.POST("/register", Register)
+		userRoutes.POST("/register", register)
 
 		userRoutes.GET("/cabinet", showUserPage)
 
@@ -95,8 +95,8 @@ func initializeRoutes() {
 	apiUserRoutes := router.Group("/api")
 	{
 		//user
-		apiUserRoutes.GET("/cabinet", authMiddleware.MiddlewareFunc(), Cabinet)
-		apiUserRoutes.POST("/edituser", authMiddleware.MiddlewareFunc(), EditField)
+		apiUserRoutes.GET("/cabinet", authMiddleware.MiddlewareFunc(), cabinet)
+		apiUserRoutes.POST("/edituser", authMiddleware.MiddlewareFunc(), editField)
 	}
 	log.Printf("Starting, HTTP on: %s\n", config.Listen)
 	//gpprof.Register(router, &gpprof.Options{

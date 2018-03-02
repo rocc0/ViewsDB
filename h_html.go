@@ -40,10 +40,10 @@ func showEditGovsNames(c *gin.Context) {
 
 func showTracePage(c *gin.Context) {
 	var (
-		trace Trace
+		trace BasicTrace
 		title string
 	)
-	trackId, err := strconv.Atoi(c.Param("trk_id"))
+	traceID, err := strconv.Atoi(c.Param("trk_id"))
 	url := c.Request.URL.Path
 	if strings.Contains(url, "edit") {
 		title = "Редагування | "
@@ -51,7 +51,7 @@ func showTracePage(c *gin.Context) {
 		title = ""
 	}
 	if err == nil {
-		err := trace.getBasicData(trackId)
+		err := trace.getBasicData(traceID)
 		if err == nil {
 			render(c, gin.H{
 				"title": title + string(trace.Fields["requisits"].([]uint8)),

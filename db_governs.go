@@ -1,14 +1,15 @@
 package main
 
-type Government struct {
-	Id   int    `json:"id"`
+type government struct {
+	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
-func getGovernsList() (*[]Government, error) {
+
+func getGovernsList() (*[]government, error) {
 	var (
-		govs     []Government
-		gov_id   int
-		gov_name string
+		govs    []government
+		govID   int
+		govName string
 	)
 	res, err := db.Query("SELECT id, gov_name FROM governments")
 	if err != nil {
@@ -16,12 +17,12 @@ func getGovernsList() (*[]Government, error) {
 	}
 
 	for res.Next() {
-		err = res.Scan(&gov_id, &gov_name)
+		err = res.Scan(&govID, &govName)
 		if err != nil {
 			return nil, err
 		}
 
-		govs = append(govs, Government{gov_id, gov_name})
+		govs = append(govs, government{govID, govName})
 	}
 	return &govs, nil
 }

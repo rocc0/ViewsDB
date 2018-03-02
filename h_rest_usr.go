@@ -13,14 +13,14 @@ import (
 type userField struct {
 	Field string `json:"field"`
 	Data  string `json:"data"`
-	Id    int    `json:"id"`
+	ID    int    `json:"id"`
 }
 
-func Cabinet(c *gin.Context) {
-	var u User
+func cabinet(c *gin.Context) {
+	var u user
 	claims := jwt.ExtractClaims(c)
 	u.Email, _ = claims["id"].(string)
-	err := u.GetUser()
+	err := u.getUser()
 
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -33,8 +33,8 @@ func Cabinet(c *gin.Context) {
 	}
 }
 
-func Register(c *gin.Context) {
-	var u User
+func register(c *gin.Context) {
+	var u user
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	err := json.Unmarshal([]byte(x), &u)
 
@@ -42,7 +42,7 @@ func Register(c *gin.Context) {
 		c.AbortWithStatus(400)
 	}
 
-	if err := u.Register(); err == nil {
+	if err := u.register(); err == nil {
 		c.JSON(200, gin.H{
 			"title": "Реєстрація успішна!",
 			"id":    u.Name,
@@ -52,7 +52,7 @@ func Register(c *gin.Context) {
 	}
 }
 
-func EditField(c *gin.Context) {
+func editField(c *gin.Context) {
 	var f userField
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	err := json.Unmarshal([]byte(x), &f)
@@ -61,7 +61,7 @@ func EditField(c *gin.Context) {
 		c.AbortWithStatus(400)
 	}
 
-	if err := f.EditField(); err == nil {
+	if err := f.editField(); err == nil {
 		c.JSON(200, gin.H{
 			"title": "Змінено!",
 		})

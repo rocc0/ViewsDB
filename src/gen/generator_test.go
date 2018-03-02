@@ -1,7 +1,10 @@
-package main
+/*
+ * Copyright (c) 2018.
+ */
+
+package gen
 
 import "testing"
-
 
 func TestRandSeq(t *testing.T) {
 	r := RandSeq(3)

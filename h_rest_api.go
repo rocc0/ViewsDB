@@ -7,22 +7,25 @@ import (
 	"reflect"
 	"strconv"
 
+	"log"
+
 	"github.com/gin-gonic/gin"
 )
 
 type saveRequest struct {
 	TraceType int    `json:"type"`
-	Id        int    `json:"id"`
+	ID        int    `json:"id"`
 	Name      string `json:"name"`
 	Data      string `json:"data"`
 }
+
 type deleteRequest struct {
-	TraceId   int    `json:"item_id"`
+	TraceID   int    `json:"item_id"`
 	TableName string `json:"tbl_name"`
 }
 
 type editGovernName struct {
-	Id   int    `json:"id"`
+	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
 
@@ -50,19 +53,22 @@ func getGoverns(c *gin.Context) {
 }
 
 func getTrace(c *gin.Context) {
-	var bTrace Trace
+	var b BasicTrace
 	basic := make(map[string]string)
-
-	traceId, err := strconv.Atoi(c.Param("trk_id"))
+	traceID, err := strconv.Atoi(c.Param("trk_id"))
 
 	if err == nil {
-		err := bTrace.getBasicData(traceId)
+		err := b.getBasicData(traceID)
 		if err != nil {
+			log.Print(err.Error())
 			c.AbortWithStatus(http.StatusBadRequest)
 		}
-		pTrace, _ := getPeriodicData(traceId)
-
-		for k, v := range bTrace.Fields {
+		period, err := getPeriodicData(traceID)
+		if err != nil {
+			log.Print(err.Error())
+			c.AbortWithStatus(http.StatusBadRequest)
+		}
+		for k, v := range b.Fields {
 			s := reflect.ValueOf(v)
 			switch s.Interface().(type) {
 			case int64:
@@ -73,8 +79,9 @@ func getTrace(c *gin.Context) {
 		}
 		c.JSON(http.StatusOK, gin.H{
 			"pl": basic,
-			"pr": pTrace})
+			"pr": period})
 	} else {
+		log.Print(err.Error())
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
 }
@@ -99,15 +106,15 @@ func postTrackField(c *gin.Context) {
 }
 
 func postCreateItem(c *gin.Context) {
-	var t Trace
+	var trace BasicTrace
 
 	x, _ := ioutil.ReadAll(c.Request.Body)
-	err := json.Unmarshal([]byte(x), &t.Fields)
+	err := json.Unmarshal([]byte(x), &trace.Fields)
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 	} else {
-		if id, err := t.createNewItem(); err == nil {
+		if id, err := trace.createNewItem(); err == nil {
 			c.JSON(http.StatusOK, gin.H{
 				"title": "Відстеження додано",
 				"id":    id,

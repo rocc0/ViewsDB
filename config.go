@@ -3,25 +3,26 @@ package main
 import (
 	"io/ioutil"
 	"log"
+
 	"gopkg.in/yaml.v2"
 )
 
-var config *Config
+var config *configuration
 
-type Config struct {
-	Listen string `yaml:"listen"`
-	MySql string `yaml:"mysql"`
-	Assets string `yaml:"assets"`
-	ImagePath string `yaml:"imgpath"`
-	CpuProf string `yaml:"cpuprofile"`
-	MemProf string `yaml:"memprofile"`
-	ElasticUrl string `yaml:"elastic-url"`
-	ElasticLog string `yaml:"elastic-log"`
+type configuration struct {
+	Listen      string `yaml:"listen"`
+	MySQL       string `yaml:"mysql"`
+	Assets      string `yaml:"assets"`
+	ImagePath   string `yaml:"imgpath"`
+	CPUProf     string `yaml:"cpuprofile"`
+	MemProf     string `yaml:"memprofile"`
+	ElasticURL  string `yaml:"elastic-url"`
+	ElasticLog  string `yaml:"elastic-log"`
 	ElasticPass string `yaml:"elastic-pass"`
-	Mongo string `yaml:"mongo"`
+	Mongo       string `yaml:"mongo"`
 }
 
-func (c *Config) getConf() error {
+func (c *configuration) getConf() error {
 	yamlFile, err := ioutil.ReadFile("conf.yaml")
 	if err != nil {
 		log.Printf("yamlFile.Get err   #%v ", err)

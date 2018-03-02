@@ -4,6 +4,7 @@ package main
 
 import (
 	"time"
+
 	"github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
 )
@@ -14,18 +15,17 @@ var authMiddleware = &jwt.GinJWTMiddleware{
 	Timeout:    time.Hour,
 	MaxRefresh: time.Hour,
 	Authenticator: func(email string, password string, c *gin.Context) (string, bool) {
-		var u User
-		u.Email = email
-		u.Password = password
-		if u.LoginCheck() == true {
+		u := user{Email: email, Password: password}
+
+		if u.loginCheck() == true {
 			return email, true
 		}
 
 		return email, false
 	},
 	Authorizator: func(email string, c *gin.Context) bool {
-		var u User
-		return u.AuthCheck()
+		u := user{Email: email}
+		return u.authCheck()
 	},
 	Unauthorized: func(c *gin.Context, code int, message string) {
 		c.JSON(code, gin.H{

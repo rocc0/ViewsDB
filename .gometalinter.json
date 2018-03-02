@@ -1,0 +1,4 @@
+{
+  "Disable": ["vetshadow"],
+  "Exclude": ["SQL string concatenation"]
+}

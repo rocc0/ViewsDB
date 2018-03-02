@@ -9,17 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Image struct {
-	PhotoId  string `json:"photo_id"`
-	DocId    string `json:"doc_id"`
-	Original string `json:"original"`
-	Thumb    string `json:"thumb"`
-}
-
-type DelImage struct {
-	PhotoId string `json:"photo_id"`
-}
-
 func getImages(c *gin.Context) {
 	id := c.Param("trk_id")
 	urls, err := getImageUrls(id)
@@ -34,8 +23,8 @@ func getImages(c *gin.Context) {
 }
 
 func postImage(c *gin.Context) {
-	var i Image
-	i.DocId = c.PostForm("doc_id")
+	var i newImage
+	i.DocID = c.PostForm("doc_id")
 	file, err := c.FormFile("file")
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -59,13 +48,12 @@ func postImage(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"original": i.Original,
 		"thumb":    i.Thumb,
-		"photo_id": i.PhotoId,
+		"photo_id": i.PhotoID,
 	})
 }
 
 func postDelImage(c *gin.Context) {
-
-	var d DelImage
+	var d delImage
 
 	col := c.Param("trk_id")
 	original := "." + config.ImagePath + col

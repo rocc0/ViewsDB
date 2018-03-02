@@ -1,21 +1,20 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
 	"os/signal"
-	"runtime/pprof"
+
 	"syscall"
-	"flag"
 )
 
-
-func Run() error {
-	ch, _ := make(chan bool), make(chan int)
+func run() error {
+	ch := make(chan bool, 1)
 
 	//Flag parsing
 	reindex := flag.NewFlagSet("reindex", flag.ExitOnError)
-	reindexWorkers := reindex.Int("qty",  1, "Number of workers")
+	reindexWorkers := reindex.Int("qty", 1, "Number of workers")
 	if len(os.Args) > 2 {
 		switch os.Args[1] {
 		case "reindex":
@@ -28,23 +27,7 @@ func Run() error {
 		}
 	}
 
-	err := InitDb(config.MySql)
-	if err != nil {
-		log.Printf("Error initializing database: %v\n", err)
-		return err
-	}
-
-	err = mgoConnect()
-	if err != nil {
-		log.Printf("Error initializing mongo: %v\n", err)
-		return err
-	}
-
 	go initializeRoutes()
-
-	//Calculation of reports
-	//go calculateRates(c)
-	//<-c
 
 	//Reindexing
 	if reindex.Parsed() {
@@ -52,36 +35,18 @@ func Run() error {
 			reindex.Usage()
 			os.Exit(1)
 		}
-
-		createWorkerPool(*reindexWorkers, ch)
-
-		if config.CpuProf != "" {
-			f, err := os.Create(config.CpuProf)
-			if err != nil {
-				log.Fatal(err)
-			}
-			pprof.StartCPUProfile(f)
-			f.Close()
-		}
-
-		pprof.StopCPUProfile()
-		if config.MemProf != "" {
-			f, err := os.Create(config.MemProf)
-			if err != nil {
-				log.Fatal(err)
-			}
-			pprof.WriteHeapProfile(f)
-			f.Close()
-		}
-		<-ch
+		doReindex(reindexWorkers, ch)
 	}
 
-	WaitForSignal()
+	//Calculation of reports
+	//go calculateRates(c)
+	//<-c
+	waitForSignal()
 
 	return nil
 }
 
-func WaitForSignal() {
+func waitForSignal() {
 	ch := make(chan os.Signal)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 	s := <-ch
