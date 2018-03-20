@@ -54,7 +54,7 @@ func showTracePage(c *gin.Context) {
 		err := trace.getBasicData(traceID)
 		if err == nil {
 			render(c, gin.H{
-				"title": title + string(trace.Fields["requisits"].([]uint8)),
+				"title": title + string(trace.Fields["reg_name"].([]uint8)),
 			}, "index.html")
 		} else {
 			c.AbortWithError(http.StatusNotFound, err)

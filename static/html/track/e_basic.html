@@ -4,72 +4,272 @@
         <div class="clearfix">
             <div class="panel panel-default pull-left">
                 <div class="panel-heading">Висновок Комітету щодо відповідності звіту вимогам постанови КМУ від 11.03.04 р. №308</div>
-                <div class="pull-left panel-body" inline-edit="track.pl.concl_basic"
-                     on-save="saveData('concl_basic', value)" on-cancel="log('CANCEL', value)"></div>
+                <div class="pull-left panel-body"
+                     inline-edit="track.pl.b_cnclsn"
+                     on-save="saveChanges('b_cnclsn', 'b', value)"
+                     on-cancel="log('CANCEL', value)">
+                </div>
             </div>
             <div class="panel panel-default pull-left">
                 <div class="panel-heading high">Порушено?</div>
-                <div class="panel-body"><switcher ng-model="track.pl.cb_bool"
-                                                  true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+                <div class="panel-body">
+                    <switcher ng-model="track.pl.b_cnclsn_bool"
+                              ng-change="saveChanges('b_cnclsn_bool', 'b', newValue)"
+                              true-value="'1'" true-label="Так"
+                              false-value="'0'" false-label="Ні">
+                    </switcher>
+                </div>
             </div>
         </div>
         <div class="clearfix">
             <div class="panel panel-default comment">
                 <div class=" panel-heading">Коментар</div>
-                <div class="panel-body" inline-comment="track.pl.concl_basic_comment"
-                     on-save="saveData('concl_basic_comment',value)" on-cancel="log('CANCEL', value)"></div>
+                <div class="panel-body"
+                     inline-comment="track.pl.b_cnclsn_comment"
+                     on-save="saveChanges('b_cnclsn_comment', 'b', value)"
+                     on-cancel="log('CANCEL', value)">
+                </div>
             </div>
         </div>
     </div>
     <div class="col-xs-6 pull-left switch basic">
         <div class="clearfix">
             <div class="panel panel-default pull-left">
-                <div class="panel-heading">Результати відстеження результативності</div>
-                <div class="pull-left panel-body" inline-edit="track.pl.rslt_basic"
-                     on-save="saveData('rslt_basic', value)" on-cancel="log('CANCEL', value)"></div>
+                <div class="panel-heading high">Результати відстеження результативності</div>
+                <div class="pull-left panel-body"
+                     inline-edit="track.pl.b_result"
+                     on-save="saveChanges('b_result', 'b', value)"
+                     on-cancel="log('CANCEL', value)">
+                </div>
             </div>
             <div class="panel panel-default pull-left">
-                <div class="panel-heading">Ефективне?</div>
-                <div class="panel-body"><switcher ng-model="track.pl.rslt_basic_bool"
-                                                  true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+                <div class="panel-heading high">Ефективне?</div>
+                <div class="panel-body">
+                    <switcher ng-model="track.pl.b_result_bool"
+                              true-value="'1'" true-label="Так"
+                              ng-change="saveChanges('b_result_bool', 'b',  newValue)"
+                              false-value="'0'" false-label="Ні">
+                    </switcher>
+                </div>
             </div>
         </div>
         <div class="clearfix">
             <div class="panel panel-default comment">
                 <div class=" panel-heading">Коментар</div>
-                <div class="panel-body" inline-comment="track.pl.rslt_basic_comment"
-                     on-save="saveData('rslt_basic_comment',value)" on-cancel="log('CANCEL', value)"></div>
+                <div class="panel-body"
+                     inline-comment="track.pl.b_result_comment"
+                     on-save="saveChanges('b_result_comment', 'b', value)"
+                     on-cancel="log('CANCEL', value)">
+                </div>
             </div>
         </div>
     </div>
     <div class="col-xs-6 pull-left">
         <div class="panel panel-default clearfix">
             <div class="panel-heading">Термін здійснення заходів з відстеження</div>
-            <div class="pull-left panel-body" inline-date="track.pl.term_basic"
-                 on-save="saveData('term_basic', value)" on-cancel="log('CANCEL', value)"></div>
+            <div class="pull-left panel-body width-25 input-name">
+                <span>За законом:</span>
+            </div>
+            <div class="pull-left panel-body width-25"
+                 inline-date="track.pl.b_termin_zakon"
+                 on-save="saveChanges('b_termin_zakon', 'b', value)"
+                 on-cancel="log('CANCEL', value)">
+            </div>
+            <div class="pull-left panel-body width-25 input-name">
+                <span>Фактичний:</span>
+            </div>
+            <div class="pull-left panel-body width-25"
+                 inline-date="track.pl.b_termin_fact"
+                 on-save="saveChanges('b_termin_fact', 'b', value)"
+                 on-cancel="log('CANCEL', value)">
+            </div>
         </div>
     </div>
 
     <div class="col-xs-6 pull-left">
         <div class="panel panel-default clearfix">
             <div class="panel-heading">Дата підписання  звіту  про відстеження результативності регуляторного акта</div>
-            <div class="pull-left panel-body" inline-date="track.pl.sign_basic"
-                 on-save="saveData('sign_basic', value)" on-cancel="log('CANCEL', value)"></div>
+            <div class="pull-left panel-body"
+                 inline-date="track.pl.b_signed"
+                 on-save="saveChanges('b_signed', 'b', value)"
+                 on-cancel="log('CANCEL', value)">
+            </div>
         </div>
     </div>
     <div class="col-xs-6 pull-left">
         <div class="panel panel-default clearfix">
-            <div class="panel-heading">Дата оприлюденення  звіту  про відстеження результативності регуляторного акта</div>
-            <div class="pull-left panel-body" inline-date="track.pl.pub_basic"
-                 on-save="saveData('pub_basic', value)" on-cancel="log('CANCEL', value)"></div>
+            <div class="panel-heading high">Дата оприлюденення  звіту  про відстеження результативності регуляторного акта</div>
+            <div class="pull-left panel-body"
+                 inline-date="track.pl.b_publicated"
+                 on-save="saveChanges('b_publicated', 'b', value)"
+                 on-cancel="log('CANCEL', value)">
+            </div>
         </div>
     </div>
     <div class="col-xs-6 pull-left">
         <div class="panel panel-default clearfix">
             <div class="panel-heading">Дата надання звіту  про відстеження результативності регуляторного акта до Держпідприємництва</div>
-            <div class="pull-left panel-body" inline-date="track.pl.gived_basic"
-                 on-save="saveData('gived_basic', value)" on-cancel="log('CANCEL', value)"></div>
+            <div class="pull-left panel-body"
+                 inline-date="track.pl.b_gived"
+                 on-save="saveChanges('b_gived', 'b', value)"
+                 on-cancel="log('CANCEL', value)">
+            </div>
         </div>
     </div>
 
+</div>
+<div class="col-md-12">
+    <h4 class="clearfix">Порушено</h4>
+    <div class="clearfix switch-reate">
+        <div class="panel panel-default pull-left high">
+            <div class="panel-heading ">Строк виконання</div>
+            <div class="panel-body">
+                <switcher ng-model="track.pl.b_br_period"
+                          true-value="'1'" true-label="Так"
+                          false-value="'0'" false-label="Ні"
+                          ng-change="saveChanges('b_br_period', 'b', newValue)">
+                </switcher>
+            </div>
+        </div>
+        <div class="panel panel-default comment">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body"
+                 inline-comment="track.pl.b_br_period_c"
+                 on-save="saveChanges('b_br_period_c', 'b', value)"
+                 on-cancel="log('CANCEL', value)">
+            </div>
+        </div>
+    </div>
+    <div class="clearfix switch-reate">
+        <div class="panel panel-default pull-left high">
+            <div class="panel-heading ">Підпис</div>
+            <div class="panel-body">
+                <switcher ng-model="track.pl.b_br_sign"
+                          true-value="'1'" true-label="Так"
+                          false-value="'0'" false-label="Ні"
+                          ng-change="saveChanges('b_br_sign', 'b', newValue)">
+                </switcher>
+            </div>
+        </div>
+        <div class="panel panel-default comment">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body"
+                 inline-comment="track.pl.b_br_sign_c"
+                 on-save="saveChanges('b_br_sign_c', 'b', value)"
+                 on-cancel="log('CANCEL', value)">
+            </div>
+        </div>
+    </div>
+    <div class="clearfix switch-reate">
+        <div class="panel panel-default pull-left high">
+            <div class="panel-heading ">Оприлюднення</div>
+            <div class="panel-body">
+                <switcher ng-model="track.pl.b_br_promo"
+                          true-value="'1'" true-label="Так"
+                          false-value="'0'" false-label="Ні"
+                          ng-change="saveChanges('b_br_promo', 'b', newValue)">
+                </switcher>
+            </div>
+        </div>
+
+        <div class="panel panel-default comment">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body"
+                 inline-comment="track.pl.b_br_promo_c"
+                 on-save="saveChanges('b_br_promo_c', 'b', value)"
+                 on-cancel="log('CANCEL', value)">
+            </div>
+        </div>
+    </div>
+    <div class="clearfix switch-reate">
+        <div class="panel panel-default pull-left high">
+            <div class="panel-heading ">Строк подання звіту</div>
+            <div class="panel-body">
+                <switcher ng-model="track.pl.b_br_term_rep"
+                          true-value="'1'" true-label="Так"
+                          false-value="'0'" false-label="Ні"
+                          ng-change="saveChanges('b_br_term_rep', 'b', newValue)">
+                </switcher>
+            </div>
+        </div>
+
+        <div class="panel panel-default comment">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body"
+                 inline-comment="track.pl.b_br_term_rep_c"
+                 on-save="saveChanges('b_br_term_rep_c', 'b', value)"
+                 on-cancel="log('CANCEL', value)">
+            </div>
+        </div>
+    </div>
+    <div class="clearfix switch-reate">
+        <div class="panel panel-default pull-left high">
+            <div class="panel-heading ">Метод відстеження</div>
+            <div class="panel-body">
+                <switcher ng-model="track.pl.b_br_track_meth"
+                          true-value="'1'" true-label="Так"
+                          false-value="'0'" false-label="Ні"
+                          ng-change="saveChanges('b_br_track_meth', 'b', newValue)">
+                </switcher>
+            </div>
+        </div>
+
+        <div class="panel panel-default comment">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body"
+                 inline-comment="track.pl.b_br_track_meth_c"
+                 on-save="saveChanges('b_br_track_meth_c', 'b', value)"
+                 on-cancel="log('CANCEL', value)">
+            </div>
+        </div>
+    </div>
+    <div class="clearfix switch-reate">
+        <div class="panel panel-default pull-left high">
+            <div class="panel-heading ">Дані та припущення</div>
+            <div class="panel-body">
+                <switcher ng-model="track.pl.b_br_data_assump"
+                          true-value="'1'" true-label="Так"
+                          false-value="'0'" false-label="Ні"
+                          ng-change="saveChanges('b_br_data_assump', 'b', newValue)">
+                </switcher>
+            </div>
+        </div>
+        <div class="panel panel-default comment">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body"
+                 inline-comment="track.pl.b_br_data_assump_c"
+                 on-save="saveChanges('b_br_data_assump_c', 'b', value)"
+                 on-cancel="log('CANCEL', value)">
+            </div>
+        </div>
+    </div>
+    <div class="clearfix switch-reate">
+        <div class="panel panel-default pull-left high">
+            <div class="panel-heading ">Показники</div>
+            <div class="panel-body">
+                <switcher ng-model="track.pl.b_br_indexes"
+                          true-value="'1'" true-label="Так"
+                          false-value="'0'" false-label="Ні"
+                          ng-change="saveChanges('b_br_indexes', 'b', newValue)">
+                </switcher>
+            </div>
+        </div>
+
+        <div class="panel panel-default comment">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body"
+                 inline-comment="track.pl.b_comment"
+                 on-save="saveChanges('b_comment', 'b', value)"
+                 on-cancel="log('CANCEL', value)">
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default comment">
+        <div class=" panel-heading">Коментар</div>
+        <div class="panel-body"
+             inline-comment="track.pl.r_comment"
+             on-save="saveChanges('r_comment', 'r',  value)"
+             on-cancel="log('CANCEL', value)">
+        </div>
+    </div>
 </div>

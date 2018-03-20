@@ -33,7 +33,7 @@ func mgoConnect() error {
 	return nil
 }
 
-func (i newImage) addImages() error {
+func (i *newImage) addImages() error {
 	g := gen.SeqLength{20}
 	i.PhotoID = g.Generate()
 	i.Original = config.ImagePath + i.DocID + "/" + i.PhotoID + ".jpg"

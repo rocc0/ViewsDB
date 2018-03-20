@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 func getImages(c *gin.Context) {
@@ -27,21 +28,26 @@ func postImage(c *gin.Context) {
 	i.DocID = c.PostForm("doc_id")
 	file, err := c.FormFile("file")
 	if err != nil {
+		log.Print(1, err)
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
 	if err := i.addImages(); err != nil {
+		log.Print(2, err)
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
 
 	if err := c.SaveUploadedFile(file, "."+i.Original); err != nil {
+		log.Print(3, err)
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
 
 	if err := i.resizeImage(); err != nil {
+		log.Print(4, err)
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
 
 	if err := i.addImageUrls(); err != nil {
+		log.Print(5, err)
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
 

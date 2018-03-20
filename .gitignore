@@ -2,6 +2,10 @@ track_db.exe
 test.index/*.*
 static/*.out
 static/images/*.*
+static/js/src/*.*
+static/css/angular-bootstrap-lightbox.min.css
+static/css/angular-bootstrap-toggle.min.css
+static/css/angular-switcher.min.css
 .idea/*.*
 .idea/copyright
 conf.yaml

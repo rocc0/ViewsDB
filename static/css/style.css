@@ -51,6 +51,37 @@ h3 {
     background-color: #ccecef;
 }
 
+.width-25 {
+    width: 25%;
+}
+.input-name span {
+    padding-left: 18px;
+    width: 100%;
+    float: left;
+    height: 33px;
+    background: #f5f5f5;
+    line-height: 30px;
+}
+
+.panel-body.high {
+    line-height: 30px;
+    height: 45px;
+}
+
+.panel-body.high span {
+    padding: 11px 8px 16px 8px;
+    height: 33px;
+    background: #f5f5f5;
+}
+.panel-heading.high {
+    line-height: 30px;
+    height: 47px;
+}
+
+.panel-body.high input {
+    height: 36px;
+}
+
 .container {
     width: 1220px;
 }
@@ -471,6 +502,9 @@ button.btn.btn-default:nth-child(2){
 
 .create-track input {
     height: 26px;
+}
+.create-track h3 {
+    background: #f5f5f5;
 }
 h3.col-xs-10.add_or_not {
     width: 80.7%;

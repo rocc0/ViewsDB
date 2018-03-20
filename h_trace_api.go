@@ -14,10 +14,10 @@ import (
 
 type (
 	saveRequest struct {
-		TraceType int    `json:"type"`
 		ID        int    `json:"id"`
-		Name      string `json:"name"`
+		Name      string `json:"column"`
 		Data      string `json:"data"`
+		TraceType string `json:"type"`
 	}
 
 	deleteRequest struct {
@@ -83,7 +83,6 @@ func getTrace(c *gin.Context) {
 			"pl": basic,
 			"pr": period})
 	} else {
-		log.Print(err.Error())
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
 }
@@ -96,10 +95,12 @@ func postTrackField(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
+		log.Print(1, err)
 	} else {
 		err := save.saveTraceField()
 		if err != nil {
 			c.AbortWithStatus(http.StatusBadRequest)
+			log.Print(2, err)
 		} else {
 			c.JSON(http.StatusOK, gin.H{
 				"title": "Зміни збережено"})
@@ -123,7 +124,6 @@ func postCreateItem(c *gin.Context) {
 			})
 		} else {
 			c.AbortWithStatus(http.StatusBadRequest)
-			log.Print(err)
 		}
 	}
 }

@@ -1,9 +1,8 @@
 <div class="period clearfix">
     <h3>Періодичні відстеження</h3>
     <div ng-repeat="pr in track.pr track by $index">
-
         <div class="col-xs-12 panel panel-default header">
-            <div class="label label-primary period-year" > {[{ pr.term_per | date: 'yyyy' }]}</div>
+            <div class="label label-primary period-year" > {[{ pr.termin_zakon | date: 'yyyy' }]}</div>
             <div class="remove-block">
                 <div ng-show="removeAsk" class="ask">
                     <button class="btn btn-success" ng-click="removePeriod($index, track.pr);">Так</button>
@@ -11,7 +10,7 @@
                 </div>
                 <button class="btn btn-danger remove"
                         ng-click="removeAsk=true">
-                    <span class="glyphicon glyphicon-remove" ></span>
+                    <span class="glyphicon glyphicon-remove"></span>
                 </button>
             </div>
         </div>
@@ -19,115 +18,185 @@
             <div class="clearfix">
                 <div class="panel panel-default pull-left">
                     <div class="panel-heading">Висновок Комітету щодо відповідності звіту вимогам постанови КМУ від 11.03.04 р. №308</div>
-                    <div class="pull-left panel-body" inline-edit="pr.concl_per"
-                         on-save="saveDataPer('concl_per',pr.pid,value)" on-cancel="log('CANCEL', value)"></div>
+                    <div class="pull-left panel-body"
+                         inline-edit="pr.cnclsn"
+                         on-save="savePeriodicChanges('cnclsn',pr.pid,value)"
+                         on-cancel="log('CANCEL', value)">
+                    </div>
                 </div>
                 <div class="panel panel-default pull-left">
                     <div class="panel-heading high">Порушено?</div>
                     <div class="panel-body">
-                        <switcher ng-model="pr.cp_bool"
+                        <switcher ng-model="pr.cnclsn_bool"
                                   true-value="'1'" true-label="Так"
-                                  false-value="'0'" false-label="Ні"></switcher></div>
+                                  false-value="'0'" false-label="Ні"
+                                  ng-change="savePeriodicChanges('cnclsn_bool', pr.pid, newValue)">
+                        </switcher>
+                    </div>
                 </div>
             </div>
             <div class="clearfix">
                 <div class="panel panel-default comment">
                     <div class=" panel-heading">Коментар</div>
-                    <div class="panel-body" inline-comment="pr.concl_per_comment"
-                         on-save="saveDataPer('concl_per_comment', pr.pid,value)" on-cancel="log('CANCEL', value)"></div>
+                    <div class="panel-body"
+                         inline-comment="pr.cnclsn_comment"
+                         on-save="savePeriodicChanges('cnclsn_comment', pr.pid,value)"
+                         on-cancel="log('CANCEL', value)">
+                    </div>
                 </div>
             </div>
         </div>
+
         <div class="col-xs-6 pull-left switch-res">
             <div class="clearfix">
             <div class="panel panel-default pull-left">
-                <div class="panel-heading switch-res-heading">Результати відстеження результативності</div>
-                <div class="panel-body" inline-edit="pr.res_per"
-                     on-save="saveDataPer('res_per',pr.pid,value)" on-cancel="log('CANCEL', value)">
+                <div class="panel-heading switch-res-heading high">Результати відстеження результативності</div>
+                <div class="panel-body"
+                     inline-edit="pr.result"
+                     on-save="savePeriodicChanges('result',pr.pid,value)"
+                     on-cancel="log('CANCEL', value)">
                 </div>
             </div>
             <div class="panel panel-default pull-left">
                 <div class="panel-heading">Рік відстеження</div>
-                <div class="pull-left panel-body" inline-edit="pr.res_per_year"
-                     on-save="saveDataPer('res_per_year', pr.pid,value)" on-cancel="log('CANCEL', value)"></div>
+                <div class="pull-left panel-body"
+                     inline-edit="pr.result_year"
+                     on-save="savePeriodicChanges('result_year', pr.pid,value)"
+                     on-cancel="log('CANCEL', value)">
+                </div>
             </div>
             <div class="panel panel-default pull-left">
-                <div class="panel-heading">Відстеження ефективне?</div>
+                <div class="panel-heading high">Ефективне?</div>
                 <div class="panel-body">
-                    <switcher ng-model="pr.res_per_bool"
-                              true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+                    <switcher ng-model="pr.result_bool"
+                              true-value="'1'" true-label="Так"
+                              false-value="'0'" false-label="Ні"
+                              ng-change="savePeriodicChanges('result_bool', pr.pid, newValue)">
+                    </switcher>
+                </div>
             </div>
             </div>
             <div class="clearfix">
                 <div class="panel panel-default comment">
-                    <div class=" panel-heading">Коментар</div>
-                    <div class="panel-body" inline-comment="pr.res_per_comment"
-                         on-save="saveDataPer('res_per_comment',pr.pid, value)" on-cancel="log('CANCEL', value)"></div>
+                    <div class="panel-heading">Коментар</div>
+                    <div class="panel-body"
+                         inline-comment="pr.result_comment"
+                         on-save="savePeriodicChanges('result_comment', pr.pid, value)"
+                         on-cancel="log('CANCEL', value)">
+                    </div>
                 </div>
             </div>
         </div>
+
         <div class="clearfix"></div>
         <div class="col-xs-6 pull-left">
             <div class="panel panel-default clearfix">
                 <div class="panel-heading">Дата підписання  звіту  про відстеження результативності регуляторного акта</div>
-                <div class="panel-body" inline-date="pr.sign_per"
-                     on-save="saveDataPer('sign_per',pr.pid,value)" on-cancel="log('CANCEL', value)"></div>
+                <div class="panel-body"
+                     inline-date="pr.signed"
+                     on-save="savePeriodicChanges('signed', pr.pid, value)"
+                     on-cancel="log('CANCEL', value)">
+                </div>
             </div>
         </div>
         <div class="col-xs-6 pull-left">
             <div class="panel panel-default clearfix">
                 <div class="panel-heading">Дата оприлюденення  звіту  про відстеження результативності регуляторного акта</div>
-                <div class="panel-body" inline-date="pr.publ_per"
-                     on-save="saveDataPer('publ_per',pr.pid,value)" on-cancel="log('CANCEL', value)"></div>
+                <div class="panel-body"
+                     inline-date="pr.publicated"
+                     on-save="savePeriodicChanges('publicated',pr.pid,value)"
+                     on-cancel="log('CANCEL', value)">
+                </div>
             </div>
         </div>
+
         <div class="clearfix"></div>
         <div class="col-xs-6 pull-left">
             <div class="panel panel-default clearfix">
-                <div class="panel-heading">Термін здійснення заходів з відстеження</div>
-                <div class="panel-body" inline-date="pr.term_per"
-                     on-save="saveDataPer('term_per',pr.pid,value)" on-cancel="log('CANCEL', value)">
+                <div class="panel-heading high">Термін здійснення заходів з відстеження</div>
+                <div class="pull-left panel-body width-25 input-name">
+                    <span>За законом:</span>
+                </div>
+                <div class="pull-left panel-body width-25"
+                     inline-date="pr.termin_zakon"
+                     on-save="savePeriodicChanges('termin_zakon',pr.pid,value)"
+                     on-cancel="log('CANCEL', value)">
+                </div>
+                <div class="pull-left panel-body width-25 input-name">
+                    <span>Фактичний:</span>
+                </div>
+                <div class="pull-left panel-body width-25"
+                     inline-date="pr.termin_fact"
+                     on-save="savePeriodicChanges('termin_fact',pr.pid,value)"
+                     on-cancel="log('CANCEL', value)">
                 </div>
             </div>
         </div>
+
         <div class="col-xs-6">
             <div class="panel panel-default clearfix">
                 <div class="panel-heading">Дата надання звіту  про відстеження результативності регуляторного акта до Держпідприємництва</div>
-                <div class="pull-left panel-body" inline-date="pr.give_per"
-                     on-save="saveDataPer('give_per',pr.pid,value)" on-cancel="log('CANCEL', value)"></div>
+                <div class="pull-left panel-body"
+                     inline-date="pr.gived"
+                     on-save="savePeriodicChanges('gived',pr.pid,value)"
+                     on-cancel="log('CANCEL', value)">
+                </div>
             </div>
         </div>
+
         <div class="col-xs-12 switch-reate">
             <div class="panel panel-default pull-left high">
-                <div class="panel-heading ">Оцінка результатів (моя)</div>
+                <div class="panel-heading">Оцінка результатів (моя)</div>
                 <div class="panel-body">
-                    <switcher ng-model="pr.broken_my_rating"
-                              true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
-            </div>
-
-                <div class="panel panel-default comment">
-                    <div class=" panel-heading">Коментар</div>
-                    <div class="panel-body" inline-comment="pr.broken_my_rating_c"
-                         on-save="saveDataPer('broken_my_rating_c', pr.pid, value)" on-cancel="log('CANCEL', value)"></div>
+                    <switcher ng-model="pr.br_my_rating"
+                              true-value="'1'" true-label="Так"
+                              false-value="'0'" false-label="Ні"
+                              ng-change="savePeriodicChanges('br_my_rating', pr.pid, newValue, oldValue)">
+                    </switcher>
                 </div>
-
+            </div>
+            <div class="panel panel-default comment">
+                <div class="panel-heading">Коментар</div>
+                <div class="panel-body"
+                     inline-comment="pr.br_my_rating_c"
+                     on-save="savePeriodicChanges('br_my_rating_c', pr.pid, value)"
+                     on-cancel="log('CANCEL', value)">
+                </div>
+            </div>
         </div>
+
         <div class="col-xs-12 switch-reate">
             <div class="panel panel-default pull-left high">
                 <div class="panel-heading ">Оцінка результатів (розробника)</div>
                 <div class="panel-body">
-                    <switcher ng-model="pr.broken_dev_rating"
-                              true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
-            </div>
-
-                <div class="panel panel-default comment">
-                    <div class=" panel-heading">Коментар</div>
-                    <div class="panel-body" inline-comment="pr.broken_dev_rating_c"
-                         on-save="saveDataPer('broken_dev_rating_c', pr.pid, value)" on-cancel="log('CANCEL', value)"></div>
+                    <switcher ng-model="pr.br_dev_rating"
+                              true-value="'1'" true-label="Так"
+                              false-value="'0'" false-label="Ні"
+                              ng-change="savePeriodicChanges('br_dev_rating', pr.pid, newValue)">
+                    </switcher>
                 </div>
-
+            </div>
+            <div class="panel panel-default comment">
+                <div class="panel-heading">Коментар</div>
+                <div class="panel-body"
+                     inline-comment="pr.br_dev_rating_c"
+                     on-save="savePeriodicChanges('br_dev_rating_c', pr.pid, value)"
+                     on-cancel="log('CANCEL', value)">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Коментар</div>
+                <div class="panel-body"
+                     inline-comment="pr.p_comment"
+                     on-save="saveData('p_comment', value)"
+                     on-cancel="log('CANCEL', value)">
+                </div>
+            </div>
         </div>
     </div>
     <button class="btn btn-default add" ng-click="addPeriod(track.pr, track.pl.reg_date)">
-        Додати нове періодичне відстеження</button>
+        Додати нове періодичне відстеження
+    </button>
 </div>

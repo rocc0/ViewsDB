@@ -6,14 +6,23 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type user struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	Surename string `json:"surename"`
-	Email    string `json:"email"`
-	Password string
-	Rights   int
-}
+type (
+	//User is used in operations with users, like login, register, etc.
+	User struct {
+		ID       int    `json:"id"`
+		Name     string `json:"name"`
+		Surename string `json:"surename"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+		Rights   int    `json:"rights"`
+	}
+
+	userField struct {
+		Field string `json:"field"`
+		Data  string `json:"data"`
+		ID    int    `json:"id"`
+	}
+)
 
 func userInit() error {
 	stmt, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id SERIAL NOT NULL PRIMARY KEY, email VARCHAR(100), " +
@@ -29,7 +38,7 @@ func userInit() error {
 	return nil
 }
 
-func (u *user) loginCheck() bool {
+func (u *User) loginCheck() bool {
 	var password string
 
 	res := db.QueryRow("SELECT password FROM users WHERE email=?", u.Email)
@@ -43,7 +52,7 @@ func (u *user) loginCheck() bool {
 	return true
 }
 
-func (u *user) authCheck() bool {
+func (u *User) authCheck() bool {
 	var privileged int
 
 	res := db.QueryRow("SELECT privileged FROM users WHERE email=?", u.Email)
@@ -52,7 +61,7 @@ func (u *user) authCheck() bool {
 	return privileged == 1
 }
 
-func (u *user) getUser() error {
+func (u *User) getUser() error {
 
 	res := db.QueryRow("SELECT name, surename, id, rights FROM users WHERE email = ?", u.Email)
 	err := res.Scan(&u.Name, &u.Surename, &u.ID, &u.Rights)
@@ -62,7 +71,7 @@ func (u *user) getUser() error {
 	return nil
 }
 
-func (u *user) register() error {
+func (u *User) register() error {
 	if !u.isUsernameAvailable() {
 		return errors.New("Користувач з цим ім'ям вже існує")
 	}
@@ -109,7 +118,7 @@ func (f *userField) editField() error {
 	return nil
 }
 
-func (u *user) isUsernameAvailable() bool {
+func (u *User) isUsernameAvailable() bool {
 	res, _ := db.Query("SELECT email FROM users WHERE email=?", u.Email)
 	if res == nil {
 		return false

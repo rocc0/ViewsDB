@@ -41,6 +41,7 @@ func run() error {
 	//Calculation of reports
 	//go calculateRates(c)
 	//<-c
+
 	waitForSignal()
 
 	return nil

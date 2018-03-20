@@ -15,29 +15,30 @@ type BasicTrace struct {
 type PeriodTrace struct {
 	PeriodID               int    `json:"pid"`
 	TraceID                int    `json:"trace_id"`
-	TermPer                string `json:"term_per"`
-	ResPerBool             int    `json:"res_per_bool"`
-	ResPerYear             int    `json:"res_per_year"`
-	ResPerComment          string `json:"res_per_comment"`
-	ResPer                 string `json:"res_per"`
-	SignPer                string `json:"sign_per"`
-	PublPer                string `json:"publ_per"`
-	GivePer                string `json:"give_per"`
-	ConclPer               string `json:"concl_per"`
-	ConclPerBool           int    `json:"cp_bool"`
-	ConclPerComment        string `json:"concl_per_comment"`
-	BrokenMyRating         int    `json:"broken_my_rating"`
-	BrokenMyRatingComment  string `json:"broken_my_rating_c"`
-	BrokenDevRating        int    `json:"broken_dev_rating"`
-	BrokenDevRatingComment string `json:"broken_dev_rating_c"`
+	TermZakon              string `json:"termin_zakon"`
+	TermFact               string `json:"termin_fact"`
+	Result                 string `json:"result"`
+	ResultBool             int    `json:"result_bool"`
+	ResultYear             int    `json:"result_year"`
+	ResultComment          string `json:"result_comment"`
+	Signed                 string `json:"signed"`
+	Publicated             string `json:"publicated"`
+	Gived                  string `json:"gived"`
+	Cnclsn                 string `json:"cnclsn"`
+	CnclsnBool             int    `json:"cnclsn_bool"`
+	CnclsnComment          string `json:"cnclsn_comment"`
+	BrokenMyRating         int    `json:"br_my_rating"`
+	BrokenMyRatingComment  string `json:"br_my_rating_c"`
+	BrokenDevRating        int    `json:"br_dev_rating"`
+	BrokenDevRatingComment string `json:"br_dev_rating_c"`
+	Comment                string `json:"p_comment"`
 }
 
+//saveTraceField saves changes maded to trace fields
 func (s saveRequest) saveTraceField() error {
-	table := "track_base"
-	if s.TraceType == 1 {
-		table = "track_period"
-	}
-	stmt, err := db.Prepare("UPDATE " + table + " SET " + s.Name + "= ? WHERE id= ?;")
+	table := map[string]string{"i": "trace_info", "b": "trace_basic", "r": "trace_repeat", "p": "trace_period"}
+
+	stmt, err := db.Prepare("UPDATE " + table[s.TraceType] + " SET " + s.Name + "= ? WHERE id= ?;")
 	if err != nil {
 		return err
 	}
@@ -49,6 +50,7 @@ func (s saveRequest) saveTraceField() error {
 	return nil
 }
 
+//deleteItem deletes periodic item of trace
 func (d deleteRequest) deleteItem() error {
 	var table string
 	if d.TableName == "p" {
@@ -67,8 +69,15 @@ func (d deleteRequest) deleteItem() error {
 }
 
 func (t *BasicTrace) getBasicData(id int) error {
-	rows, _ := db.Query("select * from track_base where id = ?;", id)
-	colNames, _ := rows.Columns()
+	rows, err := db.Query("SELECT * FROM trace_info LEFT JOIN trace_basic ON"+
+		" trace_info.id = trace_basic.id LEFT JOIN trace_repeat ON trace_info.id = trace_repeat.id WHERE trace_info.id = ?;", id)
+	if err != nil {
+		return err
+	}
+	colNames, err := rows.Columns()
+	if err != nil {
+		return err
+	}
 	columns := make([]interface{}, len(colNames))
 	columnPointers := make([]interface{}, len(colNames))
 	m := make(map[string]interface{})
@@ -95,43 +104,50 @@ func (t *BasicTrace) getBasicData(id int) error {
 
 func getPeriodicData(id int) (*[]PeriodTrace, error) {
 	var (
-		traceID, resPerBool, resPerYear, periodID, ConclPerBool, brokenMyRating, brokenDevRating int
-		termPer, resPer, resPerComment, signPer, publPer, givePer,
-		conclPer, conclPerComment, brokenMyRatingComment, brokenDevRatingComment string
+		traceID, resultBool, resultYear, periodID, cnclsnBool, brokenMyRating, brokenDevRating int
+		termZakon, termFact, result, resultComment, signed, publicated, gived,
+		cnclsn, cnclsnComment, brokenMyRatingComment, brokenDevRatingComment, comment string
 		periods []PeriodTrace
 	)
 
-	pers, err := db.Query("select id,trace_id,term_per,res_per_bool, "+
-		"COALESCE(res_per_year, 0) as res_per_year, "+
-		"COALESCE(res_per, 'висновок відсутній') as res_per,"+
-		"COALESCE(res_per_comment, 'коментар відсутній') as res_per_comment, "+
-		"COALESCE(sign_per, '') as res_per,"+
-		"COALESCE(publ_per, '') as publ_per,"+
-		"COALESCE(give_per, '') as give_per,"+
-		"COALESCE(concl_per, '') as concl_per,"+
-		"cp_bool,"+
-		"COALESCE(concl_per_comment, 'коментар відсутній') as concl_per_comment,"+
-		"COALESCE(broken_my_rating, 0) as broken_my_rating,"+
-		"COALESCE(broken_my_rating_c, '') as broken_my_rating_c,"+
-		"COALESCE(broken_dev_rating, 0) as broken_dev_rating, "+
-		"COALESCE(broken_my_rating_c, '') as broken_dev_rating_c "+
-		"from track_period where trace_id = ?;", id)
+	pers, err := db.Query("SELECT id,trace_id,"+
+		"COALESCE(termin_zakon, '') AS termin_zakon,"+
+		"COALESCE(termin_fact, '') AS termin_fact,"+
+		"result_bool, "+
+		"COALESCE(result_year, 0) AS result_year, "+
+		"COALESCE(result, 'висновок відсутній') AS result,"+
+		"COALESCE(result_comment, 'коментар відсутній') AS result_comment, "+
+		"COALESCE(signed, '') AS signed,"+
+		"COALESCE(publicated, '') AS publicated,"+
+		"COALESCE(gived, '') AS gived,"+
+		"COALESCE(cnclsn, '') AS cnclsn,"+
+		"cnclsn_bool, "+
+		"COALESCE(cnclsn_comment, 'коментар відсутній') AS cnclsn_comment,"+
+		"COALESCE(br_my_rating, 0) AS br_my_rating,"+
+		"COALESCE(br_my_rating_c, '') AS br_my_rating_c,"+
+		"COALESCE(br_dev_rating, 0) AS br_dev_rating, "+
+		"COALESCE(br_dev_rating_c, '') AS br_dev_rating_c, "+
+		"COALESCE(p_comment, '') AS p_comment "+
+		"FROM trace_period WHERE trace_id = ?;", id)
 	if err != nil {
 		return nil, err
 	}
 	for pers.Next() {
-		err := pers.Scan(&traceID, &periodID, &termPer, &resPerBool, &resPerYear, &resPer, &resPerComment,
-			&signPer, &publPer, &givePer, &conclPer, &ConclPerBool, &conclPerComment, &brokenMyRating, &brokenMyRatingComment,
-			&brokenDevRating, &brokenDevRatingComment)
+		err := pers.Scan(&traceID, &periodID, &termZakon, &termFact,
+			&resultBool, &resultYear, &result, &resultComment,
+			&signed, &publicated, &gived, &cnclsn, &cnclsnBool,
+			&cnclsnComment, &brokenMyRating, &brokenMyRatingComment,
+			&brokenDevRating, &brokenDevRatingComment, &comment)
 		if err != nil {
 			return nil, err
 		}
 
-		periods = append(periods, PeriodTrace{traceID, periodID, termPer, resPerBool,
-			resPerYear, resPerComment, resPer, signPer, publPer,
-			givePer, conclPer, ConclPerBool, conclPerComment,
-			brokenMyRating, brokenMyRatingComment,
-			brokenDevRating, brokenDevRatingComment})
+		periods = append(periods, PeriodTrace{traceID, periodID, termZakon, termFact,
+			result, resultBool, resultYear, resultComment, signed,
+			publicated, gived, cnclsn, cnclsnBool,
+			cnclsnComment, brokenMyRating,
+			brokenMyRatingComment, brokenDevRating,
+			brokenDevRatingComment, comment})
 	}
 	defer pers.Close()
 	return &periods, nil
@@ -147,8 +163,9 @@ func (t BasicTrace) createNewItem() (int, error) {
 	table := "track_base "
 
 	if _, ok := t.Fields["trace_id"]; ok {
-		table = "track_period "
+		table = "trace_period "
 	}
+
 	for k, v := range t.Fields {
 		// check that column is valid
 		colNames = append(colNames, k)
@@ -166,10 +183,10 @@ func (t BasicTrace) createNewItem() (int, error) {
 	if len(phs) > 0 {
 		phs = phs[:len(phs)-1]
 	}
-	phs = " values(" + phs + ");"
+	phs = " VALUES(" + phs + ");"
 
 	colNamesString := "(" + strings.Join(colNames, ",") + ")"
-	stmt, err := db.Prepare("insert into " + table + colNamesString + phs)
+	stmt, err := db.Prepare("INSERT INTO " + table + colNamesString + phs)
 	if err != nil {
 		return 0, err
 	}
@@ -184,7 +201,7 @@ func (t BasicTrace) createNewItem() (int, error) {
 		return 0, err
 	}
 
-	if _, ok := t.Fields["requisits"]; ok {
+	if _, ok := t.Fields["reg_name"]; ok {
 		idx.updateIndex(id)
 		return int(id), nil
 	}

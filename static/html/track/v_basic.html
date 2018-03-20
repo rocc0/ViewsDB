@@ -3,7 +3,7 @@
     <div class="col-xs-6 pull-left">
         <div class="panel panel-default clearfix">
             <div class="panel-heading">Термін здійснення заходів з відстеження</div>
-            <div class="pull-left panel-body">{[{ track.pl.term_basic }]}</div>
+            <div class="pull-left panel-body">{[{ track.pl.b_termin_zakon }]}</div>
         </div>
     </div>
     <div class="col-xs-6 pull-left ">
@@ -11,29 +11,29 @@
             <div class="panel-heading">Результати відстеження результативності
                 <span class="glyphicon glyphicon-question-sign"
                       aria-hidden="true"
-                      uib-popover="{[{ track.pl.rslt_basic_comment }]}"
+                      uib-popover="{[{ track.pl.b_result_comment }]}"
                       popover-trigger="'mouseenter'"
                       popover-placement="top-left">
                     </span></div>
-            <div class="pull-left panel-body">{[{ track.pl.rslt_basic }]}</div>
+            <div class="pull-left panel-body">{[{ track.pl.b_result }]}</div>
         </div>
     </div>
     <div class="col-xs-6 pull-left">
         <div class="panel panel-default clearfix">
             <div class="panel-heading">Дата підписання  звіту  про відстеження результативності регуляторного акта</div>
-            <div class="pull-left panel-body">{[{ track.pl.sign_basic }]}</div>
+            <div class="pull-left panel-body">{[{ track.pl.b_signed }]}</div>
         </div>
     </div>
     <div class="col-xs-6 pull-left">
         <div class="panel panel-default clearfix">
             <div class="panel-heading">Дата оприлюденення  звіту  про відстеження результативності регуляторного акта</div>
-            <div class="pull-left panel-body">{[{ track.pl.pub_basic }]}</div>
+            <div class="pull-left panel-body">{[{ track.pl.b_publicated }]}</div>
         </div>
     </div>
     <div class="col-xs-6 pull-left">
         <div class="panel panel-default clearfix">
             <div class="panel-heading">Дата надання звіту  про відстеження результативності регуляторного акта до Держпідприємництва</div>
-            <div class="pull-left panel-body">{[{ track.pl.gived_basic }]}</div>
+            <div class="pull-left panel-body">{[{ track.pl.b_gived }]}</div>
         </div>
     </div>
     <div class="col-xs-6 pull-left ">
@@ -41,12 +41,100 @@
             <div class="panel-heading">Висновок Комітету щодо відповідності звіту вимогам постанови КМУ від 11.03.04 р. №308
                     <span class="glyphicon glyphicon-question-sign"
                           aria-hidden="true"
-                          uib-popover="{[{ track.pl.concl_basic_comment }]}"
+                          uib-popover="{[{ track.pl.b_cnclsn_comment }]}"
                           popover-trigger="'mouseenter'"
                           popover-placement="top-left">
                     </span>
             </div>
-            <div class="pull-left panel-body">{[{ track.pl.concl_basic }]}</div>
+            <div class="pull-left panel-body">{[{ track.pl.b_cnclsn }]}</div>
         </div>
     </div>
+    <div class="col-md-12" id="broken-switch">
+        <h4 class="clearfix">Порушено:</h4>
+
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">
+                Строк виконання
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.b_br_period_c }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
+            <div class="panel-body">{[{ track.pl.b_br_period | boolToWord }]}</div>
+        </div>
+
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">
+                Підпис
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.b_br_sign_c }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
+            <div class="panel-body">{[{ track.pl.b_br_sign | boolToWord }]}</div>
+        </div>
+
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">
+                Оприлюднення
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.b_br_promo_c }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
+            <div class="panel-body">{[{ track.pl.b_br_promo | boolToWord }]}</div>
+        </div>
+
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">
+                Строк подання звіту
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.b_br_term_rep_c }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
+            <div class="panel-body">{[{ track.pl.b_br_term_rep | boolToWord }]}</div>
+        </div>
+
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">
+                Метод відстеження
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.b_br_track_meth_c }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
+            <div class="panel-body">{[{ track.pl.b_br_track_meth | boolToWord }]}</div>
+        </div>
+
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">
+                Дані та припущення
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.b_br_data_assump_c }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
+            <div class="panel-body">{[{ track.pl.b_br_data_assump | boolToWord }]}</div>
+        </div>
+
+        <div class="panel panel-default pull-left">
+            <div class="panel-heading">
+                Показники
+                <span class="glyphicon glyphicon-question-sign"
+                      aria-hidden="true"
+                      uib-popover="{[{ track.pl.b_br_indexes_c }]}"
+                      popover-trigger="'mouseenter'"
+                      popover-placement="top-left">
+                    </span></div>
+            <div class="panel-body">{[{ track.pl.b_br_indexes | boolToWord }]}</div>
+        </div>
+    </div>
+
 </div>

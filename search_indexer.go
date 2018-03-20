@@ -10,14 +10,16 @@ import (
 	"gopkg.in/olivere/elastic.v5"
 )
 
-type workerRange struct {
-	First int
-	Last  int
-}
+type (
+	workerRange struct {
+		First int
+		Last  int
+	}
 
-type workerRanges struct {
-	IDs []workerRange
-}
+	workerRanges struct {
+		IDs []workerRange
+	}
+)
 
 //Generating of worker ranges
 func genWorkerRanges(workers int) workerRanges {
@@ -28,10 +30,10 @@ func genWorkerRanges(workers int) workerRanges {
 	row := db.QueryRow("SELECT MAX(Id) FROM track_base")
 	row.Scan(&highestID)
 
-	// TODO: need improvement on highest id
-	len := (highestID/100 + 1) * 100
-	rng := len / workers
-	//last := len-(rng*workers)
+	// TODO: need improvement on highestID
+	length := (highestID/100 + 1) * 100
+	rng := length / workers
+	//last := length -(rng*workers)
 	first := 0
 	for i := 0; i < workers-1; i++ {
 		ids.IDs = append(ids.IDs, workerRange{first, rng * (i + 1)})

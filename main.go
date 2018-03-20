@@ -2,6 +2,7 @@
  * Copyright (c) 2018.
  */
 
+//TODO new methods for structs
 package main
 
 import (

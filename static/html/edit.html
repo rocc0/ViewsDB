@@ -1,6 +1,6 @@
 
 <div class="track" id="track-edit">
-    <h3 class="doc-name">{[{ track.pl.requisits }]}</h3>
+    <h3 class="doc-name">{[{ track.pl.reg_name }]}</h3>
     <uib-tabset active="activeJustified" justified="true" type="pills" class="doc-tabs">
 
         <uib-tab index="0" heading="Реєстраційна інформація" >
@@ -19,11 +19,7 @@
             <div ng-include="'/static/html/track/e_period.html'" class="section"></div>
         </uib-tab>
 
-        <uib-tab index="4" heading="Показники">
-            <div ng-include="'/static/html/track/e_params.html'" class="section"></div>
-        </uib-tab>
-
-        <uib-tab index="5" heading="Скан-копії">
+        <uib-tab index="4" heading="Скан-копії">
             <div ng-include="'/static/html/track/e_photo.html'" class="section scanned"></div>
         </uib-tab>
 

@@ -15,7 +15,7 @@ var authMiddleware = &jwt.GinJWTMiddleware{
 	Timeout:    time.Hour,
 	MaxRefresh: time.Hour,
 	Authenticator: func(email string, password string, c *gin.Context) (string, bool) {
-		u := user{Email: email, Password: password}
+		u := User{Email: email, Password: password}
 
 		if u.loginCheck() == true {
 			return email, true
@@ -24,7 +24,7 @@ var authMiddleware = &jwt.GinJWTMiddleware{
 		return email, false
 	},
 	Authorizator: func(email string, c *gin.Context) bool {
-		u := user{Email: email}
+		u := User{Email: email}
 		return u.authCheck()
 	},
 	Unauthorized: func(c *gin.Context, code int, message string) {

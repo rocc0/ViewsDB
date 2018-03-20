@@ -37,7 +37,7 @@ func initializeRoutes() {
 	router.GET("/ratings", showRatings)
 	router.GET("/govs/edit", showEditGovsNames)
 
-	userRoutes := router.Group("/u")
+	userRoutes := router.RouterGroup.Group("/u")
 
 	{
 		userRoutes.GET("/login", showIndexPage)
