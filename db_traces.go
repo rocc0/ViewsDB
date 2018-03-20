@@ -11,6 +11,13 @@ type BasicTrace struct {
 	Fields map[string]interface{}
 }
 
+//NewTrace is a struct that used to create new trace
+type NewTrace struct {
+	Info     map[string]interface{} `json:"info"`
+	Basic    map[string]interface{} `json:"basic"`
+	Repeated map[string]interface{} `json:"repeated"`
+}
+
 //PeriodTrace is a part of the trace page thar include only periodic traces
 type PeriodTrace struct {
 	PeriodID               int    `json:"pid"`
@@ -53,10 +60,10 @@ func (s saveRequest) saveTraceField() error {
 //deleteItem deletes periodic item of trace
 func (d deleteRequest) deleteItem() error {
 	var table string
-	if d.TableName == "p" {
-		table = "track_period"
-	} else if d.TableName == "b" {
-		table = "track_base"
+	if d.Table == "p" {
+		table = "trace_period"
+	} else if d.Table == "b" {
+		table = "track_basis"
 	}
 	stmt, err := db.Prepare("DELETE FROM " + table + " WHERE id=?")
 	if err != nil {
@@ -153,20 +160,46 @@ func getPeriodicData(id int) (*[]PeriodTrace, error) {
 	return &periods, nil
 }
 
-func (t BasicTrace) createNewItem() (int, error) {
+func (new NewTrace) createNewTrace() (int, error) {
+	var (
+		idx indexItem
+	)
+	id, err := createNewItem(new.Info, "trace_info")
+	if err != nil {
+		return 0, err
+	}
+	_, err = createNewItem(new.Basic, "trace_basic")
+	if err != nil {
+		return 0, err
+	}
+	_, err = createNewItem(new.Repeated, "trace_repeat")
+	if err != nil {
+		return 0, err
+	}
+
+	idx.updateIndex(int64(id))
+
+	return id, nil
+}
+
+func (t BasicTrace) createNewPeriod() (int, error) {
+	id, err := createNewItem(t.Fields, "trace_period")
+
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
+}
+
+func createNewItem(data map[string]interface{}, table string) (int, error) {
 	var (
 		colNames []string
 		values   []interface{}
 		phs      string
-		idx      indexItem
 	)
-	table := "track_base "
 
-	if _, ok := t.Fields["trace_id"]; ok {
-		table = "trace_period "
-	}
-
-	for k, v := range t.Fields {
+	for k, v := range data {
 		// check that column is valid
 		colNames = append(colNames, k)
 		if v == "" {
@@ -201,12 +234,7 @@ func (t BasicTrace) createNewItem() (int, error) {
 		return 0, err
 	}
 
-	if _, ok := t.Fields["reg_name"]; ok {
-		idx.updateIndex(id)
-		return int(id), nil
-	}
 	return int(id), nil
-
 }
 
 func (e editGovernName) editGovName() error {

@@ -103,18 +103,19 @@
          }
         $scope.params = $routeParams;
         var docId = $scope.params.trackId;
-        var period = {
-            "trace_id": docId,
-            "term_per": "",
-            "res_per_bool": 0,
-            "res_per_year": 0,
-            "sign_per": "",
-            "publ_per": "",
-            "give_per": "",
-            "res_per": "",
-            "concl_per": "",
-            "cp_bool": 0
-        };
+
+         var period = {
+             "trace_id": docId,
+             "termin_zakon": "",
+             "result_bool": 0,
+             "result_year": 0,
+             "signed": "",
+             "publicated": "",
+             "gived": "",
+             "result": "",
+             "cnclsn": "",
+             "cnclsn_bool": 0
+         };
 
         $http.get("/api/v/" + docId).then(function (response) {
             $scope.track = response.data;
@@ -145,13 +146,13 @@
                 if (month < 12) {
                     month += 1
                 }
-                period.term_per = new_term.getFullYear() + "-" + month + "-" + new_term.getDate();
+                period.termin_zakon = new_term.getFullYear() + "-" + month + "-" + new_term.getDate();
                 $scope.savePeriod(period);
                 data.push(period);
                 $scope.track.pr = data;
                 delete period.pid
             } else {
-                var date = data[data.length - 1].term_per;
+                var date = data[data.length - 1].termin_zakon;
                 date = new Date(date);
                 period = angular.copy(period);
                 new_term = angular.copy(date);
@@ -160,7 +161,7 @@
                 if (month < 12) {
                     month += 1
                 }
-                period.term_per = new_term.getFullYear() + "-" + month + "-" + new_term.getDate();
+                period.termin_zakon = new_term.getFullYear() + "-" + month + "-" + new_term.getDate();
                 $scope.savePeriod(period);
                 data.push(period);
                 $scope.track.pr = data;
@@ -171,7 +172,7 @@
         $scope.savePeriod = function (data) {
             $http({
                 method: 'POST',
-                url: "/api/create",
+                url: "/api/create-period",
                 data: data,
                 headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token}
             }).then(function (response) {
@@ -183,7 +184,7 @@
             $http({
                 method: 'POST',
                 url: "/api/delete",
-                data: {item_id: model[index].pid, tbl_name: "p"},
+                data: {trace_id: model[index].pid, table: "p"},
                 headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token}
         }).then(function (response) {
                 model.splice(index, 1);
@@ -260,7 +261,18 @@
 
  viewDB.controller("createCtrl", function ($scope, $http,$location,$rootScope,trackingService,authService) {
         $scope.isLoggedIn = false;
-        $scope.fdata = {};
+         $scope.form_data.repeated = {
+             "r_termin_zakon": "",
+             "r_result_bool": 0,
+             "r_result_year": 0,
+             "r_signed": "",
+             "r_publicated": "",
+             "r_gived": "",
+             "r_result": "",
+             "r_cnclsn": "",
+             "r_cnclsn_bool": 0,
+             "r_cnclsn_comment": ""
+         };
 
          const token = localStorage.getItem('token');
          if (token) {
@@ -276,7 +288,6 @@
                      console.log(err);
                      $location.path('/u/login');
                  });
-
          }
 
         trackingService.getGovs()
@@ -288,7 +299,7 @@
             $http({
                 method: 'POST',
                 url: "/api/create",
-                data: $scope.fdata,
+                data: $scope.form_data,
                 headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token}
             }).then(function (response) {
                 window.location.replace("/track/id/" + response.data.id);
@@ -306,7 +317,6 @@
             }
             return value
         }
-
     });
 
  viewDB.controller("ratingsCtrl", function ($scope, $http) {

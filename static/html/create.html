@@ -3,13 +3,17 @@
     <div class="clearfix form-save-buttons">
         <h2 class="col-xs-11">Додати відстеження</h2>
         <!--<div class="col-xs-2"><button type="submit" class="btn btn-primary pull-left">Зберегти чорновик</button></div>-->
-        <div class="col-xs-1"><button type="submit" class="btn btn-primary pull-left" ng-click="addTrack()">Додати</button></div>
+        <div class="col-xs-1">
+            <button type="submit" class="btn btn-primary pull-left" ng-click="addTrack()">Додати</button>
+        </div>
     </div>
     <h3 class="col-xs-12 track-header">Основна інформація</h3>
     <div class="col-xs-12 clearfix">
         <div class="panel panel-default">
             <div class=" panel-heading">Назва та реквізити регуляторного акта</div>
-            <div class="panel-body"><input type="text" ng-model="fdata.requisits" class="form-control"/></div>
+            <div class="panel-body">
+                <input type="text" ng-model="form_data.info.reg_name" class="form-control"/>
+            </div>
         </div>
     </div>
 
@@ -18,36 +22,45 @@
             <div class="col-xs-8 panel-heading">Реквізити реєстрації регуляторного акта в Мінюсті</div>
             <div class="col-xs-4 panel-heading">&nbsp;</div>
             <div class="clearfix">
-                <div class="col-xs-2 pull-left panel-body high"><span>Дата реєстрації</span></div>
                 <div class="col-xs-2 pull-left panel-body high">
-                    <input class="form-control" ng-model="fdata.reg_date" type="date"
-                           ng-change="fdata.reg_date = dateConvert(fdata.reg_date)"
-                           placeholder="yyyy-MM-dd" min="1999-01-01" max="2113-12-31" required></div>
-                <div class="col-xs-2 pull-left panel-body high"><span>Номер реєстрації</span></div>
+                    <span>Дата реєстрації</span>
+                </div>
                 <div class="col-xs-2 pull-left panel-body high">
-                    <input class="form-control" ng-model="fdata.reg_number" required></div>
-                <div class="col-xs-2 pull-left panel-body high"><span>Дата набуття чинності</span></div>
+                    <input class="form-control" ng-model="form_data.info.reg_date" type="date"
+                           ng-change="form_data.info.reg_date = dateConvert(form_data.info.reg_date)"
+                           placeholder="yyyy-MM-dd" min="1999-01-01" max="2113-12-31" required>
+                </div>
                 <div class="col-xs-2 pull-left panel-body high">
-                    <input class="form-control" ng-model="fdata.actual_date" type="date"
-                           ng-change="fdata.actual_date = dateConvert(fdata.actual_date)"
-                           placeholder="yyyy-MM-dd" min="1999-01-01" max="2113-12-31" required></div>
+                    <span>Номер реєстрації</span>
+                </div>
+                <div class="col-xs-2 pull-left panel-body high">
+                    <input class="form-control" ng-model="form_data.info.reg_number" required>
+                </div>
+                <div class="col-xs-2 pull-left panel-body high">
+                    <span>Дата набуття чинності</span>
+                </div>
+                <div class="col-xs-2 pull-left panel-body high">
+                    <input class="form-control" ng-model="form_data.info.actual_date" type="date"
+                           ng-change="form_data.info.actual_date = dateConvert(form_data.info.actual_date)"
+                           placeholder="yyyy-MM-dd" min="1999-01-01" max="2113-12-31" required>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="col-xs-12 clearfix">
         <div class="panel panel-default">
-            <div class="panel-heading">Розробник регуляторного акта{[{ fdata.developer }]}</div>
+            <div class="panel-heading">Розробник регуляторного акта{[{ form_data.info.developer }]}</div>
             <div class="panel-body developer">
                 <div >
-                    <input type="text" ng-model="fdata.developer"
+                    <input type="text" ng-model="form_data.info.developer"
                            placeholder="Розробник"
                            class="form-control"
                            uib-typeahead="gov as gov.name for gov in governs | filter:$viewValue"
                            typeahead-min-length="2"
                            typeahead-focus-on-select="true"
                            typeahead-editable="false"
-                           typeahead-on-select="fdata.developer = $item.id"
+                           typeahead-on-select="form_data.info.developer = $item.id"
                            typeahead-input-formatter="$model != 0 ? governs[$model-1].name : governs[$model].name">
                 </div>
             </div>
@@ -57,7 +70,9 @@
     <div class="col-xs-12 clearfix">
         <div class="panel panel-default">
             <div class=" panel-heading">Рішення Держпідприємництва щодо погодження</div>
-            <div class="panel-body"><input class="form-control" ng-model="fdata.gov_choice"></div>
+            <div class="panel-body">
+                <input class="form-control" ng-model="form_data.info.gov_choice">
+            </div>
         </div>
     </div>
 
@@ -66,95 +81,134 @@
             <div class="panel-heading">Рік відстеження та параметри</div>
             <div class="panel-body">
                 <div class="col-xs-2 pull-left">
-                    <input type="text" ng-model="fdata.trace_year"
+                    <input type="text" ng-model="form_data.info.trace_year"
                            class="form-control"placeholder="Рік відстеження">
                 </div>
                 <div class="col-xs-1 pull-left heading">Базовий</div>
-                <switcher class="col-xs-1 pull-left" ng-model="fdata.base"
-                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher>
+                <switcher class="col-xs-1 pull-left" ng-model="form_data.info.trace_basic"
+                          true-value="'1'" true-label="Так"
+                          false-value="'0'" false-label="Ні">
+                </switcher>
                 <div class="col-xs-1 pull-left heading">Повторний</div>
-                <switcher class="col-xs-1 pull-left" ng-model="fdata.repeated"
-                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні" ></switcher>
+                <switcher class="col-xs-1 pull-left" ng-model="form_data.info.trace_repeated"
+                          true-value="'1'" true-label="Так"
+                          false-value="'0'" false-label="Ні" >
+                </switcher>
                 <div class="col-xs-1 pull-left heading">Періодичний</div>
-                <switcher class="col-xs-1 pull-left" ng-model="fdata.periodic"
-                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні" ></switcher>
+                <switcher class="col-xs-1 pull-left" ng-model="form_data.info.trace_periodic"
+                          true-value="'1'" true-label="Так"
+                          false-value="'0'" false-label="Ні" >
+                </switcher>
                 <div class="col-xs-1 pull-left heading">Фактичний</div>
-                <switcher class="col-xs-1 pull-left" ng-model="fdata.fact"
-                          true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні" ></switcher>
+                <switcher class="col-xs-1 pull-left" ng-model="form_data.info.trace_fact"
+                          true-value="'1'" true-label="Так"
+                          false-value="'0'" false-label="Ні" >
+                </switcher>
             </div>
         </div>
     </div>
-
+    <div class="col-xs-12 clearfix comment">
+        <div class="panel panel-default">
+            <div class=" panel-heading">Коментар</div>
+            <div class="panel-body">
+                <textarea class="form-control" ng-model="form_data.info.i_comment"></textarea>
+            </div>
+        </div>
+    </div>
 
     <div class="clearfix">
         <h3 class="col-xs-12 track-header">Базове відстеження</h3>
         <div class="col-xs-6">
             <div class="panel panel-default clearfix">
                 <div class="panel-heading">Термін здійснення заходів з відстеження</div>
-                <div class="panel-body"><input class="form-control" ng-model="fdata.term_basic" type="date"
-                                               ng-change="fdata.term_basic = dateConvert(fdata.term_basic)"
-                                                placeholder="yyyy-MM-dd" min="1999-01-01" max="2113-12-31"></div>
+                <div class="panel-body">
+                    <input class="form-control"
+                           ng-model="form_data.basic.b_termin_zakon" type="date"
+                           ng-change="form_data.basic.b_termin_zakon = dateConvert(form_data.basic.b_termin_zakon)"
+                           placeholder="yyyy-MM-dd" min="1999-01-01" max="2113-12-31">
+                </div>
             </div>
         </div>
         <div class="col-xs-6 ">
             <div class="panel panel-default pull-left" style="width: 79.2%;">
                 <div class="panel-heading">Результати відстеження результативності</div>
-                <div class="panel-body"><input class="form-control" ng-model="fdata.rslt_basic"></div>
+                <div class="panel-body">
+                    <input class="form-control" ng-model="form_data.basic.b_result">
+                </div>
             </div>
             <div class="panel panel-default pull-left">
                 <div class="panel-heading">Ефективне?</div>
-                <div class="panel-body"><switcher ng-model="fdata.rslt_basic_bool"
-                              true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+                <div class="panel-body">
+                    <switcher ng-model="form_data.basic.b_result_bool"
+                              true-value="'1'" true-label="Так"
+                              false-value="'0'" false-label="Ні">
+                    </switcher>
+                </div>
             </div>
         </div>
         <div class="col-xs-6">
             <div class="panel panel-default clearfix">
                 <div class="panel-heading">Дата підписання  звіту  про відстеження результативності регуляторного акта</div>
-                <div class="panel-body"><input  class="form-control" ng-model="fdata.sign_basic" type="date"
-                                                ng-change="fdata.sign_basic = dateConvert(fdata.sign_basic)"
-                                                placeholder="yyyy-MM-dd" min="1999-01-01" max="2113-12-31"></div>
+                <div class="panel-body">
+                    <input  class="form-control"
+                            ng-model="form_data.basic.b_signed" type="date"
+                            ng-change="form_data.basic.b_signed = dateConvert(form_data.basic.b_signed)"
+                            placeholder="yyyy-MM-dd" min="1999-01-01" max="2113-12-31">
+                </div>
             </div>
         </div>
         <div class="col-xs-6">
             <div class="panel panel-default clearfix">
                 <div class="panel-heading">Дата оприлюденення  звіту  про відстеження результативності регуляторного акта</div>
-                <div class="panel-body"><input  class="form-control" ng-model="fdata.pub_basic" type="date"
-                                                ng-change="fdata.pub_basic = dateConvert(fdata.pub_basic)"
-                                                placeholder="yyyy-MM-dd" min="1999-01-01" max="2113-12-31"></div>
+                <div class="panel-body">
+                    <input class="form-control" ng-model="form_data.basic.b_publicated" type="date"
+                           ng-change="form_data.basic.b_publicated = dateConvert(form_data.basic.b_publicated)"
+                           placeholder="yyyy-MM-dd" min="1999-01-01" max="2113-12-31">
+                </div>
             </div>
         </div>
         <div class="col-xs-6">
             <div class="panel panel-default clearfix">
                 <div class="panel-heading">Дата надання звіту  про відстеження результативності регуляторного акта до Держпідприємництва</div>
-                <div class="panel-body"><input  class="form-control" ng-model="fdata.gived_basic" type="date"
-                                                ng-change="fdata.gived_basic = dateConvert(fdata.gived_basic)"
-                                                placeholder="yyyy-MM-dd" min="1999-01-01" max="2113-12-31"></div>
+                <div class="panel-body">
+                    <input class="form-control" ng-model="form_data.basic.b_gived" type="date"
+                           ng-change="form_data.basic.b_gived = dateConvert(form_data.basic.b_gived)"
+                           placeholder="yyyy-MM-dd" min="1999-01-01" max="2113-12-31">
+                </div>
             </div>
         </div>
         <div class="col-xs-6 switch">
             <div class="panel panel-default pull-left" style="width: 79.2%;">
                 <div class="panel-heading">Висновок Комітету щодо відповідності звіту вимогам постанови КМУ від 11.03.04 р. №308</div>
-                <div class="panel-body"><input  class="form-control" ng-model="fdata.concl_basic"></div>
+                <div class="panel-body">
+                    <input  class="form-control" ng-model="form_data.basic.b_cnclsn">
+                </div>
             </div>
             <div class="panel panel-default pull-left">
                 <div class="panel-heading high">Порушено?</div>
-                <div class="panel-body"><switcher ng-model="fdata.cb_bool"
-                              true-value="'1'" true-label="Так" false-value="'0'" false-label="Ні"></switcher></div>
+                <div class="panel-body">
+                    <switcher ng-model="form_data.basic.b_cnclsn_bool"
+                              true-value="'1'" true-label="Так"
+                              false-value="'0'" false-label="Ні">
+                    </switcher>
+                </div>
             </div>
         </div>
     </div>
 
-
-
     <div class="col-xs-12 clearfix comment">
         <div class="panel panel-default">
             <div class=" panel-heading">Коментар</div>
-            <div class="panel-body"><textarea class="form-control" ng-model="fdata.comment"></textarea></div>
+            <div class="panel-body">
+                <textarea class="form-control" ng-model="form_data.basic.b_comment"></textarea>
+            </div>
         </div>
         <div class="clearfix form-save-buttons">
             <div class="col-xs-11"></div>
             <!--<div class="col-xs-2"><button type="submit" class="btn btn-primary pull-left" >Зберегти чорновик</button></div>-->
-            <div class="col-xs-1"><button type="submit" class="btn btn-primary pull-left" ng-click="addTrack()">Додати</button></div>
+            <div class="col-xs-1">
+                <button type="submit" class="btn btn-primary pull-left" ng-click="addTrack()">Додати</button>
+            </div>
         </div>
     </div>
 

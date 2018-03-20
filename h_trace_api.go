@@ -3,13 +3,13 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"reflect"
 	"strconv"
 
-	"log"
-
 	"github.com/gin-gonic/gin"
+	"strings"
 )
 
 type (
@@ -21,8 +21,8 @@ type (
 	}
 
 	deleteRequest struct {
-		TraceID   int    `json:"item_id"`
-		TableName string `json:"tbl_name"`
+		TraceID int    `json:"trace_id"`
+		Table   string `json:"table"`
 	}
 
 	editGovernName struct {
@@ -62,12 +62,10 @@ func getTrace(c *gin.Context) {
 	if err == nil {
 		err := b.getBasicData(traceID)
 		if err != nil {
-			log.Print(err.Error())
 			c.AbortWithStatus(http.StatusBadRequest)
 		}
 		period, err := getPeriodicData(traceID)
 		if err != nil {
-			log.Print(err.Error())
 			c.AbortWithStatus(http.StatusBadRequest)
 		}
 		for k, v := range b.Fields {
@@ -95,12 +93,10 @@ func postTrackField(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
-		log.Print(1, err)
 	} else {
 		err := save.saveTraceField()
 		if err != nil {
 			c.AbortWithStatus(http.StatusBadRequest)
-			log.Print(2, err)
 		} else {
 			c.JSON(http.StatusOK, gin.H{
 				"title": "Зміни збережено"})
@@ -108,22 +104,44 @@ func postTrackField(c *gin.Context) {
 	}
 }
 
+//TODO: needs refactoring and decoupling
 func postCreateItem(c *gin.Context) {
-	var trace BasicTrace
+	var trace NewTrace
+	var period BasicTrace
 
 	x, _ := ioutil.ReadAll(c.Request.Body)
-	err := json.Unmarshal([]byte(x), &trace.Fields)
 
-	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-	} else {
-		if id, err := trace.createNewItem(); err == nil {
-			c.JSON(http.StatusOK, gin.H{
-				"title": "Відстеження додано",
-				"id":    id,
-			})
-		} else {
+	if ok := strings.Contains(c.Request.URL.Path, "create-period"); ok {
+		err := json.Unmarshal([]byte(x), &period.Fields)
+		if err != nil {
+
 			c.AbortWithStatus(http.StatusBadRequest)
+		} else {
+			if id, err := period.createNewPeriod(); err == nil {
+				c.JSON(http.StatusOK, gin.H{
+					"title": "Відстеження додано",
+					"id":    id,
+				})
+			} else {
+
+				c.AbortWithStatus(http.StatusBadRequest)
+			}
+		}
+	} else {
+		err := json.Unmarshal([]byte(x), &trace)
+		if err != nil {
+			log.Print(1, err)
+			c.AbortWithStatus(http.StatusBadRequest)
+		} else {
+			if id, err := trace.createNewTrace(); err == nil {
+				c.JSON(http.StatusOK, gin.H{
+					"title": "Відстеження додано",
+					"id":    id,
+				})
+			} else {
+				log.Print(2, err)
+				c.AbortWithStatus(http.StatusBadRequest)
+			}
 		}
 	}
 }

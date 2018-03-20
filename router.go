@@ -75,8 +75,11 @@ func initializeRoutes() {
 		apiTraceRoutes.GET("/v/:trk_id", getTrace)
 		apiTraceRoutes.POST("/v/:trk_id", authMiddleware.MiddlewareFunc(), postTrackField)
 
-		//Creation of view
+		//Creation of a new trace
 		apiTraceRoutes.POST("/create", authMiddleware.MiddlewareFunc(), postCreateItem)
+
+		//Creation of periodic trace
+		apiTraceRoutes.POST("/create-period", authMiddleware.MiddlewareFunc(), postCreateItem)
 
 		//Delete handling
 		apiTraceRoutes.POST("/delete", authMiddleware.MiddlewareFunc(), postDeleteItem)
