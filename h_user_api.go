@@ -10,14 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type userField struct {
-	Field string `json:"field"`
-	Data  string `json:"data"`
-	ID    int    `json:"id"`
-}
-
 func cabinet(c *gin.Context) {
-	var u user
+	var u User
 	claims := jwt.ExtractClaims(c)
 	u.Email, _ = claims["id"].(string)
 	err := u.getUser()
@@ -34,7 +28,7 @@ func cabinet(c *gin.Context) {
 }
 
 func register(c *gin.Context) {
-	var u user
+	var u User
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	err := json.Unmarshal([]byte(x), &u)
 

@@ -12,22 +12,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type saveRequest struct {
-	TraceType int    `json:"type"`
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	Data      string `json:"data"`
-}
+type (
+	saveRequest struct {
+		TraceType int    `json:"type"`
+		ID        int    `json:"id"`
+		Name      string `json:"name"`
+		Data      string `json:"data"`
+	}
 
-type deleteRequest struct {
-	TraceID   int    `json:"item_id"`
-	TableName string `json:"tbl_name"`
-}
+	deleteRequest struct {
+		TraceID   int    `json:"item_id"`
+		TableName string `json:"tbl_name"`
+	}
 
-type editGovernName struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-}
+	editGovernName struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	}
+)
 
 func getRatings(c *gin.Context) {
 	columns, ratings, err := getReportData()
@@ -121,20 +123,21 @@ func postCreateItem(c *gin.Context) {
 			})
 		} else {
 			c.AbortWithStatus(http.StatusBadRequest)
+			log.Print(err)
 		}
 	}
 }
 
 func postDeleteItem(c *gin.Context) {
-	var delete deleteRequest
+	var del deleteRequest
 
 	x, _ := ioutil.ReadAll(c.Request.Body)
-	err := json.Unmarshal([]byte(x), &delete)
+	err := json.Unmarshal([]byte(x), &del)
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 	} else {
-		if err := delete.deleteItem(); err == nil {
+		if err := del.deleteItem(); err == nil {
 			c.JSON(http.StatusOK, gin.H{
 				"title": "Відстеження видалено",
 			})
