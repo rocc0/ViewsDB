@@ -27,7 +27,7 @@ func genWorkerRanges(workers int) workerRanges {
 		highestID int
 		ids       workerRanges
 	)
-	row := db.QueryRow("SELECT MAX(Id) FROM track_base")
+	row := db.QueryRow("SELECT MAX(Id) FROM trace_info")
 	row.Scan(&highestID)
 
 	// TODO: need improvement on highestID
@@ -49,14 +49,15 @@ func indexWorker(ctx context.Context, wg *sync.WaitGroup, client *elastic.Client
 		developer, traceYear, base, repeated, periodical, fact string
 	)
 
-	res, err := db.Query("select id, requisits, gov_choice, reg_date, trace_year, "+
-		"developer, base, repeated, periodic, fact from track_base WHERE id BETWEEN ? AND ?", f, l)
+	res, err := db.Query("select id, reg_name, reg_date, gov_choice, trace_year, "+
+		"developer, trace_basic, trace_repeated, trace_periodic, "+
+		"trace_fact from trace_info WHERE id BETWEEN ? AND ?", f, l)
 	if err != nil {
 		log.Print("ERROR:", err)
 	}
 	log.Print("Indexing started", f, l)
 	for res.Next() {
-		err := res.Scan(&id, &requisits, &regDate, &govChoice, &traceYear, &developer,
+		err := res.Scan(&id, &requisits, &regDate, &traceYear, &govChoice, &developer,
 			&base, &repeated, &periodical, &fact)
 		if err != nil {
 			log.Print(err.Error(), " | ", id, "\n")

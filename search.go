@@ -32,7 +32,7 @@ const mapping = `
 				"id":{
 					"type":"text"
 				},
-				"requisits":{
+				"reg_name":{
 					"type":"text",
 					"analyzer": "ukrainian"
 				},
@@ -46,19 +46,19 @@ const mapping = `
 				"developer":{
 					"type":"integer"
 				},
-				"year":{
+				"trace_year":{
 					"type":"integer"
 				},
-				"base":{
+				"trace_basic":{
 					"type":"integer"
 				},
-				"repeat":{
+				"trace_repeat":{
 					"type":"integer"
 				},
-				"period":{
+				"trace_period":{
 					"type":"integer"
 				},
-				"fact":{
+				"trace_fact":{
 					"type":"integer"
 				}
 			}
@@ -108,8 +108,9 @@ func (idx indexItem) updateIndex(id int64) error {
 	)
 	ctx, client, err := elasticConnect()
 
-	ind, err := db.Query("select id, requisits, reg_date, gov_choice,"+
-		"trace_year, developer, base, repeated, periodic, fact from track_base where id=?;", id)
+	ind, err := db.Query("select id, reg_name, reg_date, gov_choice,"+
+		"trace_year, developer, trace_basic, trace_repeated, trace_periodic,"+
+		" trace_fact from trace_info where id=?;", id)
 	if err != nil {
 		return err
 	}

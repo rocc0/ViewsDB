@@ -6,7 +6,7 @@ import (
 
 func TestUser_UserInit(t *testing.T) {
 	err := UserInit()
-	if err != nil  {
+	if err != nil {
 		t.Fail()
 	}
 }
@@ -22,7 +22,6 @@ func TestUser_LoginCheck(t *testing.T) {
 		t.Fail()
 	}
 }
-
 
 func TestUser_AuthCheck(t *testing.T) {
 	var u User
@@ -54,9 +53,9 @@ func TestUser_GetUser(t *testing.T) {
 
 func TestUser_Register(t *testing.T) {
 	var userList = []User{
-		User{Name:"pass1",Surename:"",Email:"",Password:"",Rights:0},
-		User{Name:"pass1",Surename:"",Email:"",Password:"",Rights:0},
-		User{Name:"pass1",Surename:"",Email:"",Password:"",Rights:0},
+		User{Name: "pass1", Surename: "", Email: "", Password: "", Rights: 0},
+		User{Name: "pass1", Surename: "", Email: "", Password: "", Rights: 0},
+		User{Name: "pass1", Surename: "", Email: "", Password: "", Rights: 0},
 	}
 
 	err := userList[0].Register()
@@ -76,9 +75,9 @@ func TestUser_Register(t *testing.T) {
 } //
 func TestUserField_EditField(t *testing.T) {
 	var f = []userField{
-		userField{"","",0},
-		userField{"","",0},
-		userField{"","",0},
+		userField{"", "", 0},
+		userField{"", "", 0},
+		userField{"", "", 0},
 	}
 	err := f[0].EditField()
 	if err != nil {

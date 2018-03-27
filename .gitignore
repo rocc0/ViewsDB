@@ -1,4 +1,4 @@
-track_db.exe
+*.exe
 test.index/*.*
 static/*.out
 static/images/*.*
@@ -9,3 +9,4 @@ static/css/angular-switcher.min.css
 .idea/*.*
 .idea/copyright
 conf.yaml
+imager/conf.yaml

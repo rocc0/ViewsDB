@@ -1,0 +1,48 @@
+syntax = "proto3";
+package imagegrpc;
+
+
+// The Customer service definition.
+service Imager {
+  // Get all Customers with filter - A server-to-client streaming RPC.
+  rpc GetImages(ImagesFilter) returns (stream Images) {}
+  // Create a new Customer - A simple RPC
+  rpc DeleteImage(RemoveRequest) returns (RemoveResponse) {}
+
+  rpc AddImage(NewImageRequest) returns (NewImageResponse) {}
+}
+
+message Image {
+    string docID = 1;
+    string photoID = 2;
+    string original = 3;
+    string thumb = 4;
+}
+
+message Images {
+    repeated Image images = 1;
+}
+
+message NewImageRequest {
+    string docID = 1;
+    string photoID = 2;
+    string original = 3;
+    string thumb = 4;
+}
+
+message NewImageResponse {
+    bool success = 1;
+}
+
+message RemoveRequest {
+    string colID = 1;
+    string imageID = 2;
+}
+
+message RemoveResponse {
+    bool success = 1;
+}
+
+message ImagesFilter {
+    string colID = 1;
+}

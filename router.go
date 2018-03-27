@@ -88,9 +88,9 @@ func initializeRoutes() {
 	apiImageRoutes := router.Group("/api")
 	{
 		//Images
-		apiImageRoutes.POST("/upload", postImage)
+		apiImageRoutes.POST("/upload", postAddImage)
 
-		apiImageRoutes.GET("/img/:trk_id", getImages)
+		apiImageRoutes.GET("/img/:trk_id", getTraceImages)
 
 		apiImageRoutes.POST("/img/:trk_id/delete", authMiddleware.MiddlewareFunc(), postDelImage)
 	}

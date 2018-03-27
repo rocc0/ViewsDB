@@ -9,6 +9,10 @@ import (
 
 var config *configuration
 
+const (
+	grpcAddress = "localhost:50051"
+)
+
 type configuration struct {
 	Listen      string `yaml:"listen"`
 	MySQL       string `yaml:"mysql"`

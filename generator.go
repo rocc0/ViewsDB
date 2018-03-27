@@ -2,7 +2,7 @@
  * Copyright (c) 2018.
  */
 
-package gen
+package main
 
 import (
 	"math/rand"
@@ -11,15 +11,10 @@ import (
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
-//SeqLength of the string that will be returned
-type SeqLength struct {
-	Length int
-}
-
 //Generate returns a random seq of symbols
-func (g SeqLength) Generate() string {
+func generate(length int) string {
 	rand.Seed(time.Now().UnixNano())
-	b := make([]rune, g.Length)
+	b := make([]rune, length)
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]
 	}
