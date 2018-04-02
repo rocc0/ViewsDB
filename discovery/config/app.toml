@@ -1,0 +1,3 @@
+# TOML config file.
+[discovery]
+imageservice = "localhost:50051"

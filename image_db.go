@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/disintegration/imaging"
+	"github.com/minio/minio-go"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -61,9 +62,20 @@ func (i newImage) resizeImage() error {
 
 func getImageUrls(col string) ([]newImage, error) {
 	var result []newImage
+	client, err := minio.NewV4("192.168.99.100:9000", config.MinioKay,
+		config.MinioSecret, false)
+	if err != nil {
+		return nil, err
+	}
+
+	if err != nil {
+		log.Print(err.Error(), "minio error")
+	}
+	bkts, err := client.ListBuckets()
+	log.Print(bkts, len(bkts))
 
 	c := session.DB("images").C("i" + col)
-	err := c.Find(nil).All(&result)
+	err = c.Find(nil).All(&result)
 
 	if err != nil {
 		log.Print(err.Error(), "image not found")

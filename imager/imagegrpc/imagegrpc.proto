@@ -46,3 +46,7 @@ message RemoveResponse {
 message ImagesFilter {
     string colID = 1;
 }
+
+message ServiceDiscovery {
+    string order_service_uri = 1;
+}

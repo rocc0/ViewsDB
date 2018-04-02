@@ -24,6 +24,8 @@ type configuration struct {
 	ElasticLog  string `yaml:"elastic-log"`
 	ElasticPass string `yaml:"elastic-pass"`
 	Mongo       string `yaml:"mongo"`
+	MinioKay    string `yaml:"minio-k"`
+	MinioSecret string `yaml:"minio-s"`
 }
 
 func (c *configuration) getConf() error {

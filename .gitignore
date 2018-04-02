@@ -10,3 +10,4 @@ static/css/angular-switcher.min.css
 .idea/copyright
 conf.yaml
 imager/conf.yaml
+*.env

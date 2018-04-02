@@ -8,7 +8,6 @@ import (
 	pb "./imager/imagegrpc"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
-	"log"
 )
 
 func getTraceImages(c *gin.Context) {
