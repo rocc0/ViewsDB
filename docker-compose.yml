@@ -52,8 +52,8 @@ services:
     volumes:
          - "./elastic:/data/elastic"
          - "/home/rocco/data/elastic:/usr/share/elasticsearch/data"
-    command: chmod 755 /data/elastic/es-plugins.sh \
-             && /data/elastic/es-plugins.sh
+    entrypoint: chmod 755 /data/elastic/es-plugins.sh
+    command: /data/elastic/es-plugins.sh
   nats_server:
     container_name: trace_nats
     image: "nats"
