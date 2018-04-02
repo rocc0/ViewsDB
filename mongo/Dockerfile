@@ -1,9 +1,14 @@
-# https://github.com/elastic/elasticsearch-docker
-#FROM elasticsearch:5.3.0 # deprecated images https://github.com/deviantony/docker-elk/issues/119
-FROM mongo:latest
+FROM ubuntu:16.04
+MAINTAINER TonyWang <plantpark.net@gmail.com>
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
+RUN echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | tee /etc/apt/sources.list.d/mongodb.list
+RUN apt-get update && apt-get install -y mongodb-10gen
+RUN mkdir -p /data/db
+
+ADD addusers.sh /addusers.sh
+
+EXPOSE 27017 28017
 CMD ["mongod", "--auth"]
-RUN echo "Creating mongo users..."
-RUN mongo admin -u admin -p password --eval "db.createUser({"user": "hasher","pwd": "password","roles": ["readWrite"]});"
-RUN echo "Mongo users created."
-# Add your elasticsearch plugins setup here
-# Example: RUN edocklasticsearch-plugin install analysis-icu
+CMD ["/set_mongodb_password.sh"]
+ENTRYPOINT usr/bin/mongod
+
