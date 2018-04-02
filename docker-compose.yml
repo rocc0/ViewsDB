@@ -32,7 +32,7 @@ services:
          - "/home/data/mongo:/data/db"
     command: >
          mongod --auth
-         && mongod --eval db.createUser({ user: 'hasher', pwd: 'password', roles: [ { role: "readWrite", db: "hashes" } ] });
+         && mongo --eval db.createUser({ user: 'hasher', pwd: 'password', roles: [ { role: "readWrite", db: "hashes" } ] });
   elastic:
     container_name: trace_elastic
     image: "docker.elastic.co/elasticsearch/elasticsearch:5.3.0"
