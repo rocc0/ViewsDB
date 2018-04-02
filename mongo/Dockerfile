@@ -1,7 +1,7 @@
 # https://github.com/elastic/elasticsearch-docker
 #FROM elasticsearch:5.3.0 # deprecated images https://github.com/deviantony/docker-elk/issues/119
 FROM mongo:latest
-RUN mongod --auth
+CMD ["mongod", "--auth"]
 RUN echo "Creating mongo users..."
 RUN mongo admin -u admin -p password --eval "db.createUser({"user": "hasher","pwd": "password","roles": ["readWrite"]});"
 RUN echo "Mongo users created."
