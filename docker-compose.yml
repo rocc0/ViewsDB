@@ -44,6 +44,7 @@ services:
          - "9200:9200"
     environment:
          - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+         - vm.max_map_count=262144
          - xpack.security.enabled=false
          - http.cors.enabled=true
          - http.cors.allow-origin="*"
