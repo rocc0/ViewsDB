@@ -10,7 +10,7 @@ services:
     environment:
          - "MYSQL_ROOT_PASSWORD=password"
     volumes:
-         - "/home/data/mysql:/var/lib/mysql"
+         - "/home/rocco/data/mysql:/var/lib/mysql"
   myadmin:
     container_name: trace_myadmin
     image: "phpmyadmin/phpmyadmin:latest"
@@ -29,7 +29,7 @@ services:
     ports:
          - "27017:27017"
     volumes:
-         - "/home/data/mongo:/data/db"
+         - "/home/rocco/data/mongo:/data/db"
     command: >
          mongod --auth
          && mongo --eval db.createUser({ user: 'hasher', pwd: 'password', roles: [ { role: "readWrite", db: "hashes" } ] });
@@ -46,7 +46,7 @@ services:
          - transport.host=127.0.0.1
          - http.host=0.0.0.0
     volumes:
-         - "/home/data/elastic:/usr/share/elasticsearch/data"
+         - "/home/rocco/data/elastic:/usr/share/elasticsearch/data"
   nats_server:
     container_name: trace_nats
     image: "nats"
@@ -61,6 +61,6 @@ services:
     ports:
          - "9000:9000"
     volumes:
-         - "/home/data/minio/data:/data"
-         - "/home/data/minio/config:/root/.minio"
+         - "/home/rocco/data/minio/data:/data"
+         - "/home/rocco/data/minio/config:/root/.minio"
     command: server /data
