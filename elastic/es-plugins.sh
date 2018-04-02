@@ -1,5 +1,6 @@
 #!/bin/bash
-bin/elasticsearch-plugin list | grep 'ukrainian' &> /dev/null
-if [ $? == 0 ]; then
+if bin/elasticsearch-plugin list | grep -q 'ukrainian'; then
+   echo "exists"
+else
    bin/elasticsearch-plugin install analysis-ukrainian
 fi
