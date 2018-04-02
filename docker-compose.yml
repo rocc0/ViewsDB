@@ -52,7 +52,7 @@ services:
     volumes:
          - "/home/rocco/data/elastic:/usr/share/elasticsearch/data"
     command:
-         - /home/rocco/TraceDB/elastic/es-plugins.sh
+         - sh /home/rocco/TraceDB/elastic/es-plugins.sh
   nats_server:
     container_name: trace_nats
     image: "nats"
