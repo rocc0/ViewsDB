@@ -50,9 +50,8 @@ services:
          - transport.host=127.0.0.1
          - http.host=0.0.0.0
     volumes:
-         - "./elastic:/usr/share/elasticsearch/"
          - "/home/rocco/data/elastic:/usr/share/elasticsearch/data"
-    command: ./es-plugins.sh
+    command: /home/rocco/TraceDB/elastic/es-plugins.sh
   nats_server:
     container_name: trace_nats
     image: "nats"
