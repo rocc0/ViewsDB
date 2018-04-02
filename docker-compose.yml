@@ -39,6 +39,7 @@ services:
   elastic:
     container_name: trace_elastic
     image: "elasticsearch"
+    restart: always
     ports:
          - "9200:9200"
     environment:
