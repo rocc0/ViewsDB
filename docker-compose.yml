@@ -31,14 +31,15 @@ services:
     volumes:
          - "/home/data/mongo:/data/db"
     command: >
-         mongo --auth mongo --eval db.createUser({ user: 'hasher', pwd: 'password', roles: [ { role: "readWrite", db: "hashes" } ] });
+         mongod --auth
+         && mongod --eval db.createUser({ user: 'hasher', pwd: 'password', roles: [ { role: "readWrite", db: "hashes" } ] });
   elastic:
     container_name: trace_elastic
     image: "docker.elastic.co/elasticsearch/elasticsearch:5.3.0"
     ports:
          - "9200:9200"
     environment:
-         - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+         - "ES_JAVA_OPTS=-Xms512m -Xms512m"
          - xpack.security.enabled=false
          - http.cors.enabled=true
          - http.cors.allow-origin="*"
