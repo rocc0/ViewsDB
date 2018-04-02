@@ -56,7 +56,7 @@ services:
   minio_server:
     container_name: trace_minio
     image: "minio/minio"
-    env_file: variables.env
+    env_file: variables1.env
     volumes:
          - "/home/data/minio/data:/data"
          - "/home/data/minio/config:/root/.minio"
