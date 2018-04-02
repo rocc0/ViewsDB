@@ -29,10 +29,13 @@ services:
     ports:
          - "27017:27017"
     volumes:
+         - "$PWD/mongo/:/docker-entrypoint-initdb.d/"
          - "/home/rocco/data/mongo:/data/db"
+    environment:
+        - MONGO_INITDB_ROOT_USERNAME=admin
+        - MONGO_INITDB_ROOT_PASSWORD=password
     command: >
-         mongod --auth
-         && mongo --eval db.createUser({ user: 'hasher', pwd: 'password', roles: [ { role: "readWrite", db: "hashes" } ] });
+        mongod --auth
   elastic:
     container_name: trace_elastic
     image: "elasticsearch"
@@ -47,6 +50,7 @@ services:
          - http.host=0.0.0.0
     volumes:
          - "/home/rocco/data/elastic:/usr/share/elasticsearch/data"
+    command: bin/elasticsearch-plugin install analysis-ukrainian
   nats_server:
     container_name: trace_nats
     image: "nats"
