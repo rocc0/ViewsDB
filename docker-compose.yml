@@ -53,10 +53,7 @@ services:
          - "./elastic:/data/elastic"
          - "/home/rocco/data/elastic:/usr/share/elasticsearch/data"
     command: bash -c "chmod 755 /data/elastic/es-plugins.sh
-                 && bin/plugin list | grep 'ukrainian' &> /dev/null &&
-                    if [ $? == 0 ]; then
-                       bin/elasticsearch-plugin install analysis-ukrainian
-                    fi"
+                 && /data/elastic/es-plugins.sh"
   nats_server:
     container_name: trace_nats
     image: "nats"
