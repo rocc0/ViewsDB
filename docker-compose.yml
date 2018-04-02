@@ -50,6 +50,7 @@ services:
          - transport.host=127.0.0.1
          - http.host=0.0.0.0
     volumes:
+         - "./elastic:/usr/share/elasticsearch/"
          - "/home/rocco/data/elastic:/usr/share/elasticsearch/data"
     command: ./es-plugins.sh
   nats_server:
