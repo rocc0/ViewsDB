@@ -29,7 +29,7 @@ services:
     ports:
          - "27017:27017"
     volumes:
-         - "$PWD/mongo/:/docker-entrypoint-initdb.d/"
+         - "./mongo/:/docker-entrypoint-initdb.d/"
          - "/home/rocco/data/mongo:/data/db"
     environment:
         - MONGO_INITDB_ROOT_USERNAME=admin
@@ -51,7 +51,7 @@ services:
          - http.host=0.0.0.0
     volumes:
          - "/home/rocco/data/elastic:/usr/share/elasticsearch/data"
-    command: bin/elasticsearch-plugin install analysis-ukrainian
+    entrypoint: ./es-plugins.sh
   nats_server:
     container_name: trace_nats
     image: "nats"
