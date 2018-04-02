@@ -25,7 +25,7 @@ services:
          - "8080:80"
   mongodb:
     container_name: trace_mongo
-    image: "mongo:latest"
+    build: mongo/
     ports:
          - "27017:27017"
     volumes:
@@ -34,8 +34,6 @@ services:
     environment:
         - MONGO_INITDB_ROOT_USERNAME=admin
         - MONGO_INITDB_ROOT_PASSWORD=password
-    command: >
-        mongod --auth
   elastic:
     container_name: trace_elastic
     build: elastic/
