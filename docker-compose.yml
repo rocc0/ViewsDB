@@ -26,6 +26,7 @@ services:
   mongodb:
     container_name: trace_mongo
     image: "mongo:latest"
+    restart: always
     ports:
          - "27017:27017"
     volumes:
