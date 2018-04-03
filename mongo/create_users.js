@@ -11,4 +11,4 @@ db.createUser(
         wtimeout: 5000
     }
 );
-db.createCollection("test");
+

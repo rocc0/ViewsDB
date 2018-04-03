@@ -9,4 +9,4 @@ RUN mongod --fork --auth --logpath /var/log/mongodb.log \
     && echo "Waiting..." \
     && sleep 5 \
     && echo "Start..." \
-    && mongo hashes /tmp/create_users.js
+    && mongo hashes /tmp/create_users.js -u admin -p password --authenticationDatabase admin
