@@ -25,7 +25,7 @@ services:
          - "8080:80"
   mongodb:
     container_name: trace_mongo
-    build: mongo/
+    build: "mongo:latest"
     ports:
          - "27017:27017"
     volumes:
@@ -34,6 +34,9 @@ services:
     environment:
         - MONGO_INITDB_ROOT_USERNAME=admin
         - MONGO_INITDB_ROOT_PASSWORD=password
+    command:
+           bash -c "chmod 755 /docker-entrypoint-initdb.d/addusers.sh \
+           && /docker-entrypoint-initdb.d/addusers.sh"
   elastic:
     container_name: trace_elastic
     build: elastic/
