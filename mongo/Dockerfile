@@ -2,7 +2,7 @@ FROM mongo:latest
 
 MAINTAINER <vlad>
 
-ADD mongo/create_users.js /tmp/
+ADD create_users.js /tmp/
 RUN echo "Creating mongo users..."
 RUN mongod --fork --auth --logpath /var/log/mongodb.log \
     && sleep 5 \
