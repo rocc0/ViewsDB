@@ -25,7 +25,7 @@ services:
          - "8080:80"
   mongodb:
     container_name: trace_mongo
-    image: "mongo:latest"
+    build: mongo/
     restart: always
     ports:
          - "27017:27017"
