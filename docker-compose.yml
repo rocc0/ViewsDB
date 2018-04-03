@@ -35,9 +35,7 @@ services:
     environment:
         - MONGO_INITDB_ROOT_USERNAME=admin
         - MONGO_INITDB_ROOT_PASSWORD=password
-    command: bash -c "echo "Creating mongo users..." \
-           && chmod 755 /docker-entrypoint-initdb.d/addusers.sh \
-           && /docker-entrypoint-initdb.d/addusers.sh"
+
   elastic:
     container_name: trace_elastic
     build: elastic/
