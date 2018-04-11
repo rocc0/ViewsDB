@@ -511,14 +511,14 @@
 
  });
 
- viewDB.controller("authRegisterController", function ($scope,authService) {
+ viewDB.controller("authRegisterController", function ($scope,$location,authService) {
 
      $scope.user = {
          password: "",
          confirmPassword: ""
      };
      $scope.onRegister = function() {
-         authService.register(vm.user)
+         authService.register($scope.user)
              .then(function(response) {
                  $location.path('/status');
              })

@@ -26,6 +26,8 @@ type configuration struct {
 	Mongo       string `yaml:"mongo"`
 	MinioKay    string `yaml:"minio-k"`
 	MinioSecret string `yaml:"minio-s"`
+	MinioUrl    string `yaml:"minio-url"`
+	Consul      string `yaml:"consul"`
 }
 
 func (c *configuration) getConf() error {

@@ -1,12 +1,11 @@
 
 viewDB.service('authService', function ($http) {
         /*jshint validthis: true */
-        const baseURL = 'http://localhost:8888/';
 
             this.login = function(user) {
                 return $http({
                     method: 'POST',
-                    url: baseURL + 'u/login',
+                    url: '/u/login',
                     data: user,
                     headers: {'Content-Type': 'application/json'}
                 });
@@ -14,7 +13,7 @@ viewDB.service('authService', function ($http) {
             this.logout = function(user) {
                 return $http({
                     method: 'POST',
-                    url: baseURL + 'u/logout',
+                    url: '/u/logout',
                     data: user,
                     headers: {'Content-Type': 'application/json'}
                 });
@@ -22,7 +21,7 @@ viewDB.service('authService', function ($http) {
             this.register =  function(user) {
                 return $http({
                     method: 'POST',
-                    url: baseURL + 'u/register',
+                    url: '/u/register',
                     data: user,
                     headers: {'Content-Type': 'application/json'}
                 });
@@ -30,7 +29,7 @@ viewDB.service('authService', function ($http) {
             this.ensureAuthenticated = function(token) {
                 return $http({
                     method: 'GET',
-                    url: baseURL + 'api/cabinet',
+                    url: '/api/cabinet',
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: 'Bearer ' + token
@@ -41,11 +40,11 @@ viewDB.service('authService', function ($http) {
 
 viewDB.service('trackingService', function ($http) {
     /*jshint validthis: true */
-    const baseURL = 'http://localhost:8888/';
+
     this.getGovs = function () {
         return $http({
             method: 'GET',
-            url: baseURL + 'api/govs',
+            url: '/api/govs',
         });
     }
 });

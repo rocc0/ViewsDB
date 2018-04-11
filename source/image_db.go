@@ -62,7 +62,7 @@ func (i newImage) resizeImage() error {
 
 func getImageUrls(col string) ([]newImage, error) {
 	var result []newImage
-	client, err := minio.NewV4("192.168.99.100:9000", config.MinioKay,
+	client, err := minio.NewV4(config.MinioUrl, config.MinioKay,
 		config.MinioSecret, false)
 	if err != nil {
 		return nil, err
