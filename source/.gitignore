@@ -1,5 +1,4 @@
 *.exe
-test.index/*.*
 static/*.out
 static/images/*.*
 static/js/src/*.*
