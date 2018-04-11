@@ -68,11 +68,11 @@ func getImageUrls(col string) ([]newImage, error) {
 		return nil, err
 	}
 
-	if err != nil {
-		log.Print(err.Error(), "minio error")
-	}
 	bkts, err := client.ListBuckets()
-	log.Print(bkts, len(bkts))
+	if err != nil {
+		return nil, err
+	}
+	log.Print(bkts)
 
 	c := session.DB("images").C("i" + col)
 	err = c.Find(nil).All(&result)
