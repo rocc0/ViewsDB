@@ -2,22 +2,21 @@ package main
 
 import (
 	"context"
-	"log"
 
 	elastic "gopkg.in/olivere/elastic.v5"
 )
 
 type indexItem struct {
-	ID         string `json:"id"`
-	Requisits  string `json:"requisits"`
+	TraceID    string `json:"trace_id"`
+	RegName    string `json:"reg_name"`
 	RegDate    string `json:"reg_date"`
 	GovChoice  string `json:"gov_choice"`
-	TraceYear  string `json:"year"`
 	Developer  string `json:"developer"`
-	Base       string `json:"base"`
-	Repeated   string `json:"repeat"`
-	Periodical string `json:"period"`
-	Fact       string `json:"fact"`
+	TraceYear  string `json:"trace_year"`
+	Basic      string `json:"trace_basic"`
+	Repeated   string `json:"trace_repeat"`
+	Periodical string `json:"trace_period"`
+	Fact       string `json:"trace_fact"`
 }
 
 const mapping = `
@@ -29,8 +28,8 @@ const mapping = `
 	"mappings":{
 		"trace":{
 			"properties":{
-				"id":{
-					"type":"text"
+				"trace_id":{
+					"type":"string"
 				},
 				"reg_name":{
 					"type":"text",
@@ -79,7 +78,8 @@ func elasticConnect() (context.Context, *elastic.Client, error) {
 		return nil, nil, err
 	}
 
-	client.DeleteIndex("tracking").Do(ctx)
+	//client.DeleteIndex("tracking").Do(ctx)
+
 	// Use the IndexExists service to check if a specified index exists.
 	exists, err := client.IndexExists("tracking").Do(ctx)
 	if err != nil {
@@ -101,33 +101,22 @@ func elasticConnect() (context.Context, *elastic.Client, error) {
 }
 
 //Getting item from DB and adding it to elastic
-func (idx indexItem) updateIndex(id int64) error {
-	var (
-		index, requisits, regDate, govChoice,
-		developer, traceYear, base, repeated, periodical, fact string
-	)
+func (idx indexItem) updateIndex(id string) error {
+	var index int
 	ctx, client, err := elasticConnect()
 
-	ind, err := db.Query("select id, reg_name, reg_date, gov_choice,"+
+	stmt := db.QueryRow("select id, trace_id, reg_name, reg_date, gov_choice,"+
 		"trace_year, developer, trace_basic, trace_repeated, trace_periodic,"+
-		" trace_fact from trace_info where id=?;", id)
-	if err != nil {
+		" trace_fact from trace_info where trace_id=?;", id)
+
+	if err = stmt.Scan(&index, &idx.TraceID, &idx.RegName, &idx.RegDate, &idx.GovChoice,
+		&idx.TraceYear, &idx.Developer, &idx.Basic, &idx.Repeated, &idx.Periodical, &idx.Fact); err != nil {
 		return err
 	}
 
-	for ind.Next() {
-		err = ind.Scan(&index, &requisits, &regDate, &govChoice, &traceYear, &developer,
-			&base, &repeated, &periodical, &fact)
-		if err != nil {
-			log.Print(err.Error())
-			return err
-		}
+	if err = idx.writeIndex(ctx, client); err != nil {
+		return err
 	}
-
-	idx = indexItem{index, requisits, regDate, govChoice,
-		traceYear, developer, base, repeated, periodical, fact}
-	_ = idx.writeIndex(ctx, client)
-
 	return nil
 }
 
@@ -137,7 +126,7 @@ func (idx indexItem) writeIndex(ctx context.Context, client *elastic.Client) err
 	_, err := client.Index().
 		Index("tracking").
 		Type("trace").
-		Id(string(idx.ID)).
+		Id(idx.TraceID).
 		BodyJson(idx).
 		Do(ctx)
 

@@ -131,7 +131,7 @@ func getReportData() (*[]string, *[]governments, error) {
 	}
 
 	for rows.Next() {
-		columns := make([]string, len(colNames))
+		columns = make([]string, len(colNames))
 		columnPointers := make([]interface{}, len(colNames))
 		for i := range columns {
 			columnPointers[i] = &columns[i]

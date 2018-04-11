@@ -21,7 +21,7 @@ type NewTrace struct {
 //PeriodTrace is a part of the trace page thar include only periodic traces
 type PeriodTrace struct {
 	PeriodID               int    `json:"pid"`
-	TraceID                int    `json:"trace_id"`
+	TraceID                string `json:"trace_id"`
 	TermZakon              string `json:"termin_zakon"`
 	TermFact               string `json:"termin_fact"`
 	Result                 string `json:"result"`
@@ -41,149 +41,34 @@ type PeriodTrace struct {
 	Comment                string `json:"p_comment"`
 }
 
-//saveTraceField saves changes maded to trace fields
-func (s saveRequest) saveTraceField() error {
-	table := map[string]string{"i": "trace_info", "b": "trace_basic", "r": "trace_repeat", "p": "trace_period"}
-
-	stmt, err := db.Prepare("UPDATE " + table[s.TraceType] + " SET " + s.Name + "= ? WHERE id= ?;")
-	if err != nil {
-		return err
-	}
-	_, err = stmt.Exec(s.Data, s.ID)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-//deleteItem deletes periodic item of trace
-func (d deleteRequest) deleteItem() error {
-	var table string
-	if d.Table == "p" {
-		table = "trace_period"
-	} else if d.Table == "b" {
-		table = "track_basis"
-	}
-	stmt, err := db.Prepare("DELETE FROM " + table + " WHERE id=?")
-	if err != nil {
-		return err
-	}
-	if _, err := stmt.Exec(d.TraceID); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (t *BasicTrace) getBasicData(id int) error {
-	rows, err := db.Query("SELECT * FROM trace_info LEFT JOIN trace_basic ON"+
-		" trace_info.id = trace_basic.id LEFT JOIN trace_repeat ON trace_info.id = trace_repeat.id WHERE trace_info.id = ?;", id)
-	if err != nil {
-		return err
-	}
-	colNames, err := rows.Columns()
-	if err != nil {
-		return err
-	}
-	columns := make([]interface{}, len(colNames))
-	columnPointers := make([]interface{}, len(colNames))
-	m := make(map[string]interface{})
-	for i := range columns {
-		columnPointers[i] = &columns[i]
-	}
-	for rows.Next() {
-		err := rows.Scan(columnPointers...)
-		if err != nil {
-			return err
-		}
-		for i, colName := range colNames {
-			a := columnPointers[i].(*interface{})
-			if *a == nil {
-				*a = []uint8("")
-			}
-			m[colName] = *a
-		}
-		t.Fields = m
-	}
-	defer rows.Close()
-	return nil
-}
-
-func getPeriodicData(id int) (*[]PeriodTrace, error) {
-	var (
-		traceID, resultBool, resultYear, periodID, cnclsnBool, brokenMyRating, brokenDevRating int
-		termZakon, termFact, result, resultComment, signed, publicated, gived,
-		cnclsn, cnclsnComment, brokenMyRatingComment, brokenDevRatingComment, comment string
-		periods []PeriodTrace
-	)
-
-	pers, err := db.Query("SELECT id,trace_id,"+
-		"COALESCE(termin_zakon, '') AS termin_zakon,"+
-		"COALESCE(termin_fact, '') AS termin_fact,"+
-		"result_bool, "+
-		"COALESCE(result_year, 0) AS result_year, "+
-		"COALESCE(result, 'висновок відсутній') AS result,"+
-		"COALESCE(result_comment, 'коментар відсутній') AS result_comment, "+
-		"COALESCE(signed, '') AS signed,"+
-		"COALESCE(publicated, '') AS publicated,"+
-		"COALESCE(gived, '') AS gived,"+
-		"COALESCE(cnclsn, '') AS cnclsn,"+
-		"cnclsn_bool, "+
-		"COALESCE(cnclsn_comment, 'коментар відсутній') AS cnclsn_comment,"+
-		"COALESCE(br_my_rating, 0) AS br_my_rating,"+
-		"COALESCE(br_my_rating_c, '') AS br_my_rating_c,"+
-		"COALESCE(br_dev_rating, 0) AS br_dev_rating, "+
-		"COALESCE(br_dev_rating_c, '') AS br_dev_rating_c, "+
-		"COALESCE(p_comment, '') AS p_comment "+
-		"FROM trace_period WHERE trace_id = ?;", id)
-	if err != nil {
-		return nil, err
-	}
-	for pers.Next() {
-		err := pers.Scan(&traceID, &periodID, &termZakon, &termFact,
-			&resultBool, &resultYear, &result, &resultComment,
-			&signed, &publicated, &gived, &cnclsn, &cnclsnBool,
-			&cnclsnComment, &brokenMyRating, &brokenMyRatingComment,
-			&brokenDevRating, &brokenDevRatingComment, &comment)
-		if err != nil {
-			return nil, err
-		}
-
-		periods = append(periods, PeriodTrace{traceID, periodID, termZakon, termFact,
-			result, resultBool, resultYear, resultComment, signed,
-			publicated, gived, cnclsn, cnclsnBool,
-			cnclsnComment, brokenMyRating,
-			brokenMyRatingComment, brokenDevRating,
-			brokenDevRatingComment, comment})
-	}
-	defer pers.Close()
-	return &periods, nil
-}
-
-func (new NewTrace) createNewTrace() (int, error) {
+func (new NewTrace) createNewTrace() (string, error) {
 	var (
 		idx indexItem
 	)
-	id, err := createNewItem(new.Info, "trace_info")
+
+	traceID := generate(20)
+	new.Info["trace_id"], new.Basic["trace_id"], new.Repeated["trace_id"] = traceID, traceID, traceID
+
+	_, err := createNewSubTrace(new.Info, "trace_info")
 	if err != nil {
-		return 0, err
+		return "", err
 	}
-	_, err = createNewItem(new.Basic, "trace_basic")
+	_, err = createNewSubTrace(new.Basic, "trace_basic")
 	if err != nil {
-		return 0, err
+		return "", err
 	}
-	_, err = createNewItem(new.Repeated, "trace_repeat")
+	_, err = createNewSubTrace(new.Repeated, "trace_repeat")
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
-	idx.updateIndex(int64(id))
+	idx.updateIndex(traceID)
 
-	return id, nil
+	return traceID, nil
 }
 
 func (t BasicTrace) createNewPeriod() (int, error) {
-	id, err := createNewItem(t.Fields, "trace_period")
+	id, err := createNewSubTrace(t.Fields, "trace_period")
 
 	if err != nil {
 		return 0, err
@@ -192,7 +77,7 @@ func (t BasicTrace) createNewPeriod() (int, error) {
 	return id, nil
 }
 
-func createNewItem(data map[string]interface{}, table string) (int, error) {
+func createNewSubTrace(data map[string]interface{}, table string) (int, error) {
 	var (
 		colNames []string
 		values   []interface{}
@@ -229,12 +114,136 @@ func createNewItem(data map[string]interface{}, table string) (int, error) {
 		return 0, err
 	}
 
-	id, err := res.LastInsertId()
+	lastID, err := res.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
 
-	return int(id), nil
+	return int(lastID), nil
+}
+
+func (t *BasicTrace) getBasicData(id string) error {
+	rows, err := db.Query("SELECT * FROM trace_info i LEFT JOIN trace_basic b ON"+
+		" i.trace_id = b.trace_id LEFT JOIN trace_repeat r ON"+
+		" i.trace_id = r.trace_id WHERE i.trace_id = ?;", id)
+	if err != nil {
+		return err
+	}
+	colNames, err := rows.Columns()
+	if err != nil {
+		return err
+	}
+	columns := make([]interface{}, len(colNames))
+	columnPointers := make([]interface{}, len(colNames))
+	m := make(map[string]interface{})
+	for i := range columns {
+		columnPointers[i] = &columns[i]
+	}
+	for rows.Next() {
+		err := rows.Scan(columnPointers...)
+		if err != nil {
+			return err
+		}
+		for i, colName := range colNames {
+			a := columnPointers[i].(*interface{})
+			if *a == nil {
+				*a = []uint8("")
+			}
+			m[colName] = *a
+		}
+		t.Fields = m
+	}
+	defer rows.Close()
+	return nil
+}
+
+func getPeriodicData(id string) (*[]PeriodTrace, error) {
+	var (
+		resultBool, resultYear, periodID, cnclsnBool, brokenMyRating, brokenDevRating int
+		traceID, termZakon, termFact, result, resultComment, signed, publicated, gived,
+		cnclsn, cnclsnComment, brokenMyRatingComment, brokenDevRatingComment, comment string
+		periods []PeriodTrace
+	)
+
+	pers, err := db.Query("SELECT id,trace_id,"+
+		"COALESCE(termin_zakon, '') AS termin_zakon,"+
+		"COALESCE(termin_fact, '') AS termin_fact,"+
+		"result_bool, "+
+		"COALESCE(result_year, 0) AS result_year, "+
+		"COALESCE(result, 'висновок відсутній') AS result,"+
+		"COALESCE(result_comment, 'коментар відсутній') AS result_comment, "+
+		"COALESCE(signed, '') AS signed,"+
+		"COALESCE(publicated, '') AS publicated,"+
+		"COALESCE(gived, '') AS gived,"+
+		"COALESCE(cnclsn, '') AS cnclsn,"+
+		"cnclsn_bool, "+
+		"COALESCE(cnclsn_comment, 'коментар відсутній') AS cnclsn_comment,"+
+		"COALESCE(br_my_rating, 0) AS br_my_rating,"+
+		"COALESCE(br_my_rating_c, '') AS br_my_rating_c,"+
+		"COALESCE(br_dev_rating, 0) AS br_dev_rating, "+
+		"COALESCE(br_dev_rating_c, '') AS br_dev_rating_c, "+
+		"COALESCE(p_comment, '') AS p_comment "+
+		"FROM trace_period WHERE trace_id = ?;", id)
+	if err != nil {
+		return nil, err
+	}
+	for pers.Next() {
+		err := pers.Scan(&periodID, &traceID, &termZakon, &termFact,
+			&resultBool, &resultYear, &result, &resultComment,
+			&signed, &publicated, &gived, &cnclsn, &cnclsnBool,
+			&cnclsnComment, &brokenMyRating, &brokenMyRatingComment,
+			&brokenDevRating, &brokenDevRatingComment, &comment)
+		if err != nil {
+			return nil, err
+		}
+
+		periods = append(periods, PeriodTrace{periodID, traceID, termZakon, termFact,
+			result, resultBool, resultYear, resultComment, signed,
+			publicated, gived, cnclsn, cnclsnBool,
+			cnclsnComment, brokenMyRating,
+			brokenMyRatingComment, brokenDevRating,
+			brokenDevRatingComment, comment})
+	}
+	defer pers.Close()
+	return &periods, nil
+}
+
+//saveTraceField saves changes maded to trace fields
+func (s saveRequest) saveTraceChanges() error {
+	table := map[string]string{"i": "trace_info", "b": "trace_basic", "r": "trace_repeat", "p": "trace_period"}
+	field := "trace_id"
+	if s.TraceType == "p" {
+		field = "id"
+	}
+
+	stmt, err := db.Prepare("UPDATE " + table[s.TraceType] + " SET " + s.Name + "= ? WHERE " + field + " = ?;")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(s.Data, s.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+//deleteItem deletes periodic item of trace
+func (d deleteRequest) deleteItem() error {
+	var table string
+	if d.Table == "p" {
+		table = "trace_period"
+	} else if d.Table == "b" {
+		table = "track_basic"
+	}
+	stmt, err := db.Prepare("DELETE FROM " + table + " WHERE id=?")
+	if err != nil {
+		return err
+	}
+	if _, err := stmt.Exec(d.TraceID); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e editGovernName) editGovName() error {

@@ -4,9 +4,8 @@ import (
 	"log"
 	"net"
 
-	"google.golang.org/grpc"
-
 	pb "./imagegrpc"
+	"google.golang.org/grpc"
 )
 
 const (
@@ -14,6 +13,11 @@ const (
 )
 
 func init() {
+	cli, err := NewConsulClient("http://192.168.99.100:8500")
+	if err != nil {
+		log.Fatal(err)
+	}
+	cli.Register("kek", 345)
 	if err := config.getConf(); err != nil {
 		log.Fatalf("Error when parsing config: %v", err)
 	}

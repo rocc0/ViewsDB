@@ -95,10 +95,7 @@ func (u *User) register() error {
 }
 
 func (f *userField) editField() error {
-	stmt, err := db.Prepare("UPDATE users SET " + f.Field + "=? WHERE id=?;")
-	if err != nil {
-		return err
-	}
+	stmt, _ := db.Prepare("UPDATE users SET " + f.Field + "=? WHERE id=?;")
 
 	if f.Field == "password" {
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(f.Data), bcrypt.DefaultCost)
@@ -111,7 +108,7 @@ func (f *userField) editField() error {
 		}
 		return nil
 	}
-	_, err = stmt.Exec(f.Data, f.ID)
+	_, err := stmt.Exec(f.Data, f.ID)
 	if err != nil {
 		return err
 	}

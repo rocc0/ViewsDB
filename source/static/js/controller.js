@@ -11,7 +11,7 @@
                     "should": {
                         "multi_match": {
                             "query": $scope.phrase,
-                            "fields": ["requisits", "gov_choice", "reg_date"]
+                            "fields": ["reg_name", "gov_choice", "reg_date"]
                         }
                     }
                 }
@@ -198,7 +198,7 @@
             $http({
                 method: 'POST',
                 url:"/api/v/" + docId,
-                data: {id: parseInt(docId), column: column, data: value, type: table },
+                data: {id: docId, column: column, data: value, type: table },
                 headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token
                 }
             }).then(function() {
@@ -209,8 +209,8 @@
         $scope.savePeriodicChanges = function (column, pid, value) {
             $http({
                 method:'POST',
-                url:"/api/v/" + pid,
-                data: {id: pid,  column: column, data: value, type: "p"},
+                url:"/api/v/" + docId,
+                data: {id: String(pid),  column: column, data: value, type: "p"},
                 headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token}
             }).then(function () {
                 $scope.track.pr[column] = value;
@@ -261,18 +261,6 @@
 
  viewDB.controller("createCtrl", function ($scope, $http,$location,$rootScope,trackingService,authService) {
         $scope.isLoggedIn = false;
-         $scope.form_data.repeated = {
-             "r_termin_zakon": "",
-             "r_result_bool": 0,
-             "r_result_year": 0,
-             "r_signed": "",
-             "r_publicated": "",
-             "r_gived": "",
-             "r_result": "",
-             "r_cnclsn": "",
-             "r_cnclsn_bool": 0,
-             "r_cnclsn_comment": ""
-         };
 
          const token = localStorage.getItem('token');
          if (token) {
@@ -296,6 +284,28 @@
          });
 
         $scope.addTrack = function () {
+            $scope.form_data.basic = {
+                "b_termin_zakon": "",
+                "b_result_bool": 0,
+                "b_result": "",
+                "b_signed": "",
+                "b_publicated": "",
+                "b_gived": "",
+                "b_cnclsn": "",
+                "b_cnclsn_bool": 0,
+                "b_cnclsn_comment": ""
+            };
+            $scope.form_data.repeated = {
+                "r_termin_zakon": "",
+                "r_result_bool": 0,
+                "r_result": "",
+                "r_signed": "",
+                "r_publicated": "",
+                "r_gived": "",
+                "r_cnclsn": "",
+                "r_cnclsn_bool": 0,
+                "r_cnclsn_comment": ""
+            };
             $http({
                 method: 'POST',
                 url: "/api/create",

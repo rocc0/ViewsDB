@@ -2,7 +2,6 @@ package main
 
 import (
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -43,23 +42,20 @@ func showTracePage(c *gin.Context) {
 		trace BasicTrace
 		title string
 	)
-	traceID, err := strconv.Atoi(c.Param("trk_id"))
+	traceID := c.Param("trk_id")
 	url := c.Request.URL.Path
 	if strings.Contains(url, "edit") {
 		title = "Редагування | "
 	} else {
 		title = ""
 	}
-	if err == nil {
-		err := trace.getBasicData(traceID)
-		if err == nil {
-			render(c, gin.H{
-				"title": title + string(trace.Fields["reg_name"].([]uint8)),
-			}, "index.html")
-		} else {
-			c.AbortWithError(http.StatusNotFound, err)
-		}
-	} else {
-		c.AbortWithStatus(http.StatusBadGateway)
+
+	if err := trace.getBasicData(traceID); err != nil {
+		c.AbortWithError(http.StatusNotFound, err)
 	}
+
+	render(c, gin.H{
+		"title": title + string(trace.Fields["reg_name"].([]uint8)),
+	}, "index.html")
+
 }

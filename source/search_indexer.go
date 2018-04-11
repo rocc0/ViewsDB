@@ -27,7 +27,7 @@ func genWorkerRanges(workers int) workerRanges {
 		highestID int
 		ids       workerRanges
 	)
-	row := db.QueryRow("SELECT MAX(Id) FROM trace_info")
+	row := db.QueryRow("SELECT MAX(id) FROM trace_info")
 	row.Scan(&highestID)
 
 	// TODO: need improvement on highestID
@@ -45,27 +45,31 @@ func genWorkerRanges(workers int) workerRanges {
 
 func indexWorker(ctx context.Context, wg *sync.WaitGroup, client *elastic.Client, f int, l int) {
 	var (
-		id, requisits, regDate, govChoice,
-		developer, traceYear, base, repeated, periodical, fact string
+		id int
+		traceID, regName, regDate, govChoice,
+		developer, traceYear, basic, repeated, periodical, fact string
 	)
 
-	res, err := db.Query("select id, reg_name, reg_date, gov_choice, trace_year, "+
+	res, err := db.Query("select id, trace_id, reg_name, reg_date, gov_choice, trace_year, "+
 		"developer, trace_basic, trace_repeated, trace_periodic, "+
 		"trace_fact from trace_info WHERE id BETWEEN ? AND ?", f, l)
 	if err != nil {
-		log.Print("ERROR:", err)
+		log.Fatal(err)
 	}
 	log.Print("Indexing started", f, l)
 	for res.Next() {
-		err := res.Scan(&id, &requisits, &regDate, &traceYear, &govChoice, &developer,
-			&base, &repeated, &periodical, &fact)
+		err := res.Scan(&id, &traceID, &regName, &regDate, &govChoice, &traceYear, &developer,
+			&basic, &repeated, &periodical, &fact)
 		if err != nil {
-			log.Print(err.Error(), " | ", id, "\n")
+			log.Fatal(err)
 		}
-		idx := indexItem{id, requisits, regDate, govChoice,
-			traceYear, developer, base, repeated, periodical, fact}
+		idx := indexItem{traceID, regName, regDate, govChoice,
+			developer, traceYear, basic, repeated, periodical, fact}
 
-		_ = idx.writeIndex(ctx, client)
+		err = idx.writeIndex(ctx, client)
+		if err != nil {
+			log.Fatal(1, err)
+		}
 	}
 
 	log.Print("Indexing done\n")
