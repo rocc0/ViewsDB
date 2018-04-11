@@ -13,15 +13,17 @@ const (
 )
 
 func init() {
-	cli, err := NewConsulClient("http://192.168.99.100:8500")
-	if err != nil {
-		log.Fatal(err)
-	}
-	cli.Register("kek", 345)
+	//INIT config vars, MUST be first in init statement!!!
 	if err := config.getConf(); err != nil {
 		log.Fatalf("Error when parsing config: %v", err)
 	}
+	//INIT config vars, MUST be first in init statement!!!
 
+	cli, err := NewConsulClient(config.Consul)
+	if err != nil {
+		log.Fatal(err)
+	}
+	cli.Register("imager", 345)
 	if err := mgoConnect(); err != nil {
 		log.Fatalf("Error initializing mongo: %v\n", err)
 	}

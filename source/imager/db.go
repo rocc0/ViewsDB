@@ -19,6 +19,16 @@ type newImage struct {
 	Thumb    string `json:"thumb"`
 }
 
+func mgoConnect() error {
+	s, err := mgo.Dial(config.Mongo)
+	if err != nil {
+		return err
+	}
+	s.SetMode(mgo.Monotonic, true)
+	session = s.Copy()
+	return nil
+}
+
 func (i newImage) resizeImage() error {
 	src, err := imaging.Open("." + i.Original)
 	if err != nil {
@@ -60,11 +70,13 @@ func (i newImage) addImageUrls() error {
 }
 
 func (i newImage) deleteImage() error {
-
+	log.Print(i.DocID, " | ", i.PhotoID)
 	c := session.DB("images").C("i" + i.DocID)
+	log.Print(c.FullName)
 	err := c.Remove(bson.M{"photoid": i.PhotoID})
 
 	if err != nil {
+		log.Print(err)
 		return err
 	}
 

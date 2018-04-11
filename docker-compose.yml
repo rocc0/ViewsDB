@@ -15,8 +15,8 @@ services:
     container_name: trace_myadmin
     image: "phpmyadmin/phpmyadmin:latest"
     environment:
-        PMA_HOST: mysql_db
-        PMA_PORT: 3306
+          - PMA_HOST: mysql_db
+          - PMA_PORT: 3306
     links:
           - mysql_db
     depends_on:
