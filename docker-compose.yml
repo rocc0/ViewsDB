@@ -59,6 +59,13 @@ services:
         - "4222:4222"
         - "6222:6222"
         - "8222:8222"
+  conusl:
+    container_name: trace_consul
+    image: "consul"
+    ports:
+        - "8500:8500"
+    environment:
+        - CONSUL_BIND_INTERFACE=eth0
   minio_server:
     container_name: trace_minio
     image: "minio/minio"
