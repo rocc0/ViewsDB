@@ -1,6 +1,6 @@
 *.exe
 static/*.out
-static/images/*.*
+static/images
 static/js/src/*.*
 static/css/angular-bootstrap-lightbox.min.css
 static/css/angular-bootstrap-toggle.min.css
