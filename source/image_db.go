@@ -1,106 +1,123 @@
 package main
 
 import (
-	"log"
-	"os"
+	"bytes"
+	"image/jpeg"
+	"mime/multipart"
 
-	"github.com/disintegration/imaging"
 	"github.com/minio/minio-go"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	"github.com/nfnt/resize"
+
+	pb "../imager.d/pb"
+	"google.golang.org/grpc"
 )
 
-var session *mgo.Session
+//var session *mgo.Session
 
 type newImage struct {
-	PhotoID  string `json:"photo_id"`
-	DocID    string `json:"doc_id"`
-	Original string `json:"original"`
-	Thumb    string `json:"thumb"`
+	PhotoID string `json:"url"`
+	DocID   string `json:"doc_id"`
+	Thumb   string `json:"thumbUrl"`
 }
 
 type delImage struct {
+	DocID   string `json:"doc_id"`
 	PhotoID string `json:"photo_id"`
 }
 
-func mgoConnect() error {
-	s, err := mgo.Dial(config.Mongo)
+//func mgoConnect() error {
+//	s, err := mgo.Dial(config.Mongo)
+//	if err != nil {
+//		return err
+//	}
+//	s.SetMode(mgo.Monotonic, true)
+//	session = s.Copy()
+//	return nil
+//}
+
+//Create image
+func (i *newImage) uploadFilesToMinio(file *multipart.FileHeader) error {
+	i.PhotoID = generate(20) + ".jpg"
+	i.Thumb = "resized/" + i.PhotoID
+	client, err := minio.NewV4(config.MinioUrl, config.MinioKay, config.MinioSecret, false)
 	if err != nil {
 		return err
 	}
-	s.SetMode(mgo.Monotonic, true)
-	session = s.Copy()
+	original, err := file.Open()
+	if err != nil {
+		return err
+	}
+	resized, err := resizeImage(file)
+	if err != nil {
+		return err
+	}
+
+	if ok, _ := client.BucketExists(i.DocID); !ok {
+		if err = client.MakeBucket(i.DocID, "us-east-1"); err != nil {
+			return err
+		}
+	}
+	if err = client.SetBucketPolicy(i.DocID, "", "readonly"); err != nil {
+		return err
+	}
+	//Save original
+	if _, err = client.PutObject(i.DocID, i.PhotoID, original, file.Size,
+		minio.PutObjectOptions{ContentType: "multipart/form-data"}); err != nil {
+		return err
+	}
+	//Save thumb
+	if _, err = client.PutObject(i.DocID, "resized/"+i.PhotoID, resized, int64(resized.Len()),
+		minio.PutObjectOptions{ContentType: "image/jpeg"}); err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func (i *newImage) addImages() error {
-	i.PhotoID = generate(20)
-	i.Original = config.ImagePath + i.DocID + "/" + i.PhotoID + ".jpg"
-	i.Thumb = config.ImagePath + i.DocID + "/resized/" + i.PhotoID + ".jpg"
-
-	os.Mkdir("."+config.ImagePath+i.DocID, 0700)
-	os.Mkdir("."+config.ImagePath+i.DocID+"/resized", 0700)
-
-	return nil
-}
-
-func (i newImage) resizeImage() error {
-	src, err := imaging.Open("." + i.Original)
+func resizeImage(file *multipart.FileHeader) (*bytes.Buffer, error) {
+	buf := new(bytes.Buffer)
+	src, err := file.Open()
 	if err != nil {
-		return err
+		return nil, err
+	}
+	img, err := jpeg.Decode(src)
+	if err != nil {
+		return nil, err
 	}
 
-	dstImage128 := imaging.Resize(src, 128, 0, imaging.Lanczos)
-
-	err = imaging.Save(dstImage128, "."+i.Thumb)
+	dstImage128 := resize.Resize(128, 0, img, resize.Lanczos3)
+	err = jpeg.Encode(buf, dstImage128, nil)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return buf, nil
 }
 
 func getImageUrls(col string) ([]newImage, error) {
+	var doneCh chan struct{}
 	var result []newImage
-	client, err := minio.NewV4(config.MinioUrl, config.MinioKay,
-		config.MinioSecret, false)
+	client, err := minio.NewV4(config.MinioUrl, config.MinioKay, config.MinioSecret, false)
 	if err != nil {
 		return nil, err
 	}
-
-	bkts, err := client.ListBuckets()
-	if err != nil {
-		return nil, err
+	list := client.ListObjectsV2(col, "resized/", true, doneCh)
+	for i := range list {
+		result = append(result, newImage{PhotoID: "http://192.168.99.100:9000/" + col + "/" + i.Key[8:], DocID: col, Thumb: i.Key})
 	}
-	log.Print(bkts)
-
-	c := session.DB("images").C("i" + col)
-	err = c.Find(nil).All(&result)
-
-	if err != nil {
-		log.Print(err.Error(), "image not found")
-	}
-
 	return result, nil
 }
 
-func (i newImage) addImageUrls() error {
-	c := session.DB("images").C("i" + i.DocID)
-	err := c.Insert(&i)
-
+func (d delImage) deleteImage() error {
+	conn, err := grpc.Dial(grpcAddress, grpc.WithInsecure())
 	if err != nil {
 		return err
 	}
+	defer conn.Close()
 
-	return nil
-}
+	client := pb.NewImagerClient(conn)
 
-func (d delImage) deleteImage(col string) error {
-
-	c := session.DB("images").C("i" + col)
-	err := c.Remove(bson.M{"photoid": d.PhotoID})
-
-	if err != nil {
+	if err := removeImage(client, &pb.RemoveRequest{d.DocID, d.PhotoID}); err != nil {
 		return err
 	}
 

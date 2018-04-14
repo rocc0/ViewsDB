@@ -4,7 +4,7 @@ import (
 	"io"
 	"log"
 
-	pb "./imager/imagegrpc"
+	pb "../imager.d/pb"
 	"golang.org/x/net/context"
 )
 

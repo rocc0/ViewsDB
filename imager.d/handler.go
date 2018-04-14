@@ -1,18 +1,18 @@
 package main
 
 import (
-	"os"
-
-	pb "./imagegrpc"
-	"golang.org/x/net/context"
 	"log"
+
+	pb "./pb"
+	"golang.org/x/net/context"
 )
 
 type server struct {
 }
 
 func (s server) GetImages(filter *pb.ImagesFilter, stream pb.Imager_GetImagesServer) error {
-	urls, err := getImageUrls(filter.ColID)
+	var i = Image{DocID: filter.ColID}
+	urls, err := i.getImages()
 	if err != nil {
 		return err
 	}
@@ -24,16 +24,11 @@ func (s server) GetImages(filter *pb.ImagesFilter, stream pb.Imager_GetImagesSer
 
 func (s server) DeleteImage(ctx context.Context, rq *pb.RemoveRequest) (*pb.RemoveResponse, error) {
 
-	var i newImage
+	var i Image
 	i.PhotoID = rq.ImageID
 	i.DocID = rq.ColID
-	original := "." + config.ImagePath + rq.ColID + "/" + rq.ImageID
-	log.Print(original)
+	log.Print(i.PhotoID, " | ", i.DocID)
 	if err := i.deleteImage(); err != nil {
-		return nil, err
-	}
-
-	if err := os.RemoveAll(original); err != nil {
 		return nil, err
 	}
 
@@ -41,13 +36,9 @@ func (s server) DeleteImage(ctx context.Context, rq *pb.RemoveRequest) (*pb.Remo
 }
 
 func (s server) AddImage(ctx context.Context, rq *pb.NewImageRequest) (*pb.NewImageResponse, error) {
-	i := newImage{rq.PhotoID, rq.DocID, rq.Original, rq.Thumb}
+	i := Image{rq.PhotoID, rq.DocID, rq.Thumb}
 
-	if err := i.resizeImage(); err != nil {
-		return nil, err
-	}
-
-	if err := i.addImageUrls(); err != nil {
+	if err := i.addImage(); err != nil {
 		return nil, err
 	}
 	return &pb.NewImageResponse{true}, nil

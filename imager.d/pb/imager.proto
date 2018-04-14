@@ -4,19 +4,18 @@ package imagegrpc;
 
 // The Customer service definition.
 service Imager {
-  // Get all Customers with filter - A server-to-client streaming RPC.
+  // Get all Images of specified document
   rpc GetImages(ImagesFilter) returns (stream Images) {}
-  // Create a new Customer - A simple RPC
+  // Delete Image
   rpc DeleteImage(RemoveRequest) returns (RemoveResponse) {}
-
+  // Create a new Image
   rpc AddImage(NewImageRequest) returns (NewImageResponse) {}
 }
 
 message Image {
     string docID = 1;
     string photoID = 2;
-    string original = 3;
-    string thumb = 4;
+    string thumb = 3;
 }
 
 message Images {
@@ -26,8 +25,7 @@ message Images {
 message NewImageRequest {
     string docID = 1;
     string photoID = 2;
-    string original = 3;
-    string thumb = 4;
+    string thumb = 3;
 }
 
 message NewImageResponse {

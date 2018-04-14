@@ -2,7 +2,7 @@
     <ul class="gallery" ng-show="images.length">
         <li ng-repeat="image in images" class="image img-wrap">
             <a ng-click="openLightboxModal($index)">
-                <img ng-src="{[{image.thumb}]}" class="img-thumbnail">
+                <img ng-src="http://192.168.99.100:9000/{[{ docId }]}/{[{image.thumbUrl}]}" class="img-thumbnail">
             </a>
                 <button ng-click="removeImage($index)" class="btn btn-default btn-xs close" type="button">
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
@@ -11,7 +11,6 @@
     </ul>
     <div class="no-images" ng-hide="images.length"><h1>Фото відсутні</h1></div>
 </div>
-
 
 <div>
     <div class="clearfix">

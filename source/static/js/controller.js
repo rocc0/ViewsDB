@@ -89,7 +89,7 @@
     });
 
  viewDB.controller("editCtrl", function ($scope, $http, $sce, $location, trackingService,
-                                            $routeParams, fileUploadService, Lightbox,authService) {
+                                            $routeParams, fileUploadService, Lightbox, authService) {
          const token = localStorage.getItem('token');
          if (token) {
              authService.ensureAuthenticated(token)
@@ -102,10 +102,10 @@
 
          }
         $scope.params = $routeParams;
-        var docId = $scope.params.trackId;
+        $scope.docId = $scope.params.trackId;
 
          var period = {
-             "trace_id": docId,
+             "trace_id": $scope.docId,
              "termin_zakon": "",
              "result_bool": 0,
              "result_year": 0,
@@ -117,7 +117,7 @@
              "cnclsn_bool": 0
          };
 
-        $http.get("/api/v/" + docId).then(function (response) {
+        $http.get("/api/v/" + $scope.docId).then(function (response) {
             $scope.track = response.data;
         });
      //format label for typehead on select
@@ -127,7 +127,7 @@
          });
 
      //end format label for typehead on select
-        $http.get("/api/img/" + docId).then(function (response) {
+        $http.get("/api/img/" + $scope.docId).then(function (response) {
             $scope.images = response.data.images;
         });
 
@@ -197,8 +197,8 @@
         $scope.saveChanges = function (column, table, value) {
             $http({
                 method: 'POST',
-                url:"/api/v/" + docId,
-                data: {id: docId, column: column, data: value, type: table },
+                url:"/api/v/" + $scope.docId,
+                data: {id: $scope.docId, column: column, data: value, type: table },
                 headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token
                 }
             }).then(function() {
@@ -209,7 +209,7 @@
         $scope.savePeriodicChanges = function (column, pid, value) {
             $http({
                 method:'POST',
-                url:"/api/v/" + docId,
+                url:"/api/v/" + $scope.docId,
                 data: {id: String(pid),  column: column, data: value, type: "p"},
                 headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token}
             }).then(function () {
@@ -222,16 +222,18 @@
         // end saving value
 
         // open image
-        $scope.openLightboxModal = function (index) {
+        $scope.openLightboxModal = function(index) {
+            console.log($scope.images[index])
             Lightbox.openModal($scope.images, index);
         };
         // remove image
         $scope.removeImage = function (index) {
-            var photo_id = $scope.images[index].photo_id;
+            var photo_id = $scope.images[index].url;
+
             $http({
                 method: 'POST',
-                url:"/api/img/" + docId + "/delete",
-                data: {photo_id: $scope.images[index].photo_id},
+                url:"/api/img/" + $scope.docId + "/delete",
+                data: {photo_id:  $scope.images[index].thumbUrl},
                 headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token}
             }).then(function (response) {
                 $scope.images.splice(index, 1);
@@ -240,16 +242,17 @@
         // upload image
         $scope.uploadFile = function (images) {
             var uploadUrl = "/api/upload",
-                promise = fileUploadService.uploadFileToUrl(images, uploadUrl, docId, token);
+                promise = fileUploadService.uploadFileToUrl(images, uploadUrl, $scope.docId, token);
 
             promise.then(function (response) {
+                console
                 if ($scope.images == null) {
                     $scope.images = []
                 }
                 $scope.images.push({
-                    "photo_id": response.data.photo_id,
-                    "original": response.data.original,
-                    "thumb": response.data.thumb
+                    "url": response.data.url,
+                    "doc_id": response.data.doc_id,
+                    "thumbUrl": response.data.thumbUrl
                 })
             }, function () {
                 $scope.serverResponse = 'An error has occurred';

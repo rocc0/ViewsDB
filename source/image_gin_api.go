@@ -5,10 +5,32 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	pb "./imager/imagegrpc"
+	"log"
+
 	"github.com/gin-gonic/gin"
-	"google.golang.org/grpc"
 )
+
+func postAddImage(c *gin.Context) {
+	var i newImage
+
+	i.DocID = c.PostForm("doc_id")
+	file, err := c.FormFile("file")
+
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+	}
+
+	if err = i.uploadFilesToMinio(file); err != nil {
+		log.Print(err)
+		c.AbortWithStatus(http.StatusBadRequest)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"url":      "http://192.168.99.100:9000/" + i.DocID + "/" + i.PhotoID,
+		"doc_id":   i.DocID,
+		"thumbUrl": i.Thumb,
+	})
+}
 
 func getTraceImages(c *gin.Context) {
 	id := c.Param("trk_id")
@@ -23,57 +45,19 @@ func getTraceImages(c *gin.Context) {
 	})
 }
 
-func postAddImage(c *gin.Context) {
-	var i newImage
-
-	i.DocID = c.PostForm("doc_id")
-	file, err := c.FormFile("file")
-	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-	}
-	if err := i.addImages(); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-	}
-
-	if err := c.SaveUploadedFile(file, "."+i.Original); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-	}
-
-	if err := i.resizeImage(); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-	}
-
-	if err := i.addImageUrls(); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"original": i.Original,
-		"thumb":    i.Thumb,
-		"photo_id": i.PhotoID,
-	})
-}
-
 func postDelImage(c *gin.Context) {
 	var d delImage
-	conn, err := grpc.Dial(grpcAddress, grpc.WithInsecure())
-	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-	}
-	defer conn.Close()
-
-	client := pb.NewImagerClient(conn)
-
-	colID := c.Param("trk_id")
-
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	if err := json.Unmarshal([]byte(x), &d); err != nil {
+		log.Print(err)
+		c.AbortWithStatus(http.StatusBadRequest)
+	}
+	d.DocID = c.Param("trk_id")
+	log.Print(d.DocID, " | ", d.PhotoID)
+	if err := d.deleteImage(); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
 
-	if err := removeImage(client, &pb.RemoveRequest{colID, d.PhotoID}); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-	}
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "deleted",
 	})

@@ -17,10 +17,10 @@ func init() {
 	if err != nil {
 		log.Fatalf("Error initializing database: %v\n", err)
 	}
-	err = mgoConnect()
-	if err != nil {
-		log.Fatalf("Error initializing mongo: %v\n", err)
-	}
+	//err = mgoConnect()
+	//if err != nil {
+	//	log.Fatalf("Error initializing mongo: %v\n", err)
+	//}
 }
 
 func main() {

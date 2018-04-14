@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+var letters = []rune("abcdefghijklmnopqrstuvwxyz1234567890")
 
 //Generate returns a random seq of symbols
 func generate(length int) string {

@@ -4,7 +4,7 @@ import (
 	"log"
 	"net"
 
-	pb "./imagegrpc"
+	"./pb"
 	"google.golang.org/grpc"
 )
 
@@ -24,9 +24,6 @@ func init() {
 		log.Fatal(err)
 	}
 	cli.Register("imager", 345)
-	if err := mgoConnect(); err != nil {
-		log.Fatalf("Error initializing mongo: %v\n", err)
-	}
 }
 
 func main() {
