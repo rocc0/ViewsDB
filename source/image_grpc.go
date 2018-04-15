@@ -8,14 +8,12 @@ import (
 	"golang.org/x/net/context"
 )
 
-func addImage(client pb.ImagerClient, img *pb.NewImageRequest) {
+func addImage(client pb.ImagerClient, img *pb.NewImageRequest) (*pb.NewImageResponse, error) {
 	resp, err := client.AddImage(context.Background(), img)
 	if err != nil {
-		log.Fatalf("Could not add Image: %v", err)
+		return nil, err
 	}
-	if resp.Success {
-		log.Printf("A new Image has been added")
-	}
+	return resp, nil
 }
 
 func removeImage(client pb.ImagerClient, img *pb.RemoveRequest) error {
@@ -30,22 +28,23 @@ func removeImage(client pb.ImagerClient, img *pb.RemoveRequest) error {
 }
 
 // getImages calls the RPC method GetIage of ImagerServer
-func getImagesGRPC(client pb.ImagerClient, filter *pb.ImagesFilter) {
+func getImagesGRPC(client pb.ImagerClient, filter *pb.ImagesFilter) ([]newImage, error) {
 	// calling the streaming API
-	imgs := []*pb.Images{}
+	images := []newImage{}
+
 	stream, err := client.GetImages(context.Background(), filter)
 	if err != nil {
-		log.Fatalf("Error on get customers: %v", err)
+		log.Fatalf("Error on get images: %v", err)
 	}
 	for {
-		customer, err := stream.Recv()
+		image, err := stream.Recv()
 		if err == io.EOF {
-			break
+			return images, nil
 		}
 		if err != nil {
-			log.Fatalf("%v.GetCustomers(_) = _, %v", client, err)
+			log.Fatalf("%v.GetImages(_) = _, %v", client, err)
 		}
-		imgs = append(imgs, customer)
+		images = append(images, newImage{image.PhotoID, image.DocID, image.Thumb})
 	}
-
+	return images, nil
 }

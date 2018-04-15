@@ -5,7 +5,7 @@ package imagegrpc;
 // The Customer service definition.
 service Imager {
   // Get all Images of specified document
-  rpc GetImages(ImagesFilter) returns (stream Images) {}
+  rpc GetImages(ImagesFilter) returns (stream Image) {}
   // Delete Image
   rpc DeleteImage(RemoveRequest) returns (RemoveResponse) {}
   // Create a new Image
@@ -18,10 +18,6 @@ message Image {
     string thumb = 3;
 }
 
-message Images {
-    repeated Image images = 1;
-}
-
 message NewImageRequest {
     string docID = 1;
     string photoID = 2;
@@ -29,7 +25,9 @@ message NewImageRequest {
 }
 
 message NewImageResponse {
-    bool success = 1;
+    string docID = 1;
+    string photoID = 2;
+    string thumb = 3;
 }
 
 message RemoveRequest {

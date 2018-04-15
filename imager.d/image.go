@@ -4,7 +4,7 @@ import (
 	"log"
 
 	pb "./pb"
-	minio "github.com/minio/minio-go"
+	"github.com/minio/minio-go"
 )
 
 type Image struct {
@@ -13,10 +13,16 @@ type Image struct {
 	Thumb   string `json:"thumbUrl"`
 }
 
-func (i Image) getImages() ([]*pb.Images, error) {
-	var result []*pb.Images
+func (i Image) getImages(filter *pb.ImagesFilter, stream pb.Imager_GetImagesServer) (<-chan minio.ObjectInfo, error) {
+	var doneCh chan struct{}
 
-	return result, nil
+	client, err := minio.NewV4(config.MinioUrl, config.MinioKay, config.MinioSecret, false)
+	if err != nil {
+		return nil, err
+	}
+	urls := client.ListObjectsV2(i.DocID, "resized/", true, doneCh)
+
+	return urls, nil
 }
 
 func (i Image) addImage() error {

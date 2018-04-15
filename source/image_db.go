@@ -8,6 +8,8 @@ import (
 	"github.com/minio/minio-go"
 	"github.com/nfnt/resize"
 
+	"log"
+
 	pb "../imager.d/pb"
 	"google.golang.org/grpc"
 )
@@ -95,17 +97,16 @@ func resizeImage(file *multipart.FileHeader) (*bytes.Buffer, error) {
 }
 
 func getImageUrls(col string) ([]newImage, error) {
-	var doneCh chan struct{}
-	var result []newImage
-	client, err := minio.NewV4(config.MinioUrl, config.MinioKay, config.MinioSecret, false)
+	conn, err := grpc.Dial(grpcAddress, grpc.WithInsecure())
 	if err != nil {
-		return nil, err
+		log.Fatal(err)
 	}
-	list := client.ListObjectsV2(col, "resized/", true, doneCh)
-	for i := range list {
-		result = append(result, newImage{PhotoID: "http://192.168.99.100:9000/" + col + "/" + i.Key[8:], DocID: col, Thumb: i.Key})
-	}
-	return result, nil
+	defer conn.Close()
+	pbclient := pb.NewImagerClient(conn)
+
+	images, err := getImagesGRPC(pbclient, &pb.ImagesFilter{col})
+
+	return images, nil
 }
 
 func (d delImage) deleteImage() error {
