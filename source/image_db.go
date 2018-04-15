@@ -1,12 +1,7 @@
 package main
 
 import (
-	"bytes"
-	"image/jpeg"
 	"mime/multipart"
-
-	"github.com/minio/minio-go"
-	"github.com/nfnt/resize"
 
 	"log"
 
@@ -27,73 +22,30 @@ type delImage struct {
 	PhotoID string `json:"photo_id"`
 }
 
-//func mgoConnect() error {
-//	s, err := mgo.Dial(config.Mongo)
-//	if err != nil {
-//		return err
-//	}
-//	s.SetMode(mgo.Monotonic, true)
-//	session = s.Copy()
-//	return nil
-//}
-
 //Create image
-func (i *newImage) uploadFilesToMinio(file *multipart.FileHeader) error {
-	i.PhotoID = generate(20) + ".jpg"
-	i.Thumb = "resized/" + i.PhotoID
-	client, err := minio.NewV4(config.MinioUrl, config.MinioKay, config.MinioSecret, false)
+func (i *newImage) uploadFilesToMinio(f *multipart.FileHeader) error {
+	var b []byte
+	conn, err := grpc.Dial(grpcAddress, grpc.WithInsecure())
 	if err != nil {
 		return err
 	}
-	original, err := file.Open()
+	defer conn.Close()
+	pbclient := pb.NewImagerClient(conn)
+
+	file, err := f.Open()
 	if err != nil {
 		return err
 	}
-	resized, err := resizeImage(file)
+	_, err = file.Read(b)
 	if err != nil {
 		return err
 	}
 
-	if ok, _ := client.BucketExists(i.DocID); !ok {
-		if err = client.MakeBucket(i.DocID, "us-east-1"); err != nil {
-			return err
-		}
-	}
-	if err = client.SetBucketPolicy(i.DocID, "", "readonly"); err != nil {
-		return err
-	}
-	//Save original
-	if _, err = client.PutObject(i.DocID, i.PhotoID, original, file.Size,
-		minio.PutObjectOptions{ContentType: "multipart/form-data"}); err != nil {
-		return err
-	}
-	//Save thumb
-	if _, err = client.PutObject(i.DocID, "resized/"+i.PhotoID, resized, int64(resized.Len()),
-		minio.PutObjectOptions{ContentType: "image/jpeg"}); err != nil {
-		return err
-	}
+	img, err := addImage(pbclient, &pb.NewImageRequest{i.DocID, b})
 
+	i.PhotoID = img.PhotoID
+	i.Thumb = img.Thumb
 	return nil
-}
-
-func resizeImage(file *multipart.FileHeader) (*bytes.Buffer, error) {
-	buf := new(bytes.Buffer)
-	src, err := file.Open()
-	if err != nil {
-		return nil, err
-	}
-	img, err := jpeg.Decode(src)
-	if err != nil {
-		return nil, err
-	}
-
-	dstImage128 := resize.Resize(128, 0, img, resize.Lanczos3)
-	err = jpeg.Encode(buf, dstImage128, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return buf, nil
 }
 
 func getImageUrls(col string) ([]newImage, error) {
@@ -104,7 +56,7 @@ func getImageUrls(col string) ([]newImage, error) {
 	defer conn.Close()
 	pbclient := pb.NewImagerClient(conn)
 
-	images, err := getImagesGRPC(pbclient, &pb.ImagesFilter{col})
+	images, err := getAllImages(pbclient, &pb.ImagesFilter{col})
 
 	return images, nil
 }

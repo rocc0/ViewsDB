@@ -28,7 +28,7 @@ func removeImage(client pb.ImagerClient, img *pb.RemoveRequest) error {
 }
 
 // getImages calls the RPC method GetIage of ImagerServer
-func getImagesGRPC(client pb.ImagerClient, filter *pb.ImagesFilter) ([]newImage, error) {
+func getAllImages(client pb.ImagerClient, filter *pb.ImagesFilter) ([]newImage, error) {
 	// calling the streaming API
 	images := []newImage{}
 

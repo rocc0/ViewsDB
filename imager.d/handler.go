@@ -9,12 +9,14 @@ type server struct {
 }
 
 func (s server) AddImage(ctx context.Context, rq *pb.NewImageRequest) (*pb.NewImageResponse, error) {
-	i := Image{rq.PhotoID, rq.DocID, rq.Thumb}
+	img := pb.NewImageRequest{rq.DocID, rq.Photo}
 
-	if err := i.addImage(); err != nil {
+	if res, err := uploadFilesToMinio(img); err != nil {
 		return nil, err
+	} else {
+		return &pb.NewImageResponse{res.DocID, res.PhotoID, res.Thumb}, nil
 	}
-	return &pb.NewImageResponse{rq.DocID, rq.PhotoID, rq.Thumb}, nil
+
 }
 
 func (s server) GetImages(filter *pb.ImagesFilter, stream pb.Imager_GetImagesServer) error {
