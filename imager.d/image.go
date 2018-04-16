@@ -2,16 +2,14 @@ package main
 
 import (
 	"log"
-	"math/rand"
-	"time"
 
 	"bytes"
 	"image/jpeg"
 
 	pb "./pb"
-
 	"github.com/minio/minio-go"
 	"github.com/nfnt/resize"
+	"github.com/rocc0/TraceDB/source/gen"
 )
 
 type Image struct {
@@ -23,7 +21,7 @@ type Image struct {
 func uploadFilesToMinio(img pb.NewImageRequest) (*pb.NewImageResponse, error) {
 	r := bytes.NewReader(img.Photo)
 	log.Print(len(img.Photo))
-	photoID := generate(20) + ".jpg"
+	photoID := gen.Generate(20) + ".jpg"
 	var i = Image{PhotoID: photoID, DocID: img.DocID, Thumb: "resized/" + photoID}
 
 	client, err := minio.NewV4(config.MinioUrl, config.MinioKay, config.MinioSecret, false)
@@ -72,18 +70,6 @@ func resizeImage(file []byte) (*bytes.Buffer, error) {
 	}
 
 	return buf, nil
-}
-
-var letters = []rune("abcdefghijklmnopqrstuvwxyz1234567890")
-
-//Generate returns a random seq of symbols
-func generate(length int) string {
-	rand.Seed(time.Now().UnixNano())
-	b := make([]rune, length)
-	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
-	}
-	return string(b)
 }
 
 func (i Image) getImages(filter *pb.ImagesFilter, stream pb.Imager_GetImagesServer) (<-chan minio.ObjectInfo, error) {

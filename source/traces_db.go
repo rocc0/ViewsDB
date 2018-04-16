@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/rocc0/TraceDB/source/gen"
 )
 
 //BasicTrace is a part of the trace page that include register info and basic+repeated traces
@@ -46,7 +47,7 @@ func (new NewTrace) createNewTrace() (string, error) {
 		idx indexItem
 	)
 
-	traceID := generate(20)
+	traceID := gen.Generate(20)
 	new.Info["trace_id"], new.Basic["trace_id"], new.Repeated["trace_id"] = traceID, traceID, traceID
 
 	_, err := createNewSubTrace(new.Info, "trace_info")
