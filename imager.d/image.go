@@ -22,8 +22,9 @@ type Image struct {
 
 func uploadFilesToMinio(img pb.NewImageRequest) (*pb.NewImageResponse, error) {
 	r := bytes.NewReader(img.Photo)
+	log.Print(len(img.Photo))
 	photoID := generate(20) + ".jpg"
-	var i = Image{PhotoID: photoID, Thumb: "resized/" + photoID}
+	var i = Image{PhotoID: photoID, DocID: img.DocID, Thumb: "resized/" + photoID}
 
 	client, err := minio.NewV4(config.MinioUrl, config.MinioKay, config.MinioSecret, false)
 	if err != nil {

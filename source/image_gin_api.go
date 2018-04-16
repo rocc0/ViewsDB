@@ -20,7 +20,7 @@ func postAddImage(c *gin.Context) {
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
 
-	if err = i.uploadFilesToMinio(file); err != nil {
+	if err = i.createAddImage(file); err != nil {
 		log.Print(err)
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
@@ -54,7 +54,7 @@ func postDelImage(c *gin.Context) {
 	}
 	d.DocID = c.Param("trk_id")
 	log.Print(d.DocID, " | ", d.PhotoID)
-	if err := d.deleteImage(); err != nil {
+	if err := d.createRemoveRequest(); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
 
