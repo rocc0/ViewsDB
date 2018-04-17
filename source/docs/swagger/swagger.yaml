@@ -1,0 +1,650 @@
+basePath: /api
+definitions:
+  httputil.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+  main.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      rights:
+        type: integer
+      surename:
+        type: string
+    type: object
+  main.newImage:
+    properties:
+      doc_id:
+        type: string
+      thumbUrl:
+        type: string
+      url:
+        type: string
+    type: object
+host: localhost:8888
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a TraceDB celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: TraceDB API
+  version: "1.0"
+paths:
+  /:
+    get:
+      consumes:
+      - text/html
+      description: Show html main/search page
+      operationId: get-index-page
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Index page html endpoint
+  /api/{trk_id}/delete:
+    post:
+      consumes:
+      - application/json
+      description: Deleting image of a document
+      parameters:
+      - description: trace id
+        in: path
+        name: trk_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Deleting image of a document
+  /api/cabinet:
+    get:
+      consumes:
+      - application/json
+      description: get string by ID
+      operationId: get-string-by-string
+      parameters:
+      - description: JWT ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.User'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Getting user data for displaying in user cabinet
+  /api/create-period:
+    post:
+      consumes:
+      - application/json
+      description: endpoint for two operations
+      operationId: post-create-new-trace-period
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ID
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Creation new item or period of item
+  /api/delete:
+    post:
+      consumes:
+      - application/json
+      description: get string by ID
+      operationId: post-delete-item
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Getting user data for displaying in user cabinet
+  /api/edituser:
+    post:
+      consumes:
+      - application/json
+      description: this endpoint used to hendling passchange or first/lastname changing
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Змінено!
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Handling changes in user fields
+  /api/govs:
+    get:
+      consumes:
+      - application/json
+      description: get string by ID
+      operationId: get-governments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ratings
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Getting user data for displaying in user cabinet
+  /api/govs/edit:
+    post:
+      consumes:
+      - application/json
+      description: get string by ID
+      operationId: post-edit-govs
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: gov edited
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Getting user data for displaying in user cabinet
+  /api/ratings:
+    get:
+      consumes:
+      - application/json
+      description: get string by ID
+      operationId: get-ratings
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ratings
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Getting user data for displaying in user cabinet
+  /api/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: putting new image to minio storage
+      parameters:
+      - description: doc id
+        in: path
+        name: doc_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.newImage'
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Image uploading endpoint
+  /api/v/{trk_id}:
+    get:
+      consumes:
+      - application/json
+      description: get string by ID
+      operationId: get-trace
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Trace
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Getting user data for displaying in user cabinet
+    post:
+      consumes:
+      - application/json
+      description: get string by ID
+      operationId: post-edit-field
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Trace field edited
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Getting user data for displaying in user cabinet
+  /govs/edit:
+    get:
+      consumes:
+      - text/html
+      description: Show html govs page
+      operationId: get-govs
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: governments
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Getting user data for displaying in user cabinet
+  /id/{trk_id}/edit:
+    get:
+      consumes:
+      - text/html
+      description: Show html trace page
+      operationId: get-trac-by-string
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: trace
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Getting user data for displaying in user cabinet
+  /img/{trk_id}:
+    get:
+      consumes:
+      - application/json
+      description: Getting all images of document from minio through gRPC
+      parameters:
+      - description: trace id
+        in: path
+        name: trk_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Getting all images of document
+  /ratings:
+    get:
+      consumes:
+      - text/html
+      description: Show html ratings page
+      operationId: get-string-by-string
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: ratings
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Getting user data for displaying in user cabinet
+  /track/create:
+    get:
+      consumes:
+      - text/html
+      description: Show html trace creation page
+      operationId: get-creation-page
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: creation
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Getting user data for displaying in user cabinet
+  /u/cabinet:
+    get:
+      consumes:
+      - text/html
+      description: Show html user page
+      operationId: get-user-page
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: user page
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Getting user data for displaying in user cabinet
+  /u/login:
+    get:
+      consumes:
+      - text/html
+      description: Show html login page
+      operationId: get-login-page
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: login
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Index page html endpoint
+  /u/register:
+    get:
+      consumes:
+      - application/json
+      description: register a new user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Реєстрація успішна!
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+            type: object
+      summary: Handling user registration
+swagger: "2.0"
