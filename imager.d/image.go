@@ -1,8 +1,6 @@
 package main
 
 import (
-	"log"
-
 	"bytes"
 	"image/jpeg"
 
@@ -18,9 +16,21 @@ type Image struct {
 	Thumb   string `json:"thumbUrl"`
 }
 
+func checkBucketExists(name string) error {
+	client, err := minio.NewV4(config.MinioUrl, config.MinioKay, config.MinioSecret, false)
+	if err != nil {
+		return err
+	}
+	if ok, _ := client.BucketExists(name); !ok {
+		if err = client.MakeBucket(name, "us-east-1"); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func uploadFilesToMinio(img pb.NewImageRequest) (*pb.NewImageResponse, error) {
 	r := bytes.NewReader(img.Photo)
-	log.Print(len(img.Photo))
 	photoID := gen.Generate(20) + ".jpg"
 	var i = Image{PhotoID: photoID, DocID: img.DocID, Thumb: "resized/" + photoID}
 
@@ -34,10 +44,8 @@ func uploadFilesToMinio(img pb.NewImageRequest) (*pb.NewImageResponse, error) {
 		return nil, err
 	}
 
-	if ok, _ := client.BucketExists(i.DocID); !ok {
-		if err = client.MakeBucket(i.DocID, "us-east-1"); err != nil {
-			return nil, err
-		}
+	if err = checkBucketExists(i.DocID); err != nil {
+		return nil, err
 	}
 	if err = client.SetBucketPolicy(i.DocID, "", "readonly"); err != nil {
 		return nil, err
@@ -79,6 +87,9 @@ func (i Image) getImages(filter *pb.ImagesFilter, stream pb.Imager_GetImagesServ
 	if err != nil {
 		return nil, err
 	}
+	if err = checkBucketExists(filter.ColID); err != nil {
+		return nil, err
+	}
 	urls := client.ListObjectsV2(i.DocID, "resized/", true, doneCh)
 
 	return urls, nil
@@ -87,18 +98,15 @@ func (i Image) getImages(filter *pb.ImagesFilter, stream pb.Imager_GetImagesServ
 func (i Image) deleteImage() error {
 	client, err := minio.NewV4(config.MinioUrl, config.MinioKay, config.MinioSecret, false)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 
 	err = client.RemoveObject(i.DocID, i.PhotoID)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 	err = client.RemoveObject(i.DocID, i.PhotoID[8:])
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 

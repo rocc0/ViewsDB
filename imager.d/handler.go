@@ -1,8 +1,6 @@
 package main
 
 import (
-	"log"
-
 	pb "./pb"
 	"golang.org/x/net/context"
 )
@@ -13,7 +11,6 @@ type server struct {
 func (s server) AddImage(ctx context.Context, rq *pb.NewImageRequest) (*pb.NewImageResponse, error) {
 	img := pb.NewImageRequest{rq.DocID, rq.Photo}
 	if res, err := uploadFilesToMinio(img); err != nil {
-		log.Print(err)
 		return nil, err
 	} else {
 		return &pb.NewImageResponse{res.DocID, res.PhotoID, res.Thumb}, nil
@@ -26,6 +23,7 @@ func (s server) GetImages(filter *pb.ImagesFilter, stream pb.Imager_GetImagesSer
 	if err != nil {
 		return err
 	}
+
 	for i := range urls {
 		img := pb.Image{PhotoID: "http://192.168.99.100:9000/" + filter.ColID + "/" + i.Key[8:],
 			DocID: filter.ColID, Thumb: i.Key}
