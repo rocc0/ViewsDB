@@ -3,6 +3,8 @@ package main
 import (
 	"errors"
 
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -41,7 +43,7 @@ func userInit() error {
 func (u *User) loginCheck() bool {
 	var password string
 
-	res := db.QueryRow("SELECT password FROM users WHERE email=?", u.Email)
+	res := db.QueryRow("SELECT password FROM users WHERE email=$1", u.Email)
 	res.Scan(&password)
 
 	err := bcrypt.CompareHashAndPassword([]byte(password), []byte(u.Password))
@@ -55,7 +57,7 @@ func (u *User) loginCheck() bool {
 func (u *User) authCheck() bool {
 	var privileged int
 
-	res := db.QueryRow("SELECT privileged FROM users WHERE email=?", u.Email)
+	res := db.QueryRow("SELECT privileged FROM users WHERE email=$1", u.Email)
 	res.Scan(&privileged)
 
 	return privileged == 1
@@ -63,7 +65,7 @@ func (u *User) authCheck() bool {
 
 func (u *User) getUser() error {
 
-	res := db.QueryRow("SELECT name, surename, id, rights FROM users WHERE email = ?", u.Email)
+	res := db.QueryRow("SELECT name, surename, id, rights FROM users WHERE email = $1", u.Email)
 	err := res.Scan(&u.Name, &u.Surename, &u.ID, &u.Rights)
 	if err != nil {
 		return err
@@ -80,7 +82,7 @@ func (u *User) register() error {
 	if err != nil {
 		return err
 	}
-	req, err := db.Prepare("INSERT INTO users (name, surename, email, password) VALUES (?,?,?,?)")
+	req, err := db.Prepare("INSERT INTO users (name, surename, email, password) VALUES ($1,$2,$3,$4)")
 	if err != nil {
 		return err
 	}
@@ -95,7 +97,7 @@ func (u *User) register() error {
 }
 
 func (f *userField) editField() error {
-	stmt, _ := db.Prepare("UPDATE users SET " + f.Field + "=? WHERE id=?;")
+	stmt, _ := db.Prepare("UPDATE users SET " + f.Field + "=$1 WHERE id=$2;")
 
 	if f.Field == "password" {
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(f.Data), bcrypt.DefaultCost)
@@ -116,7 +118,7 @@ func (f *userField) editField() error {
 }
 
 func (u *User) isUsernameAvailable() bool {
-	res, _ := db.Query("SELECT email FROM users WHERE email=?", u.Email)
+	res, _ := db.Query("SELECT email FROM users WHERE email=$1", u.Email)
 	if res == nil {
 		return false
 	}

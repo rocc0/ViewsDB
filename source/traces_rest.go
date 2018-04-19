@@ -3,9 +3,8 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
-	"reflect"
-	"strconv"
 	"strings"
 
 	"./httputil"
@@ -48,9 +47,9 @@ type (
 func postCreateItem(c *gin.Context) {
 	var trace NewTrace
 	var period BasicTrace
-
 	x, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
+
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
@@ -70,11 +69,14 @@ func postCreateItem(c *gin.Context) {
 			})
 		}
 	}
+	log.Print("1234 ")
 	if err := json.Unmarshal([]byte(x), &trace); err != nil {
+
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
-	if id, err := trace.createNewTrace(); err == nil {
+	if id, err := trace.createNewTrace(); err != nil {
+		log.Print("155 ", err)
 		httputil.NewError(c, http.StatusInternalServerError, err)
 		return
 	} else {
@@ -146,29 +148,22 @@ func getGoverns(c *gin.Context) {
 // @Router /api/v/{trk_id} [get]
 func getTrace(c *gin.Context) {
 	var b BasicTrace
-	basic := make(map[string]string)
+	var b2 BasicTrace
 	traceID := c.Param("trk_id")
 
-	if err := b.getBasicData(traceID); err != nil {
+	basic, err := b.getBasicData(traceID)
+	if err != nil {
 		httputil.NewError(c, http.StatusNotFound, err)
 		return
 	}
-	period, err := getPeriodicData(traceID)
+	period, err := b2.getPeriodicData(traceID)
 	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
 		return
 	}
-	for k, v := range b.Fields {
-		s := reflect.ValueOf(v)
-		switch s.Interface().(type) {
-		case int64:
-			basic[k] = string(strconv.Itoa(int(v.(int64))))
-		default:
-			basic[k] = string(v.([]uint8))
-		}
-	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"pl": basic,
+		"pl": basic.Fields,
 		"pr": period})
 }
 

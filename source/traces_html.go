@@ -152,13 +152,13 @@ func showTracePage(c *gin.Context) {
 		title = ""
 	}
 
-	if err := trace.getBasicData(traceID); err != nil {
+	if t, err := trace.getBasicData(traceID); err != nil {
 		httputil.NewError(c, http.StatusNotFound, err)
 		return
+	} else {
+		render(c, gin.H{
+			"title": title + t.Fields["reg_name"].(string),
+		}, "index.html")
 	}
-
-	render(c, gin.H{
-		"title": title + string(trace.Fields["reg_name"].([]uint8)),
-	}, "index.html")
 
 }

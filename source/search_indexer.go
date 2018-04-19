@@ -52,7 +52,7 @@ func indexWorker(ctx context.Context, wg *sync.WaitGroup, client *elastic.Client
 
 	res, err := db.Query("select id, trace_id, reg_name, reg_date, gov_choice, trace_year, "+
 		"developer, trace_basic, trace_repeated, trace_periodic, "+
-		"trace_fact from trace_info WHERE id BETWEEN ? AND ?", f, l)
+		"trace_fact from trace_info WHERE id BETWEEN $1 AND $2", f, l)
 	if err != nil {
 		log.Fatal(err)
 	}

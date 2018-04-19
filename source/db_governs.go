@@ -1,5 +1,10 @@
 package main
 
+import (
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
+)
+
 type government struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`

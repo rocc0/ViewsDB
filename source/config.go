@@ -28,6 +28,9 @@ type configuration struct {
 	MinioSecret string `yaml:"minio-s"`
 	MinioUrl    string `yaml:"minio-url"`
 	Consul      string `yaml:"consul"`
+	PgUser      string `yaml:"pg-user"`
+	PgPass      string `yaml:"pg-pass"`
+	PgHost      string `yaml:"pg-host"`
 }
 
 func (c *configuration) getConf() error {

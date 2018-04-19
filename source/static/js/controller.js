@@ -207,6 +207,7 @@
         };
 
         $scope.savePeriodicChanges = function (column, pid, value) {
+            console.log(column, pid, value)
             $http({
                 method:'POST',
                 url:"/api/v/" + $scope.docId,
@@ -315,6 +316,7 @@
                 data: $scope.form_data,
                 headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token}
             }).then(function (response) {
+                console.log(response)
                 window.location.replace("/track/id/" + response.data.id);
             })
         }

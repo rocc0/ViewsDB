@@ -3,8 +3,13 @@ package main
 import (
 	"strings"
 
+	"log"
+
+	"fmt"
+
+	"./gen"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/rocc0/TraceDB/source/gen"
+	_ "github.com/lib/pq"
 )
 
 //BasicTrace is a part of the trace page that include register info and basic+repeated traces
@@ -19,29 +24,6 @@ type NewTrace struct {
 	Repeated map[string]interface{} `json:"repeated"`
 }
 
-//PeriodTrace is a part of the trace page thar include only periodic traces
-type PeriodTrace struct {
-	PeriodID               int    `json:"pid"`
-	TraceID                string `json:"trace_id"`
-	TermZakon              string `json:"termin_zakon"`
-	TermFact               string `json:"termin_fact"`
-	Result                 string `json:"result"`
-	ResultBool             int    `json:"result_bool"`
-	ResultYear             int    `json:"result_year"`
-	ResultComment          string `json:"result_comment"`
-	Signed                 string `json:"signed"`
-	Publicated             string `json:"publicated"`
-	Gived                  string `json:"gived"`
-	Cnclsn                 string `json:"cnclsn"`
-	CnclsnBool             int    `json:"cnclsn_bool"`
-	CnclsnComment          string `json:"cnclsn_comment"`
-	BrokenMyRating         int    `json:"br_my_rating"`
-	BrokenMyRatingComment  string `json:"br_my_rating_c"`
-	BrokenDevRating        int    `json:"br_dev_rating"`
-	BrokenDevRatingComment string `json:"br_dev_rating_c"`
-	Comment                string `json:"p_comment"`
-}
-
 func (new NewTrace) createNewTrace() (string, error) {
 	var (
 		idx indexItem
@@ -49,7 +31,6 @@ func (new NewTrace) createNewTrace() (string, error) {
 
 	traceID := gen.Generate(20)
 	new.Info["trace_id"], new.Basic["trace_id"], new.Repeated["trace_id"] = traceID, traceID, traceID
-
 	_, err := createNewSubTrace(new.Info, "trace_info")
 	if err != nil {
 		return "", err
@@ -63,7 +44,10 @@ func (new NewTrace) createNewTrace() (string, error) {
 		return "", err
 	}
 
-	idx.updateIndex(traceID)
+	if err = idx.updateIndex(traceID); err != nil {
+		log.Print("2 ", err)
+		return "", err
+	}
 
 	return traceID, nil
 }
@@ -83,8 +67,9 @@ func createNewSubTrace(data map[string]interface{}, table string) (int, error) {
 		colNames []string
 		values   []interface{}
 		phs      string
+		lastID   int
 	)
-
+	count := 1
 	for k, v := range data {
 		// check that column is valid
 		colNames = append(colNames, k)
@@ -95,44 +80,39 @@ func createNewSubTrace(data map[string]interface{}, table string) (int, error) {
 		} else {
 			values = append(values, v)
 		}
-
-		phs += "?,"
+		phs += fmt.Sprintf("$%v,", count)
+		count += 1
 	}
 
 	if len(phs) > 0 {
 		phs = phs[:len(phs)-1]
 	}
-	phs = " VALUES(" + phs + ");"
+	phs = " VALUES (" + phs + ")"
 
 	colNamesString := "(" + strings.Join(colNames, ",") + ")"
-	stmt, err := db.Prepare("INSERT INTO " + table + colNamesString + phs)
+	stmt, err := db.Prepare("INSERT INTO " + table + colNamesString + phs + " RETURNING id;")
 	if err != nil {
 		return 0, err
 	}
 
-	res, err := stmt.Exec(values...)
+	err = stmt.QueryRow(values...).Scan(&lastID)
 	if err != nil {
 		return 0, err
 	}
 
-	lastID, err := res.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
-
-	return int(lastID), nil
+	return lastID, nil
 }
 
-func (t *BasicTrace) getBasicData(id string) error {
+func (t *BasicTrace) getBasicData(id string) (*BasicTrace, error) {
 	rows, err := db.Query("SELECT * FROM trace_info i LEFT JOIN trace_basic b ON"+
 		" i.trace_id = b.trace_id LEFT JOIN trace_repeat r ON"+
-		" i.trace_id = r.trace_id WHERE i.trace_id = ?;", id)
+		" i.trace_id = r.trace_id WHERE i.trace_id = $1;", id)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	colNames, err := rows.Columns()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	columns := make([]interface{}, len(colNames))
 	columnPointers := make([]interface{}, len(colNames))
@@ -143,7 +123,7 @@ func (t *BasicTrace) getBasicData(id string) error {
 	for rows.Next() {
 		err := rows.Scan(columnPointers...)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		for i, colName := range colNames {
 			a := columnPointers[i].(*interface{})
@@ -155,55 +135,44 @@ func (t *BasicTrace) getBasicData(id string) error {
 		t.Fields = m
 	}
 	defer rows.Close()
-	return nil
+	return t, nil
 }
 
-func getPeriodicData(id string) (*[]PeriodTrace, error) {
-	var (
-		resultBool, resultYear, periodID, cnclsnBool, brokenMyRating, brokenDevRating int
-		traceID, termZakon, termFact, result, resultComment, signed, publicated, gived,
-		cnclsn, cnclsnComment, brokenMyRatingComment, brokenDevRatingComment, comment string
-		periods []PeriodTrace
-	)
-
-	pers, err := db.Query("SELECT id,trace_id,"+
-		"COALESCE(termin_zakon, '') AS termin_zakon,"+
-		"COALESCE(termin_fact, '') AS termin_fact,"+
-		"result_bool, "+
-		"COALESCE(result_year, 0) AS result_year, "+
-		"COALESCE(result, 'висновок відсутній') AS result,"+
-		"COALESCE(result_comment, 'коментар відсутній') AS result_comment, "+
-		"COALESCE(signed, '') AS signed,"+
-		"COALESCE(publicated, '') AS publicated,"+
-		"COALESCE(gived, '') AS gived,"+
-		"COALESCE(cnclsn, '') AS cnclsn,"+
-		"cnclsn_bool, "+
-		"COALESCE(cnclsn_comment, 'коментар відсутній') AS cnclsn_comment,"+
-		"COALESCE(br_my_rating, 0) AS br_my_rating,"+
-		"COALESCE(br_my_rating_c, '') AS br_my_rating_c,"+
-		"COALESCE(br_dev_rating, 0) AS br_dev_rating, "+
-		"COALESCE(br_dev_rating_c, '') AS br_dev_rating_c, "+
-		"COALESCE(p_comment, '') AS p_comment "+
-		"FROM trace_period WHERE trace_id = ?;", id)
+func (t *BasicTrace) getPeriodicData(id string) (*[]map[string]interface{}, error) {
+	var periods []map[string]interface{}
+	pers, err := db.Query("SELECT id,trace_id, termin_zakon,termin_fact,result_bool,result_year, "+
+		"result,result_comment, signed, publicated,gived,cnclsn,cnclsn_bool, cnclsn_comment,"+
+		"br_my_rating,br_my_rating_c,br_dev_rating, br_dev_rating_c, p_comment "+
+		"FROM trace_period WHERE trace_id = $1;", id)
 	if err != nil {
+		log.Print(err, "   ###1")
 		return nil, err
 	}
+	colNames, err := pers.Columns()
+	if err != nil {
+		log.Print(err, "   ###2")
+		return nil, err
+	}
+	columns := make([]interface{}, len(colNames))
+	columnPointers := make([]interface{}, len(colNames))
+	m := make(map[string]interface{})
+	for i := range columns {
+		columnPointers[i] = &columns[i]
+	}
 	for pers.Next() {
-		err := pers.Scan(&periodID, &traceID, &termZakon, &termFact,
-			&resultBool, &resultYear, &result, &resultComment,
-			&signed, &publicated, &gived, &cnclsn, &cnclsnBool,
-			&cnclsnComment, &brokenMyRating, &brokenMyRatingComment,
-			&brokenDevRating, &brokenDevRatingComment, &comment)
+		err := pers.Scan(columnPointers...)
 		if err != nil {
+			log.Print(err, "   ###3")
 			return nil, err
 		}
-
-		periods = append(periods, PeriodTrace{periodID, traceID, termZakon, termFact,
-			result, resultBool, resultYear, resultComment, signed,
-			publicated, gived, cnclsn, cnclsnBool,
-			cnclsnComment, brokenMyRating,
-			brokenMyRatingComment, brokenDevRating,
-			brokenDevRatingComment, comment})
+		for i, colName := range colNames {
+			a := columnPointers[i].(*interface{})
+			if *a == nil {
+				*a = []uint8("")
+			}
+			m[colName] = *a
+		}
+		periods = append(periods, m)
 	}
 	defer pers.Close()
 	return &periods, nil
@@ -217,12 +186,14 @@ func (s saveRequest) saveTraceChanges() error {
 		field = "id"
 	}
 
-	stmt, err := db.Prepare("UPDATE " + table[s.TraceType] + " SET " + s.Name + "= ? WHERE " + field + " = ?;")
+	stmt, err := db.Prepare("UPDATE " + table[s.TraceType] + " SET " + s.Name + "= $1 WHERE " + field + " = $2;")
 	if err != nil {
+		log.Print("1 ", err)
 		return err
 	}
 	_, err = stmt.Exec(s.Data, s.ID)
 	if err != nil {
+		log.Print("2 ", err)
 		return err
 	}
 

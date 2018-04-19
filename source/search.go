@@ -104,10 +104,13 @@ func elasticConnect() (context.Context, *elastic.Client, error) {
 func (idx indexItem) updateIndex(id string) error {
 	var index int
 	ctx, client, err := elasticConnect()
+	if err != nil {
+		return err
+	}
 
 	stmt := db.QueryRow("select id, trace_id, reg_name, reg_date, gov_choice,"+
 		"trace_year, developer, trace_basic, trace_repeated, trace_periodic,"+
-		" trace_fact from trace_info where trace_id=?;", id)
+		" trace_fact from trace_info where trace_id=$1;", id)
 
 	if err = stmt.Scan(&index, &idx.TraceID, &idx.RegName, &idx.RegDate, &idx.GovChoice,
 		&idx.TraceYear, &idx.Developer, &idx.Basic, &idx.Repeated, &idx.Periodical, &idx.Fact); err != nil {

@@ -20,7 +20,7 @@
                     <div class="panel-heading">Висновок Комітету щодо відповідності звіту вимогам постанови КМУ від 11.03.04 р. №308</div>
                     <div class="pull-left panel-body"
                          inline-edit="pr.cnclsn"
-                         on-save="savePeriodicChanges('cnclsn',pr.pid,value)"
+                         on-save="savePeriodicChanges('cnclsn',pr.id,value)"
                          on-cancel="log('CANCEL', value)">
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                         <switcher ng-model="pr.cnclsn_bool"
                                   true-value="'1'" true-label="Так"
                                   false-value="'0'" false-label="Ні"
-                                  ng-change="savePeriodicChanges('cnclsn_bool', pr.pid, newValue)">
+                                  ng-change="savePeriodicChanges('cnclsn_bool', pr.id, newValue)">
                         </switcher>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                     <div class=" panel-heading">Коментар</div>
                     <div class="panel-body"
                          inline-comment="pr.cnclsn_comment"
-                         on-save="savePeriodicChanges('cnclsn_comment', pr.pid,value)"
+                         on-save="savePeriodicChanges('cnclsn_comment', pr.id, value)"
                          on-cancel="log('CANCEL', value)">
                     </div>
                 </div>
@@ -53,7 +53,7 @@
                 <div class="panel-heading switch-res-heading high">Результати відстеження результативності</div>
                 <div class="panel-body"
                      inline-edit="pr.result"
-                     on-save="savePeriodicChanges('result',pr.pid,value)"
+                     on-save="savePeriodicChanges('result',pr.id,value)"
                      on-cancel="log('CANCEL', value)">
                 </div>
             </div>
@@ -61,7 +61,7 @@
                 <div class="panel-heading">Рік відстеження</div>
                 <div class="pull-left panel-body"
                      inline-edit="pr.result_year"
-                     on-save="savePeriodicChanges('result_year', pr.pid,value)"
+                     on-save="savePeriodicChanges('result_year', pr.id,value)"
                      on-cancel="log('CANCEL', value)">
                 </div>
             </div>
@@ -71,7 +71,7 @@
                     <switcher ng-model="pr.result_bool"
                               true-value="'1'" true-label="Так"
                               false-value="'0'" false-label="Ні"
-                              ng-change="savePeriodicChanges('result_bool', pr.pid, newValue)">
+                              ng-change="savePeriodicChanges('result_bool', pr.id, newValue)">
                     </switcher>
                 </div>
             </div>
@@ -81,7 +81,7 @@
                     <div class="panel-heading">Коментар</div>
                     <div class="panel-body"
                          inline-comment="pr.result_comment"
-                         on-save="savePeriodicChanges('result_comment', pr.pid, value)"
+                         on-save="savePeriodicChanges('result_comment', pr.id, value)"
                          on-cancel="log('CANCEL', value)">
                     </div>
                 </div>
@@ -94,7 +94,7 @@
                 <div class="panel-heading">Дата підписання  звіту  про відстеження результативності регуляторного акта</div>
                 <div class="panel-body"
                      inline-date="pr.signed"
-                     on-save="savePeriodicChanges('signed', pr.pid, value)"
+                     on-save="savePeriodicChanges('signed', pr.id, value)"
                      on-cancel="log('CANCEL', value)">
                 </div>
             </div>
@@ -104,7 +104,7 @@
                 <div class="panel-heading">Дата оприлюденення  звіту  про відстеження результативності регуляторного акта</div>
                 <div class="panel-body"
                      inline-date="pr.publicated"
-                     on-save="savePeriodicChanges('publicated',pr.pid,value)"
+                     on-save="savePeriodicChanges('publicated',pr.id,value)"
                      on-cancel="log('CANCEL', value)">
                 </div>
             </div>
@@ -119,7 +119,7 @@
                 </div>
                 <div class="pull-left panel-body width-25"
                      inline-date="pr.termin_zakon"
-                     on-save="savePeriodicChanges('termin_zakon',pr.pid,value)"
+                     on-save="savePeriodicChanges('termin_zakon',pr.id,value)"
                      on-cancel="log('CANCEL', value)">
                 </div>
                 <div class="pull-left panel-body width-25 input-name">
@@ -127,7 +127,7 @@
                 </div>
                 <div class="pull-left panel-body width-25"
                      inline-date="pr.termin_fact"
-                     on-save="savePeriodicChanges('termin_fact',pr.pid,value)"
+                     on-save="savePeriodicChanges('termin_fact',pr.id,value)"
                      on-cancel="log('CANCEL', value)">
                 </div>
             </div>
@@ -138,7 +138,7 @@
                 <div class="panel-heading">Дата надання звіту  про відстеження результативності регуляторного акта до Держпідприємництва</div>
                 <div class="pull-left panel-body"
                      inline-date="pr.gived"
-                     on-save="savePeriodicChanges('gived',pr.pid,value)"
+                     on-save="savePeriodicChanges('gived',pr.id,value)"
                      on-cancel="log('CANCEL', value)">
                 </div>
             </div>
@@ -151,7 +151,7 @@
                     <switcher ng-model="pr.br_my_rating"
                               true-value="'1'" true-label="Так"
                               false-value="'0'" false-label="Ні"
-                              ng-change="savePeriodicChanges('br_my_rating', pr.pid, newValue, oldValue)">
+                              ng-change="savePeriodicChanges('br_my_rating', pr.id, newValue, oldValue)">
                     </switcher>
                 </div>
             </div>
@@ -159,7 +159,7 @@
                 <div class="panel-heading">Коментар</div>
                 <div class="panel-body"
                      inline-comment="pr.br_my_rating_c"
-                     on-save="savePeriodicChanges('br_my_rating_c', pr.pid, value)"
+                     on-save="savePeriodicChanges('br_my_rating_c', pr.id, value)"
                      on-cancel="log('CANCEL', value)">
                 </div>
             </div>
@@ -172,7 +172,7 @@
                     <switcher ng-model="pr.br_dev_rating"
                               true-value="'1'" true-label="Так"
                               false-value="'0'" false-label="Ні"
-                              ng-change="savePeriodicChanges('br_dev_rating', pr.pid, newValue)">
+                              ng-change="savePeriodicChanges('br_dev_rating', pr.id, newValue)">
                     </switcher>
                 </div>
             </div>
@@ -180,7 +180,7 @@
                 <div class="panel-heading">Коментар</div>
                 <div class="panel-body"
                      inline-comment="pr.br_dev_rating_c"
-                     on-save="savePeriodicChanges('br_dev_rating_c', pr.pid, value)"
+                     on-save="savePeriodicChanges('br_dev_rating_c', pr.id, value)"
                      on-cancel="log('CANCEL', value)">
                 </div>
             </div>
