@@ -2,15 +2,8 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 
 	"gopkg.in/yaml.v2"
-)
-
-var config *configuration
-
-const (
-	grpcAddress = "localhost:50051"
 )
 
 type configuration struct {
@@ -33,15 +26,17 @@ type configuration struct {
 	PgHost      string `yaml:"pg-host"`
 }
 
+var config *configuration
+
+const grpcAddress = "localhost:50051"
+
 func (c *configuration) getConf() error {
-	yamlFile, err := ioutil.ReadFile("conf.yaml")
+	yamlFile, err := ioutil.ReadFile("./trace.d/conf.yaml")
 	if err != nil {
-		log.Printf("yamlFile.Get err   #%v ", err)
 		return err
 	}
-	err = yaml.Unmarshal(yamlFile, &config)
-	if err != nil {
-		log.Fatalf("Unmarshal: %v", err)
+
+	if err = yaml.Unmarshal(yamlFile, &config); err != nil {
 		return err
 	}
 	return nil

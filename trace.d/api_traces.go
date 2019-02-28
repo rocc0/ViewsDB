@@ -3,11 +3,9 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 
-	"./httputil"
 	"github.com/gin-gonic/gin"
 )
 
@@ -39,28 +37,29 @@ type (
 // @Accept  json
 // @Produce  json
 // @Success 200 {string} string "ID"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router /api/create [post]
 // @Router /api/create-period [post]
 func postCreateItem(c *gin.Context) {
-	var trace NewTrace
-	var period BasicTrace
+	var (
+		trace  NewTrace
+		period BasicTrace
+	)
 	x, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
-
-		httputil.NewError(c, http.StatusBadRequest, err)
+		NewError(c, http.StatusBadRequest, err)
 		return
 	}
 
 	if ok := strings.Contains(c.Request.URL.Path, "create-period"); ok {
 		if err := json.Unmarshal([]byte(x), &period.Fields); err != nil {
-			httputil.NewError(c, http.StatusBadRequest, err)
+			NewError(c, http.StatusBadRequest, err)
 			return
 		}
 		if id, err := period.createNewPeriod(); err != nil {
-			httputil.NewError(c, http.StatusInternalServerError, err)
+			NewError(c, http.StatusInternalServerError, err)
 			return
 		} else {
 			c.JSON(http.StatusOK, gin.H{
@@ -69,15 +68,12 @@ func postCreateItem(c *gin.Context) {
 			})
 		}
 	}
-	log.Print("1234 ")
 	if err := json.Unmarshal([]byte(x), &trace); err != nil {
-
-		httputil.NewError(c, http.StatusBadRequest, err)
+		NewError(c, http.StatusBadRequest, err)
 		return
 	}
 	if id, err := trace.createNewTrace(); err != nil {
-		log.Print("155 ", err)
-		httputil.NewError(c, http.StatusInternalServerError, err)
+		NewError(c, http.StatusInternalServerError, err)
 		return
 	} else {
 		c.JSON(http.StatusOK, gin.H{
@@ -95,14 +91,14 @@ func postCreateItem(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {string} string "Ratings"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router /api/ratings [get]
 func getRatings(c *gin.Context) {
 	columns, ratings, err := getReportData()
 	if err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
+		NewError(c, http.StatusInternalServerError, err)
 		return
 	} else {
 		c.JSON(http.StatusOK, gin.H{
@@ -119,14 +115,14 @@ func getRatings(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {string} string "Ratings"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router /api/govs [get]
 func getGoverns(c *gin.Context) {
 	res, err := getGovernsList()
 	if err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
+		NewError(c, http.StatusInternalServerError, err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -142,23 +138,25 @@ func getGoverns(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {string} string "Trace"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router /api/v/{trk_id} [get]
 func getTrace(c *gin.Context) {
-	var b BasicTrace
-	var b2 BasicTrace
+	var (
+		b  BasicTrace
+		b2 BasicTrace
+	)
 	traceID := c.Param("trk_id")
 
 	basic, err := b.getBasicData(traceID)
 	if err != nil {
-		httputil.NewError(c, http.StatusNotFound, err)
+		NewError(c, http.StatusNotFound, err)
 		return
 	}
 	period, err := b2.getPeriodicData(traceID)
 	if err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
+		NewError(c, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -174,20 +172,19 @@ func getTrace(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {string} string "Trace field edited"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router /api/v/{trk_id} [post]
 func postEditTrackField(c *gin.Context) {
 	var save saveRequest
-
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	if err := json.Unmarshal([]byte(x), &save); err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
+		NewError(c, http.StatusBadRequest, err)
 		return
 	}
 	if err := save.saveTraceChanges(); err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
+		NewError(c, http.StatusInternalServerError, err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -203,21 +200,19 @@ func postEditTrackField(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {string} string "gov edited"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router /api/govs/edit [post]
 func postEditGovernments(c *gin.Context) {
 	var edit editGovernName
-
 	x, _ := ioutil.ReadAll(c.Request.Body)
-
 	if err := json.Unmarshal([]byte(x), &edit); err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
+		NewError(c, http.StatusBadRequest, err)
 		return
 	}
 	if err := edit.editGovName(); err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
+		NewError(c, http.StatusInternalServerError, err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -233,21 +228,19 @@ func postEditGovernments(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {string} string "Deleted"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router /api/delete [post]
 func postDeleteItem(c *gin.Context) {
 	var del deleteRequest
-
 	x, _ := ioutil.ReadAll(c.Request.Body)
-
 	if err := json.Unmarshal([]byte(x), &del); err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
+		NewError(c, http.StatusBadRequest, err)
 		return
 	}
 	if err := del.deleteItem(); err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
+		NewError(c, http.StatusInternalServerError, err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{

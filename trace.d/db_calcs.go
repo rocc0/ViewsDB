@@ -127,11 +127,9 @@ func getReportData() (*[]string, *[]governments, error) {
 	colNames, _ := rows.Columns()
 	names, _ := db.Query("SELECT fullname FROM rating_cols")
 	for names.Next() {
-		err = names.Scan(&column)
-		if err != nil {
+		if err = names.Scan(&column); err != nil {
 			return nil, nil, err
 		}
-
 		columns = append(columns, column)
 	}
 
@@ -141,8 +139,8 @@ func getReportData() (*[]string, *[]governments, error) {
 		for i := range columns {
 			columnPointers[i] = &columns[i]
 		}
-		err := rows.Scan(columnPointers...)
-		if err != nil {
+
+		if err := rows.Scan(columnPointers...); err != nil {
 			return nil, nil, err
 		}
 

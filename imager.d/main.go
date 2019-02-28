@@ -4,7 +4,7 @@ import (
 	"log"
 	"net"
 
-	pb "./pb"
+	pb "github.com/rocc0/TraceDB/imager.d/pb"
 	"google.golang.org/grpc"
 )
 

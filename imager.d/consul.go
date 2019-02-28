@@ -49,12 +49,12 @@ func (c *client) DeRegister(id string) error {
 // Service return a service
 func (c *client) Service(service, tag string) ([]*consul.ServiceEntry, *consul.QueryMeta, error) {
 	passingOnly := true
-	addrs, meta, err := c.consul.Health().Service(service, tag, passingOnly, nil)
-	if len(addrs) == 0 && err == nil {
+	address, meta, err := c.consul.Health().Service(service, tag, passingOnly, nil)
+	if len(address) == 0 && err == nil {
 		return nil, nil, fmt.Errorf("service ( %s ) was not found", service)
 	}
 	if err != nil {
 		return nil, nil, err
 	}
-	return addrs, meta, nil
+	return address, meta, nil
 }

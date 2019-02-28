@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strings"
 
-	"./httputil"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,9 +14,9 @@ import (
 // @Accept  text/html
 // @Produce  text/html
 // @Success 200 {string} string "ok"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router / [get]
 func showIndexPage(c *gin.Context) {
 	render(c, gin.H{
@@ -32,9 +31,9 @@ func showIndexPage(c *gin.Context) {
 // @Accept  text/html
 // @Produce  text/html
 // @Success 200 {string} string "register"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router /u/register [get]
 func showRegisterPage(c *gin.Context) {
 	render(c, gin.H{
@@ -49,9 +48,9 @@ func showRegisterPage(c *gin.Context) {
 // @Accept  text/html
 // @Produce  text/html
 // @Success 200 {string} string "login"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router /u/login [get]
 func showLoginPage(c *gin.Context) {
 	render(c, gin.H{
@@ -66,9 +65,9 @@ func showLoginPage(c *gin.Context) {
 // @Accept  text/html
 // @Produce  text/html
 // @Success 200 {string} string "ratings"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router /ratings [get]
 func showRatingsPage(c *gin.Context) {
 	render(c, gin.H{
@@ -83,9 +82,9 @@ func showRatingsPage(c *gin.Context) {
 // @Accept  text/html
 // @Produce  text/html
 // @Success 200 {string} string "creation"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router /track/create [get]
 func showTraceCreationPage(c *gin.Context) {
 	render(c, gin.H{
@@ -100,9 +99,9 @@ func showTraceCreationPage(c *gin.Context) {
 // @Accept  text/html
 // @Produce  text/html
 // @Success 200 {string} string "user page"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router /u/cabinet [get]
 func showUserPage(c *gin.Context) {
 	render(c, gin.H{
@@ -117,9 +116,9 @@ func showUserPage(c *gin.Context) {
 // @Accept  text/html
 // @Produce  text/html
 // @Success 200 {string} string "governments"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router /govs/edit [get]
 func showEditGovsNames(c *gin.Context) {
 	render(c, gin.H{
@@ -134,9 +133,9 @@ func showEditGovsNames(c *gin.Context) {
 // @Accept  text/html
 // @Produce  text/html
 // @Success 200 {string} string "trace"
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 404 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
 // @Router /id/{trk_id} [get]
 // @Router /id/{trk_id}/edit [get]
 func showTracePage(c *gin.Context) {
@@ -144,17 +143,14 @@ func showTracePage(c *gin.Context) {
 		trace BasicTrace
 		title string
 	)
-	traceID := c.Param("trk_id")
-	url := c.Request.URL.Path
-	if strings.Contains(url, "edit") {
+	if strings.Contains(c.Request.URL.Path, "edit") {
 		title = "Редагування | "
 	} else {
 		title = ""
 	}
 
-	if t, err := trace.getBasicData(traceID); err != nil {
-		httputil.NewError(c, http.StatusNotFound, err)
-		return
+	if t, err := trace.getBasicData(c.Param("trk_id")); err != nil {
+		NewError(c, http.StatusNotFound, err)
 	} else {
 		render(c, gin.H{
 			"title": title + t.Fields["reg_name"].(string),

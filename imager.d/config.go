@@ -24,8 +24,8 @@ func (c *configuration) getConf() error {
 		log.Printf("yamlFile.Get err   #%v ", err)
 		return err
 	}
-	err = yaml.Unmarshal(yamlFile, &config)
-	if err != nil {
+
+	if err = yaml.Unmarshal(yamlFile, &config); err != nil {
 		log.Fatalf("Unmarshal: %v", err)
 		return err
 	}

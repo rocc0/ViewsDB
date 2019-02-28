@@ -3,20 +3,19 @@ package main
 import (
 	"net/http"
 	"net/http/httptest"
-	"testing"
 	"os"
+	"testing"
 
 	"github.com/gin-gonic/gin"
 )
 
 var userList = []User{
-	User{Email: "user1", Password: "pass1"},
-	User{Email: "user2", Password: "pass2"},
-	User{Email: "user3", Password: "pass3"},
+	{Email: "user1", Password: "pass1"},
+	{Email: "user2", Password: "pass2"},
+	{Email: "user3", Password: "pass3"},
 }
 
 var tmpUserList []User
-
 
 func TestMain(m *testing.M) {
 	//Set Gin to Test Mode

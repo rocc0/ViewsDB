@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	elastic "gopkg.in/olivere/elastic.v5"
+	"gopkg.in/olivere/elastic.v5"
 )
 
 type indexItem struct {
@@ -68,7 +68,6 @@ const mapping = `
 //Connect to elastic
 func elasticConnect() (context.Context, *elastic.Client, error) {
 	ctx := context.Background()
-
 	client, err := elastic.NewClient(
 		elastic.SetURL(config.ElasticURL, config.ElasticURL),
 		elastic.SetSniff(false),
@@ -126,14 +125,12 @@ func (idx indexItem) updateIndex(id string) error {
 //Writing item to elastic index
 func (idx indexItem) writeIndex(ctx context.Context, client *elastic.Client) error {
 
-	_, err := client.Index().
+	if _, err := client.Index().
 		Index("tracking").
 		Type("trace").
 		Id(idx.TraceID).
 		BodyJson(idx).
-		Do(ctx)
-
-	if err != nil {
+		Do(ctx); err != nil {
 		return err
 	}
 	return nil

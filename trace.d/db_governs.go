@@ -1,7 +1,6 @@
 package main
 
 import (
-	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 )
 
@@ -22,8 +21,8 @@ func getGovernsList() (*[]government, error) {
 	}
 
 	for res.Next() {
-		err = res.Scan(&govID, &govName)
-		if err != nil {
+
+		if err = res.Scan(&govID, &govName); err != nil {
 			return nil, err
 		}
 

@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"os"
-	"runtime/pprof"
 	"sync"
 
 	"gopkg.in/olivere/elastic.v5"
@@ -28,7 +26,9 @@ func genWorkerRanges(workers int) workerRanges {
 		ids       workerRanges
 	)
 	row := db.QueryRow("SELECT MAX(id) FROM trace_info")
-	row.Scan(&highestID)
+	if err := row.Scan(&highestID); err != nil {
+		return workerRanges{}
+	}
 
 	// TODO: need improvement on highestID
 	length := (highestID/100 + 1) * 100
@@ -58,16 +58,15 @@ func indexWorker(ctx context.Context, wg *sync.WaitGroup, client *elastic.Client
 	}
 	log.Print("Indexing started", f, l)
 	for res.Next() {
-		err := res.Scan(&id, &traceID, &regName, &regDate, &govChoice, &traceYear, &developer,
-			&basic, &repeated, &periodical, &fact)
-		if err != nil {
-			log.Fatal(err)
+
+		if err := res.Scan(&id, &traceID, &regName, &regDate, &govChoice, &traceYear, &developer,
+			&basic, &repeated, &periodical, &fact); err != nil {
+			return
 		}
 		idx := indexItem{traceID, regName, regDate, govChoice,
 			developer, traceYear, basic, repeated, periodical, fact}
 
-		err = idx.writeIndex(ctx, client)
-		if err != nil {
+		if err = idx.writeIndex(ctx, client); err != nil {
 			log.Fatal(1, err)
 		}
 	}
@@ -77,8 +76,8 @@ func indexWorker(ctx context.Context, wg *sync.WaitGroup, client *elastic.Client
 }
 
 func createWorkerPool(noOfWorkers int, ch chan bool) {
-	ranges := genWorkerRanges(noOfWorkers)
 	var wg sync.WaitGroup
+	ranges := genWorkerRanges(noOfWorkers)
 
 	ctx, client, err := elasticConnect()
 	if err != nil {
@@ -96,24 +95,5 @@ func createWorkerPool(noOfWorkers int, ch chan bool) {
 
 func doReindex(workers *int, ch chan bool) {
 	createWorkerPool(*workers, ch)
-
-	if config.CPUProf != "" {
-		f, err := os.Create(config.CPUProf)
-		if err != nil {
-			log.Fatal(err)
-		}
-		pprof.StartCPUProfile(f)
-		f.Close()
-	}
-
-	pprof.StopCPUProfile()
-	if config.MemProf != "" {
-		f, err := os.Create(config.MemProf)
-		if err != nil {
-			log.Fatal(err)
-		}
-		pprof.WriteHeapProfile(f)
-		f.Close()
-	}
 	<-ch
 }

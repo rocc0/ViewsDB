@@ -9,7 +9,7 @@ type server struct {
 }
 
 func (s server) AddImage(ctx context.Context, rq *pb.NewImageRequest) (*pb.NewImageResponse, error) {
-	img := pb.NewImageRequest{rq.DocID, rq.Photo}
+	img := pb.NewImageRequest{DocID: rq.DocID, Photo: rq.Photo}
 	if res, err := uploadFilesToMinio(img); err != nil {
 		return nil, err
 	} else {
@@ -18,8 +18,8 @@ func (s server) AddImage(ctx context.Context, rq *pb.NewImageRequest) (*pb.NewIm
 }
 
 func (s server) GetImages(filter *pb.ImagesFilter, stream pb.Imager_GetImagesServer) error {
-	var i = Image{DocID: filter.ColID}
-	urls, err := i.getImages(filter, stream)
+	imgDir := Image{DocID: filter.ColID}
+	urls, err := imgDir.getImages(filter, stream)
 	if err != nil {
 		return err
 	}
@@ -35,11 +35,11 @@ func (s server) GetImages(filter *pb.ImagesFilter, stream pb.Imager_GetImagesSer
 }
 
 func (s server) DeleteImage(ctx context.Context, rq *pb.RemoveRequest) (*pb.RemoveResponse, error) {
-	var i = Image{PhotoID: rq.ImageID, DocID: rq.ColID}
+	img := Image{PhotoID: rq.ImageID, DocID: rq.ColID}
 
-	if err := i.deleteImage(); err != nil {
+	if err := img.deleteImage(); err != nil {
 		return nil, err
 	}
 
-	return &pb.RemoveResponse{true}, nil
+	return &pb.RemoveResponse{Success: true}, nil
 }

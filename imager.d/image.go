@@ -3,17 +3,29 @@ package main
 import (
 	"bytes"
 	"image/jpeg"
+	"math/rand"
+	"time"
 
 	pb "./pb"
 	"github.com/minio/minio-go"
 	"github.com/nfnt/resize"
-	"github.com/rocc0/TraceDB/source/gen"
 )
 
 type Image struct {
 	PhotoID string `json:"url"`
 	DocID   string `json:"doc_id"`
 	Thumb   string `json:"thumbUrl"`
+}
+
+//Generate returns a random seq of symbols
+func Generate(length int) string {
+	letters := []rune("abcdefghijklmnopqrstuvwxyz1234567890")
+	rand.Seed(time.Now().UnixNano())
+	b := make([]rune, length)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }
 
 func checkBucketExists(name string) error {
@@ -31,7 +43,7 @@ func checkBucketExists(name string) error {
 
 func uploadFilesToMinio(img pb.NewImageRequest) (*pb.NewImageResponse, error) {
 	r := bytes.NewReader(img.Photo)
-	photoID := gen.Generate(20) + ".jpg"
+	photoID := Generate(20) + ".jpg"
 	var i = Image{PhotoID: photoID, DocID: img.DocID, Thumb: "resized/" + photoID}
 
 	client, err := minio.NewV4(config.MinioUrl, config.MinioKay, config.MinioSecret, false)
@@ -47,7 +59,7 @@ func uploadFilesToMinio(img pb.NewImageRequest) (*pb.NewImageResponse, error) {
 	if err = checkBucketExists(i.DocID); err != nil {
 		return nil, err
 	}
-	if err = client.SetBucketPolicy(i.DocID, "", "readonly"); err != nil {
+	if err = client.SetBucketPolicy(i.DocID, "readonly"); err != nil {
 		return nil, err
 	}
 	//Save original

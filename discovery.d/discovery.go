@@ -8,7 +8,7 @@ import (
 	"github.com/nats-io/go-nats"
 	"github.com/spf13/viper"
 
-	pb "../imager/imagegrpc"
+	pb "github.com/rocc0/TraceDB/imager.d/pb"
 )
 
 const natsAddress = "nats://192.168.99.100:4222"

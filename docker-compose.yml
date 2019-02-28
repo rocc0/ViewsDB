@@ -10,7 +10,7 @@ services:
     environment:
         - "MYSQL_ROOT_PASSWORD=password"
     volumes:
-        - "/home/rocco/data/mysql:/var/lib/mysql"
+        - "./data/mysql:/var/lib/mysql"
   myadmin:
     container_name: trace_myadmin
     image: "phpmyadmin/phpmyadmin:latest"
@@ -22,19 +22,19 @@ services:
     depends_on:
         - mysql_db
     ports:
-        - "8080:80"
+        - "8787:80"
   mongodb:
     container_name: trace_mongo
-    build: mongo/
+    build: build/mongo/
     restart: always
     ports:
         - "27017:27017"
     volumes:
-        - "./mongo/:/starter/"
-        - "/home/rocco/data/mongo:/data/db"
+        - "./build/mongo/:/starter/"
+        - "./data/mongo:/data/db"
     environment:
-        - MONGO_INITDB_ROOT_USERNAME=admin
-        - MONGO_INITDB_ROOT_PASSWORD=password
+        MONGO_INITDB_ROOT_USERNAME: admin
+        MONGO_INITDB_ROOT_PASSWORD: password
   postgres:
     container_name: trace_pgsql
     image: postgres
@@ -42,7 +42,7 @@ services:
     ports:
         - "5432:5432"
     volumes:
-        - "/home/rocco/data/postgres:/var/lib/postgresql/data"
+        - "./data/postgres:/var/lib/postgresql/data"
     environment:
         - POSTGRES_PASSWORD=password
   adminer:
@@ -52,7 +52,7 @@ services:
         - 8080:8080
   elastic:
     container_name: trace_elastic
-    build: elastic/
+    build: build/elastic/
     restart: always
     ports:
          - "9200:9200"
@@ -65,8 +65,8 @@ services:
         - transport.host=127.0.0.1
         - http.host=0.0.0.0
     volumes:
-        - "./elastic:/data/elastic"
-        - "/home/rocco/data/elastic:/usr/share/elasticsearch/data"
+        - "./build/elastic:/data/elastic"
+        - "./data/elastic:/usr/share/elasticsearch/data"
   nats_server:
     container_name: trace_nats
     image: "nats"
@@ -84,10 +84,10 @@ services:
   minio_server:
     container_name: trace_minio
     image: "minio/minio"
-    env_file: variables.env
+    env_file: "./build/minio_vars.env"
     ports:
         - "9000:9000"
     volumes:
-        - "/home/rocco/data/minio/data:/data"
-        - "/home/rocco/data/minio/config:/root/.minio"
+        - "./data/minio/data:/data"
+        - "./data/minio/config:/root/.minio"
     command: server /data

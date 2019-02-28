@@ -3,11 +3,9 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 
-	"log"
-
-	"./httputil"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,17 +22,16 @@ import (
 // @Router /api/upload [post]
 func postAddImage(c *gin.Context) {
 	var i newImage
-
 	i.DocID = c.PostForm("doc_id")
 	file, err := c.FormFile("file")
 
 	if err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
+		NewError(c, http.StatusBadRequest, err)
 		return
 	}
 
 	if err = i.createAddImage(file); err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
+		NewError(c, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -61,7 +58,7 @@ func getTraceImages(c *gin.Context) {
 	urls, err := getImageUrls(id)
 
 	if err != nil {
-		httputil.NewError(c, http.StatusNotFound, err)
+		NewError(c, http.StatusNotFound, err)
 		return
 	}
 
@@ -85,14 +82,14 @@ func postDelImage(c *gin.Context) {
 	var d delImage
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	if err := json.Unmarshal([]byte(x), &d); err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
+		NewError(c, http.StatusBadRequest, err)
 		return
 	}
 
 	d.DocID = c.Param("trk_id")
 	log.Print(d.DocID, " | ", d.PhotoID)
 	if err := d.createRemoveRequest(); err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
+		NewError(c, http.StatusInternalServerError, err)
 		return
 	}
 
